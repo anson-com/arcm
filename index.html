@@ -316,6 +316,24 @@ body::before {
     </style>
 </head>
 <body>
+<!-- 登录弹窗遮罩 -->
+<div id="loginMask" style="position:fixed;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;z-index:9999;">
+    <div id="loginBox" style="background:#ffffff;padding:30px;border-radius:16px;width:90%;max-width:360px;box-shadow:0 8px 32px rgba(0,0,0,0.25);">
+        <h2 style="text-align:center;margin-top:0;color:#111827;">AnsonCRM 登录验证</h2>
+        <p id="tipText" style="color:#ef4444;display:none;text-align:center;margin:8px 0;">密码错误，请重新输入</p>
+        <div style="margin:15px 0;">
+            <label style="color:#111827;display:flex;align-items:center;gap:6px;">
+                <span>🔑</span>访问密码
+            </label>
+            <input type="password" id="pwdInput" placeholder="请输入登录密码" style="width:100%;box-sizing:border-box;padding:12px;margin-top:8px;border-radius:8px;font-size:16px;border:1px solid #ddd;background:#fff;color:#111827;">
+        </div>
+        <div style="display:flex;gap:12px;margin-top:24px;">
+            <button id="loginBtn" style="flex:1;padding:14px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:17px;font-weight:500;">确认登录</button>
+            <button id="resetPwdBtn" style="flex:1;padding:14px;border:none;border-radius:10px;font-size:17px;color:#2563eb;background:#f3f4f6;">重置密码</button>
+        </div>
+    </div>
+</div>
+
 <div class="app-container">
     <header class="header">
         <div class="logo-area"><i class="fas fa-address-book"></i><h1> Anson <span>CRM</span></h1></div>
@@ -1214,6 +1232,79 @@ body::before {
             }
         });
     });
+</script>
+<!-- 下面是登录JS代码 -->
+<script>
+const loginMask = document.getElementById('loginMask');
+const mainPage = document.getElementById('mainPage');
+const pwdInput = document.getElementById('pwdInput');
+const loginBtn = document.getElementById('loginBtn');
+const resetPwdBtn = document.getElementById('resetPwdBtn');
+const tipText = document.getElementById('tipText');
+
+// 自定义初始密码
+const DEFAULT_PASSWORD = "123456";
+
+window.onload = function(){
+    let savePwd = localStorage.getItem('crmLoginPwd');
+    // 首次访问初始化密码
+    if(!savePwd){
+        localStorage.setItem('crmLoginPwd', DEFAULT_PASSWORD);
+        savePwd = DEFAULT_PASSWORD;
+    }
+    // 每次刷新页面强制清除登录状态，必须重新输入密码
+    localStorage.removeItem('crmIsLogin');
+    // 未登录强制隐藏主页面
+    mainPage.style.display = 'none';
+    loginMask.style.display = 'flex';
+}
+
+// 登录按钮
+loginBtn.onclick = function(){
+    const inputVal = pwdInput.value.trim();
+    const realPwd = localStorage.getItem('crmLoginPwd');
+    if(inputVal === realPwd){
+        loginMask.style.display = 'none';
+        mainPage.style.display = 'block';
+        tipText.style.display = 'none';
+        // 本次会话登录成功（仅当前标签页生效，刷新清空）
+        sessionStorage.setItem('crmIsLogin', '1');
+    }else{
+        tipText.style.display = 'block';
+        pwdInput.value = '';
+        pwdInput.focus();
+    }
+}
+
+// 回车快捷登录
+pwdInput.onkeydown = function(e){
+    if(e.key === 'Enter') loginBtn.click();
+}
+
+// 重置密码：必须验证旧密码
+resetPwdBtn.onclick = function(){
+    const oldPwdCheck = prompt('请输入当前旧密码验证身份：');
+    const realPwd = localStorage.getItem('crmLoginPwd');
+    if(oldPwdCheck === null) return;
+    if(oldPwdCheck.trim() !== realPwd){
+        alert('旧密码输入错误，无权修改密码！');
+        return;
+    }
+    const newPwd = prompt('验证通过，请设置新的访问密码：');
+    if(newPwd && newPwd.trim() !== ''){
+        localStorage.setItem('crmLoginPwd', newPwd.trim());
+        alert('密码修改成功！页面将刷新，请重新登录');
+        location.reload();
+    }else{
+        alert('新密码不能为空，修改取消');
+    }
+}
+
+// 手动退出登录按钮调用函数
+function logout(){
+    sessionStorage.removeItem('crmIsLogin');
+    location.reload();
+}
 </script>
 </body>
 </html>
