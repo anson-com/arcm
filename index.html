@@ -12,8 +12,7 @@
     <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='40' fill='%232563eb'/%3E%3Ctext x='96' y='120' font-size='90' text-anchor='middle' fill='white'%3E★%3C/text%3E%3C/svg%3E">
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#f6f9fc">
-    <!-- 浏览器标签页图标 -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%232563eb'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle' fill='white'>★</text></svg>">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%232563eb'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle' fill='white'>★</text></svg>
    
  <script>
         if ('serviceWorker' in navigator) {
@@ -42,6 +41,8 @@ body::before {
         * { margin:0; padding:0; box-sizing:border-box; }
         body { font-family:'Inter',sans-serif; background:#f6f9fc; color:#1e293b; padding:24px; min-height:100vh; display:flex; justify-content:center; }
         body.modal-open { overflow: hidden; }
+        body.lock-scroll { overflow:hidden !important; }
+        body.lock-scroll::before { display:none !important; }
         .app-container { max-width:1280px; width:100%; }
         .header { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; margin-bottom:32px; gap:16px; }
         .logo-area { display:flex; align-items:center; gap:12px; }
@@ -131,8 +132,7 @@ body::before {
         .form-row .form-group { flex:1; min-width:120px; }
         .modal-actions { display:flex; justify-content:flex-end; gap:10px; margin-top:24px; }
 
-        /* 分类条目基准样式 */
-       .manage-item-row {
+        .manage-item-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -143,18 +143,12 @@ body::before {
     background: #ffffff;
     transition: 0.2s ease all;
     min-height: 14px;
- /* 控制分类文字大小，现在15px，数值越小字越小 */
     font-size: 14px;
 }
 .manage-item-row:hover {
     background: #f0f7ff;
     border-color: #cbd5e1;
 }
-        }
-        .manage-item-row:hover {
-            background:#f0f7ff;
-            border-color:#cbd5e1;
-        }
         .manage-del-btn {
             color:#ef4444;
             background:none;
@@ -173,7 +167,6 @@ body::before {
             color:#dc2626;
         }
 
-        /* 重写add-tag-row，与manage-item-row视觉完全统一 */
         .add-tag-row {
             display:flex;
             gap:6px;
@@ -192,7 +185,6 @@ body::before {
     transition: all 0.2s ease;
     min-height: 32px;
 }
-        }
         .add-tag-row input::placeholder {
             color:#94a3b8;
         }
@@ -215,13 +207,11 @@ body::before {
     box-shadow: 0 2px 8px rgba(37,99,235,0.15);
     min-height: 24px;
 }
-        }
         .add-tag-row .btn:hover {
             box-shadow:0 6px 16px rgba(37,99,235,0.3);
         }
 
         .copyright-text { line-height:1.8; text-align:center; color:#475569; }
-        /* 移动端自适应不挤压 */
     @media (max-width:640px) {
     body { padding:12px; }
     .header {
@@ -229,20 +219,18 @@ body::before {
         flex-wrap: wrap;
         align-items: center;
         gap: 10px;
-        /* 头部完全无左右内边距，横向贴满屏幕 */
         padding: 0;
         margin: 0 -12px 20px -12px;
     }
-    /* 缩小LOGO最小宽度，释放更多右侧空间给统计卡片 */
     .logo-area {
         flex-shrink: 0;
         min-width: 130px;
-        padding-left: 12px; /* LOGO单独左侧留白，匹配页面body边距 */
+        padding-left: 12px;
     }
     .header-stats {
         flex: 1;
         min-width: 0;
-        margin: 0 6px 0 0; /* 仅右侧6px，和下方大白框边距对齐 */
+        margin: 0 6px 0 0;
         gap: 4px;
         justify-content: flex-end;
     }
@@ -262,7 +250,7 @@ body::before {
         margin-top:6px;
         gap: 14px;
         row-gap: 8px; 
-        padding: 0 12px; /* 按钮栏左右6px，和页面统一 */
+        padding: 0 12px;
     }
 
     .toolbar { flex-direction:column; align-items:stretch; }
@@ -281,7 +269,6 @@ body::before {
         justify-content:center;
     }
 
-    /* 弹窗强制恢复原始排版：按钮靠右、文字左对齐 */
     .modal h2 {
         text-align: left;
     }
@@ -311,126 +298,182 @@ body::before {
 .header-stats .stat-item {
     display: flex;
     align-items: center;
-    /* 新增两行，防止PC窗口缩小挤压变形 */
     min-width: 8px;
     flex-shrink:0;
 }
 
-/* 仅手机端生效，PC完全保持原样 */
 @media (max-width: 640px) {
-    /* 登录弹窗打开时，隐藏顶部白色留白条 */
-    body.lock-scroll::before {
-        display: none !important;
-    }
-    /* 登录磨砂遮罩向上铺满刘海状态栏，无留白 */
     #loginMask {
         padding-top: env(safe-area-inset-top) !important;
-        box-sizing: border-box !important;
+        padding-bottom: env(safe-area-inset-bottom) !important;
     }
-    /* 登录弹窗顶部增加安全边距，文字不被刘海遮挡 */
     #loginBox {
         padding-top: max(30px, env(safe-area-inset-top) + 16px) !important;
     }
-}
-
-@media (max-width:640px){
-  html,body{overscroll-behavior-y:contain !important;}
+    #initPwdBox {
+        width: 100%;
+        max-width: unset;
+        margin: 20px 12px;
+    }
 }
 
 @media (min-width:641px){
     #pwaSplash{display:none !important;}
 }
+
+#loginBox button:active,
+#resetBox button:active,
+#initPwdBox button:active {
+  opacity:0.85;
+  transform:scale(0.97);
+  transition:0.1s;
+}
+/* 登录遮罩通用居中 */
+#loginMask, #resetMask {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background:rgba(0,0,0,0.55);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+    padding: 0 12px;
+}
+#loginMask.show, #resetMask.show {
+    display:flex;
+}
+#loginBox, #resetBox {
+    background:#fff;
+    border-radius:24px;
+    width:100%;
+    max-width:300px;
+    box-shadow:0 10px 40px rgba(0,0,0,0.18);
+}
+#initPwdBox {
+    background:#ffffff;
+    padding:32px 24px 34px 24px;
+    border-radius:24px;
+    width:100%;
+    max-width:300px;
+    margin:40px auto;
+    box-shadow:0 10px 40px rgba(0,0,0,0.18);
+    display:none;
+}
+#initPwdBox.show {
+    display:block;
+}
+input[type="password"]::-ms-reveal { display:none; }
     </style>
 </head>
 <body>
-<!-- 手机PWA启动闪屏，iOS/安卓统一过渡画面 -->
 <div id="pwaSplash" style="position:fixed;inset:0;background:#f6f9fc;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:320px;">
     <svg width="90" height="90" viewBox="0 0 100 100">
-        <rect width="100" height="100" rx="30" fill="#2563eb"/>
+        <circle cx="50" cy="50" r="50" fill="#2563eb"/>
         <text x="50" y="68" font-size="50" text-anchor="middle" fill="white">★</text>
     </svg>
-    <h1 style="font-size:25px;font-weight:700;margin:0;color:#111827;">Anson <span style="color:#9ca3af;">CRM</span></h1>
+    <span style="font-size:25px;font-weight:700;color:#1e293b;">AnsonCRM</span>
 </div>
-<!-- 登录弹窗遮罩 -->
-<div id="loginMask" style="position:fixed;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;z-index:9999;">
-    <div id="loginBox" style="background:#ffffff;padding:30px;border-radius:16px;width:90%;max-width:360px;box-shadow:0 8px 32px rgba(0,0,0,0.25);
-    /* 手机媒体查询：小屏时全屏无圆角铺满 */
-    @media (max-width:768px){
-        width:100%;
-        height:100vh;
-        max-width:unset;
-        border-radius:0;
-        padding:40px 20px;
-        justify-content:center;
-        display:flex;
-        flex-direction:column;
-    }
-    ">
-        <h2 id="boxTitle" style="text-align:center;margin:0 0 12px;color:#111827;font-size:26px;">AnsonCRM 登录验证</h2>
-        <p id="tipText" style="color:#ef4444;display:none;text-align:center;margin:8px 0 16px 0;min-height:24px;"></p>
 
-        <!-- 面板1：登录面板（默认显示） -->
+<!-- 1、登录弹窗遮罩（独立无嵌套、无重复ID） -->
+<div id="loginMask">
+    <div id="loginBox" style="padding:32px 24px 34px 24px;">
+        <div style="text-align:center;margin-bottom:20px;">
+            <svg width="72" height="72" viewBox="0 0 100 100" style="display:inline-block;">
+                <circle cx="50" cy="50" r="50" fill="#2563eb"/>
+                <text x="50" y="68" font-size="50" text-anchor="middle" fill="#ffffff">★</text>
+            </svg>
+        </div>
+        <h2 id="boxTitle" style="text-align:center;font-size:24px;margin:0 0 24px 0;font-weight:700;">
+            <span style="color:#111827;">Anson</span> <span style="color:#9ca3af;">CRM</span>
+        </h2>
+        <p id="tipText" style="color:#ef4444;display:none;text-align:center;margin:8px 0 16px 0;min-height:24px;"></p>
+        <!-- 登录面板 -->
         <div id="panelLogin">
             <div style="margin-bottom:24px;position:relative;">
-                <label style="color:#111827;display:flex;align-items:center;gap:6px;font-size:15px;margin-bottom:8px;">
-                    <span>🔑</span>访问密码
-                </label>
-                <input type="password" id="pwdInput" placeholder="请输入登录密码" style="width:100%;box-sizing:border-box;padding:12px 42px 12px 12px;margin:0;border-radius:8px;font-size:16px;border:1px solid #ddd;background:#fff;color:#111827;">
-                <span id="eyeLogin" style="position:absolute;right:14px;bottom:12px;font-size:18px;cursor:pointer;color:#555;user-select:none;">◡</span>
+              <input id="pwdInput" type="password" placeholder="请输入登录密码" style="width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #e2e8f0;border-radius:14px;font-size:15px;outline:none;transition:0.2s all;"
+                onfocus="this.style.borderColor='#2563eb';this.style.boxShadow='0 0 0 3px rgba(37,99,235,0.1)';"
+                onblur="this.style.borderColor='#e2e8f0';this.style.boxShadow='none';">
+              <span id="eyeLogin" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:#64748b;">◡</span>
             </div>
-            <div style="display:flex;gap:12px;">
-                <button id="loginBtn" style="flex:1;padding:14px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:17px;font-weight:500;">确认登录</button>
-                <button id="switchActionBtn" style="flex:1;padding:14px;border:none;border-radius:10px;font-size:17px;color:#2563eb;background:#f3f4f6;">设置初始密码</button>
+            <div style="display:flex;gap:12px;margin-top:6px;">
+              <button id="loginBtn" style="flex:1;padding:13px 0;background:#2563eb;color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:600;">确认登录</button>
+              <button id="switchActionBtn" style="flex:1;padding:13px 0;background:#f1f5f9;color:#2563eb;border:none;border-radius:12px;font-size:16px;font-weight:600;">重置密码</button>
             </div>
         </div>
-
-        <!-- 面板2：首次设置初始密码面板（无弹窗） -->
+        <!-- 初始化密码面板 -->
         <div id="panelInit" style="display:none;">
             <div style="margin-bottom:24px;position:relative;">
-                <label style="color:#111827;display:flex;align-items:center;gap:6px;font-size:15px;margin-bottom:8px;">
-                    <span>🔑</span>首次使用需设置密码
-                </label>
-                <input type="password" id="initPwdInput" placeholder="自定义你的登录密码" style="width:100%;box-sizing:border-box;padding:12px 42px 12px 12px;margin:0;border-radius:8px;font-size:16px;border:1px solid #ddd;background:#fff;color:#111827;">
-                <span id="eyeInit" style="position:absolute;right:14px;bottom:12px;font-size:18px;cursor:pointer;color:#555;user-select:none;">◡</span>
+              <input id="initPwdInput" type="password" placeholder="首次使用请设置登录密码" style="width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #e2e8f0;border-radius:14px;font-size:15px;outline:none;transition:0.2s all;"
+                onfocus="this.style.borderColor='#2563eb';this.style.boxShadow='0 0 0 3px rgba(37,99,235,0.1)';"
+                onblur="this.style.borderColor='#e2e8f0';this.style.boxShadow='none';">
+              <span id="eyeInit" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:#64748b;">◡</span>
             </div>
-            <div style="display:flex;gap:12px;">
-                <button id="confirmInitBtn" style="flex:1;padding:14px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:17px;font-weight:500;">确认创建</button>
-                <button id="backFromInitBtn" style="flex:1;padding:14px;border:none;border-radius:10px;font-size:17px;color:#2563eb;background:#f3f4f6;">返回登录</button>
-            </div>
-        </div>
-
-        <!-- 面板3：重置密码面板（旧密码+新密码双输入） -->
-        <div id="panelReset" style="display:none;">
-            <div style="margin-bottom:12px;position:relative;">
-                <label style="color:#111827;display:flex;align-items:center;gap:6px;font-size:15px;margin-bottom:8px;">
-                    <span>🔒</span>当前旧密码
-                </label>
-                <input type="password" id="oldPwdInput" placeholder="输入现有密码" style="width:100%;box-sizing:border-box;padding:12px 42px 12px 12px;margin:0;border-radius:8px;font-size:16px;border:1px solid #ddd;background:#fff;color:#111827;">
-                <span id="eyeOld" style="position:absolute;right:14px;bottom:12px;font-size:18px;cursor:pointer;color:#555;user-select:none;">◡</span>
-            </div>
-            <div style="margin-bottom:24px;position:relative;">
-                <label style="color:#111827;display:flex;align-items:center;gap:6px;font-size:15px;margin-bottom:8px;">
-                    <span>🔑</span>设置新密码
-                </label>
-                <input type="password" id="newPwdInput" placeholder="设置全新访问密码" style="width:100%;box-sizing:border-box;padding:12px 42px 12px 12px;margin:0;border-radius:8px;font-size:16px;border:1px solid #ddd;background:#fff;color:#111827;">
-                <span id="eyeNew" style="position:absolute;right:14px;bottom:12px;font-size:18px;cursor:pointer;color:#555;user-select:none;">◡</span>
-            </div>
-            <div style="display:flex;gap:12px;">
-                <button id="confirmResetBtn" style="flex:1;padding:14px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:17px;font-weight:500;">确认修改</button>
-                <button id="backFromResetBtn" style="flex:1;padding:14px;border:none;border-radius:10px;font-size:17px;color:#2563eb;background:#f3f4f6;">返回登录</button>
+            <div style="display:flex;gap:12px;margin-top:6px;">
+              <button id="confirmInitBtn" style="flex:1;padding:13px 0;background:#2563eb;color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:600;">完成设置</button>
+              <button id="backFromInitBtn" style="flex:1;padding:13px 0;background:#f1f5f9;color:#2563eb;border:none;border-radius:12px;font-size:16px;font-weight:600;">返回</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- 主页面，无退出按钮，登录前永久隐藏 -->
-<div id="mainPage" style="display:none;">
-    <!-- 粘贴你全部CRM页面原有代码 -->
+<!-- 2、重置密码独立遮罩面板（单独DOM，无ID重复） -->
+<div id="resetMask">
+    <div id="resetBox" style="padding:32px 24px 34px 24px;">
+        <div style="text-align:center;margin-bottom:20px;">
+            <svg width="72" height="72" viewBox="0 0 100 100" style="display:inline-block;">
+                <circle cx="50" cy="50" r="50" fill="#2563eb"/>
+                <text x="50" y="68" font-size="50" text-anchor="middle" fill="#ffffff">★</text>
+            </svg>
+        </div>
+        <h2 style="text-align:center;font-size:24px;margin:0 0 24px 0;font-weight:700;">
+            <span style="color:#111827;">Anson</span> <span style="color:#9ca3af;">CRM</span>
+        </h2>
+        <p id="resetTipText" style="color:#ef4444;display:none;text-align:center;margin:8px 0 16px 0;min-height:24px;"></p>
+        <div style="margin-bottom:16px;position:relative;">
+          <input id="oldPwdInput" type="password" placeholder="请输入当前旧密码" style="width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #e2e8f0;border-radius:14px;font-size:15px;outline:none;transition:0.2s all;"
+            onfocus="this.style.borderColor='#2563eb';this.style.boxShadow='0 0 0 3px rgba(37,99,235,0.1)';"
+            onblur="this.style.borderColor='#e2e8f0';this.style.boxShadow='none';">
+          <span id="eyeOld" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:#64748b;">◡</span>
+        </div>
+        <div style="margin-bottom:24px;position:relative;">
+          <input id="newPwdInput" type="password" placeholder="请设置新密码" style="width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #e2e8f0;border-radius:14px;font-size:15px;outline:none;transition:0.2s all;"
+            onfocus="this.style.borderColor='#2563eb';this.style.boxShadow='0 0 0 3px rgba(37,99,235,0.1)';"
+            onblur="this.style.borderColor='#e2e8f0';this.style.boxShadow='none';">
+          <span id="eyeNew" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:#64748b;">◡</span>
+        </div>
+        <div style="display:flex;gap:12px;margin-top:6px;">
+          <button id="confirmResetBtn" style="flex:1;padding:13px 0;background:#2563eb;color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:600;">保存新密码</button>
+          <button id="backFromResetBtn" style="flex:1;padding:13px 0;background:#f1f5f9;color:#2563eb;border:none;border-radius:12px;font-size:16px;font-weight:600;">返回</button>
+        </div>
+    </div>
 </div>
 
+<!-- 3、首次设置密码独立卡片（无遮罩，单独ID不重复） -->
+<div id="initPwdBox">
+  <div style="text-align:center;margin-bottom:20px;">
+    <svg width="72" height="72" viewBox="0 0 100 100" style="display:inline-block;">
+      <circle cx="50" cy="50" r="50" fill="#2563eb"/>
+      <text x="50" y="68" font-size="50" text-anchor="middle" fill="#ffffff">★</text>
+    </svg>
+  </div>
+  <h2 style="text-align:center;font-size:24px;margin:0 0 24px 0;font-weight:700;">
+    <span style="color:#111827;">Anson</span> <span style="color:#9ca3af;">CRM</span>
+  </h2>
+  <div style="margin-bottom:24px;position:relative;">
+    <input id="initSinglePwd" type="password" placeholder="首次使用请设置登录密码" style="width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #e2e8f0;border-radius:14px;font-size:15px;outline:none;transition:0.2s all;"
+      onfocus="this.style.borderColor='#2563eb';this.style.boxShadow='0 0 0 3px rgba(37,99,235,0.1)';"
+      onblur="this.style.borderColor='#e2e8f0';this.style.boxShadow='none';">
+    <span id="eyeSingleInit" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:#64748b;">◡</span>
+  </div>
+  <button id="setInitSingleBtn" style="width:100%;padding:13px 0;background:#2563eb;color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:600;">完成设置</button>
+</div>
+
+<!-- 主页面容器 -->
+<div id="mainPage" style="display:none;">
 <div class="app-container">
     <header class="header">
-
         <div class="logo-area">
   <svg width="48" height="48" viewBox="0 0 100 100" style="background:#dbeafe; border-radius:14px; padding:10px;">
     <circle cx="50" cy="50" r="50" fill="#2563eb"/>
@@ -438,13 +481,11 @@ body::before {
   </svg>
   <h1>Anson <span>CRM</span></h1>
 </div>
-
         <div class="stats header-stats">
         <div class="stat-item"><i class="fas fa-users"></i> 总客户 <strong id="totalCount">0</strong></div>
         <div class="stat-item"><i class="fas fa-phone"></i> 互动记录 <strong id="interactionCount">0</strong></div>
     </div>
         <div class="header-actions">
-        <!-- 一排功能按钮 -->
             <button class="btn btn-outline btn-sm" id="manageIndustryBtn"><i class="fas fa-tags"></i> 行业分类管理</button>
             <button class="btn btn-outline btn-sm" id="manageExhibitionBtn"><i class="fas fa-building"></i> 展会分类管理</button>
             <button class="btn btn-outline btn-sm" id="exportBtn"><i class="fas fa-download"></i> 导出备份</button>
@@ -470,6 +511,7 @@ body::before {
         <button class="btn btn-primary" id="addBtn"><i class="fas fa-plus"></i> 添加客户</button>
     </div>
     <div class="grid" id="contactGrid"></div>
+</div>
 </div>
 
 <!-- 添加客户弹窗 -->
@@ -587,25 +629,21 @@ body::before {
 </div>
 
 <script>
-// ====== 先放这段闪屏关闭代码 ======
 window.addEventListener('load',()=>{
     setTimeout(()=>{
         const splash = document.getElementById('pwaSplash');
         if(splash) splash.style.display = 'none';
     },1500);
 });
-
 </script>
 
 <script>
-    // 全局数据
     let contacts = [];
     let industryList = [];
     const DEFAULT_INDUSTRY = '其他行业';
     let exhibitionList = [];
     const DEFAULT_EXHIBITION = '未归类展会';
 
-    // 跨平台打开外部链接
     function openExternalUrl(url) {
         try {
             if (!url || url.trim() === '') return;
@@ -634,7 +672,6 @@ window.addEventListener('load',()=>{
     const exhibitionFilterEl = document.getElementById('exhibitionFilter');
     const exhibitionSelectEl = document.getElementById('exhibition');
 
-    // 加载本地数据，全局try/catch防卡死
     function loadData() {
         try {
             const rawContact = localStorage.getItem('crm_contacts');
@@ -1347,32 +1384,32 @@ window.addEventListener('load',()=>{
     });
 </script>
 
-<!-- 下面是登录JS代码 -->
-</script>
-<!-- 下面是登录JS代码 -->
+<!-- 登录逻辑完整JS（修复DOM匹配，适配新版三套面板ID，无冲突不卡死） -->
 <script>
 // 绑定全部DOM元素
 const loginMask = document.getElementById('loginMask');
+const resetMask = document.getElementById('resetMask');
+const initPwdBox = document.getElementById('initPwdBox');
 const mainPage = document.getElementById('mainPage');
 const boxTitle = document.getElementById('boxTitle');
 const tipText = document.getElementById('tipText');
+const resetTipText = document.getElementById('resetTipText');
 
-// 登录面板
+// 登录面板元素
 const panelLogin = document.getElementById('panelLogin');
 const pwdInput = document.getElementById('pwdInput');
 const loginBtn = document.getElementById('loginBtn');
 const switchActionBtn = document.getElementById('switchActionBtn');
 const eyeLogin = document.getElementById('eyeLogin');
 
-// 初始化密码面板
+// 初始化密码弹窗内面板
 const panelInit = document.getElementById('panelInit');
 const initPwdInput = document.getElementById('initPwdInput');
 const confirmInitBtn = document.getElementById('confirmInitBtn');
 const backFromInitBtn = document.getElementById('backFromInitBtn');
 const eyeInit = document.getElementById('eyeInit');
 
-// 重置密码面板
-const panelReset = document.getElementById('panelReset');
+// 独立重置密码面板元素
 const oldPwdInput = document.getElementById('oldPwdInput');
 const newPwdInput = document.getElementById('newPwdInput');
 const confirmResetBtn = document.getElementById('confirmResetBtn');
@@ -1380,19 +1417,24 @@ const backFromResetBtn = document.getElementById('backFromResetBtn');
 const eyeOld = document.getElementById('eyeOld');
 const eyeNew = document.getElementById('eyeNew');
 
+// 无遮罩初始化卡片元素
+const initSinglePwd = document.getElementById('initSinglePwd');
+const setInitSingleBtn = document.getElementById('setInitSingleBtn');
+const eyeSingleInit = document.getElementById('eyeSingleInit');
+
 // 阻止手机下拉回弹、滚动溢出
 function stopMobileOverscroll(e) {
     e.preventDefault();
 }
 
-// 页面初始化
+// 页面初始化登录系统
 function initLoginSystem(){
-    // 已删除强制清空登录代码：刷新页面保留登录，仅关闭标签自动失效
     document.body.classList.add('lock-scroll');
-    // 手机禁止下拉溢出
     document.addEventListener('touchmove', stopMobileOverscroll, { passive:false });
     mainPage.style.display = 'none';
-    loginMask.style.display = 'flex';
+    loginMask.classList.add('show');
+    resetMask.classList.remove('show');
+    initPwdBox.classList.remove('show');
     showPanel('login');
 
     const savedPwd = localStorage.getItem('crmLoginPwd');
@@ -1402,53 +1444,40 @@ function initLoginSystem(){
         switchActionBtn.innerText = '重置密码';
     }
 
-    // 刷新页面读取会话，有登录记录直接进入系统
+    // 会话缓存免登录
     if(sessionStorage.getItem('crmIsLogin') === '1'){
-        loginMask.style.display = 'none';
+        loginMask.classList.remove('show');
         mainPage.style.display = 'block';
         document.body.classList.remove('lock-scroll');
-        // 登录成功解除手机滚动限制
         document.removeEventListener('touchmove', stopMobileOverscroll);
     }
 }
 
-// 统一切换面板，切换时强制重置输入框为密文、重置简约眼睛图标
+// 切换登录弹窗内子面板（登录/初次设置密码）
 function showPanel(type){
-    // 全部面板隐藏
     panelLogin.style.display = 'none';
     panelInit.style.display = 'none';
-    panelReset.style.display = 'none';
     tipText.style.display = 'none';
 
     switch(type){
         case 'login':
-            boxTitle.innerText = 'AnsonCRM 登录验证';
+            boxTitle.innerText = '';
             panelLogin.style.display = 'block';
             pwdInput.value = '';
             pwdInput.type = 'password';
             eyeLogin.innerText = '◡';
             break;
         case 'init':
-            boxTitle.innerText = '创建访问密码';
+            boxTitle.innerText = '';
             panelInit.style.display = 'block';
             initPwdInput.value = '';
             initPwdInput.type = 'password';
             eyeInit.innerText = '◡';
             break;
-        case 'reset':
-            boxTitle.innerText = '修改访问密码';
-            panelReset.style.display = 'block';
-            oldPwdInput.value = '';
-            newPwdInput.value = '';
-            oldPwdInput.type = 'password';
-            newPwdInput.type = 'password';
-            eyeOld.innerText = '◡';
-            eyeNew.innerText = '◡';
-            break;
     }
 }
 
-// DOM加载完成后执行初始化
+// DOM加载完成执行登录初始化
 document.addEventListener('DOMContentLoaded', initLoginSystem);
 
 // 登录按钮逻辑
@@ -1456,11 +1485,10 @@ loginBtn.addEventListener('click', ()=>{
     const input = pwdInput.value.trim();
     const realPwd = localStorage.getItem('crmLoginPwd');
     if(input === realPwd){
-        loginMask.style.display = 'none';
+        loginMask.classList.remove('show');
         mainPage.style.display = 'block';
         tipText.style.display = 'none';
         document.body.classList.remove('lock-scroll');
-        // 登录成功移除滚动拦截
         document.removeEventListener('touchmove', stopMobileOverscroll);
         sessionStorage.setItem('crmIsLogin','1');
     }else{
@@ -1476,17 +1504,21 @@ pwdInput.addEventListener('keydown', (e)=>{
     if(e.key === 'Enter') loginBtn.click();
 })
 
-// 右侧切换面板按钮
+// 切换按钮：初始密码/重置密码
 switchActionBtn.addEventListener('click', ()=>{
     const savedPwd = localStorage.getItem('crmLoginPwd');
     if(!savedPwd || savedPwd === ''){
         showPanel('init');
     }else{
-        showPanel('reset');
+        loginMask.classList.remove('show');
+        resetMask.classList.add('show');
+        oldPwdInput.value = '';
+        newPwdInput.value = '';
+        resetTipText.style.display = 'none';
     }
 })
 
-// ---------------------- 初始化密码面板逻辑 ----------------------
+// 【登录弹窗内-初次设置密码】确认按钮
 confirmInitBtn.addEventListener('click', ()=>{
     const newPwd = initPwdInput.value.trim();
     if(newPwd === ''){
@@ -1503,34 +1535,37 @@ confirmInitBtn.addEventListener('click', ()=>{
 })
 backFromInitBtn.addEventListener('click', ()=>showPanel('login'));
 
-// ---------------------- 重置密码面板逻辑 ----------------------
+// 【独立重置密码弹窗】保存新密码
 confirmResetBtn.addEventListener('click', ()=>{
     const realPwd = localStorage.getItem('crmLoginPwd');
     const oldVal = oldPwdInput.value.trim();
     const newVal = newPwdInput.value.trim();
-    tipText.style.display = 'none';
+    resetTipText.style.display = 'none';
 
     if(oldVal !== realPwd){
-        tipText.innerText = '旧密码输入错误，无权修改密码！';
-        tipText.style.display = 'block';
+        resetTipText.innerText = '旧密码输入错误，无权修改密码！';
+        resetTipText.style.display = 'block';
         oldPwdInput.value = '';
         oldPwdInput.focus();
         return;
     }
     if(newVal === ''){
-        tipText.innerText = '新密码不能为空，修改取消';
-        tipText.style.display = 'block';
+        resetTipText.innerText = '新密码不能为空，修改取消';
+        resetTipText.style.display = 'block';
         newPwdInput.focus();
         return;
     }
     localStorage.setItem('crmLoginPwd', newVal.trim());
-    tipText.innerText = '密码修改成功，页面即将刷新';
-    tipText.style.display = 'block';
+    resetTipText.innerText = '密码修改成功，页面即将刷新';
+    resetTipText.style.display = 'block';
     setTimeout(()=>location.reload(), 1200);
 })
-backFromResetBtn.addEventListener('click', ()=>showPanel('login'));
+backFromResetBtn.addEventListener('click', ()=>{
+    resetMask.classList.remove('show');
+    loginMask.classList.add('show');
+})
 
-// ==================== 简约线条眼睛切换逻辑 ====================
+// 密码显示/隐藏切换图标
 eyeLogin.onclick = function(){
     if(pwdInput.type === 'password'){
         pwdInput.type = 'text';
@@ -1567,6 +1602,25 @@ eyeNew.onclick = function(){
         this.innerText = '◡';
     }
 }
+eyeSingleInit.onclick = function(){
+    if(initSinglePwd.type === 'password'){
+        initSinglePwd.type = 'text';
+        this.innerText = '👁';
+    }else{
+        initSinglePwd.type = 'password';
+        this.innerText = '◡';
+    }
+}
+setInitSingleBtn.addEventListener('click',()=>{
+    const val = initSinglePwd.value.trim();
+    if(!val){
+        alert('密码不能为空');
+        return;
+    }
+    localStorage.setItem('crmLoginPwd',val);
+    alert('初始密码设置完成，请刷新页面登录');
+    location.reload();
+})
 </script>
 </body>
 </html>
