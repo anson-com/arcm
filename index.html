@@ -319,57 +319,62 @@ body::before {
 <!-- 登录弹窗遮罩 -->
 <div id="loginMask" style="position:fixed;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;z-index:9999;">
     <div id="loginBox" style="background:#ffffff;padding:30px;border-radius:16px;width:90%;max-width:360px;box-shadow:0 8px 32px rgba(0,0,0,0.25);">
-        <h2 style="text-align:center;margin-top:0;color:#111827;">AnsonCRM 登录验证</h2>
-        <p id="tipText" style="color:#ef4444;display:none;text-align:center;margin:8px 0;">密码错误，请重新输入</p>
+        <h2 id="boxTitle" style="text-align:center;margin:0 0 12px;color:#111827;font-size:26px;">AnsonCRM 登录验证</h2>
+        <p id="tipText" style="color:#ef4444;display:none;text-align:center;margin:8px 0 16px 0;min-height:24px;"></p>
 
-        <!-- 正常登录面板 -->
-        <div id="loginPanel">
-            <div style="margin:15px 0;">
-                <label style="color:#111827;display:flex;align-items:center;gap:6px;">
+        <!-- 面板1：登录面板（默认显示） -->
+        <div id="panelLogin">
+            <div style="margin-bottom:24px;">
+                <label style="color:#111827;display:flex;align-items:center;gap:6px;font-size:15px;margin-bottom:8px;">
                     <span>🔑</span>访问密码
                 </label>
-                <input type="password" id="pwdInput" placeholder="请输入登录密码" style="width:100%;box-sizing:border-box;padding:12px;margin-top:8px;border-radius:8px;font-size:16px;border:1px solid #ddd;background:#fff;color:#111827;">
+                <input type="password" id="pwdInput" placeholder="请输入登录密码" style="width:100%;box-sizing:border-box;padding:12px;margin:0;border-radius:8px;font-size:16px;border:1px solid #ddd;background:#fff;color:#111827;">
+            </div>
+            <div style="display:flex;gap:12px;">
+                <button id="loginBtn" style="flex:1;padding:14px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:17px;font-weight:500;">确认登录</button>
+                <button id="switchActionBtn" style="flex:1;padding:14px;border:none;border-radius:10px;font-size:17px;color:#2563eb;background:#f3f4f6;">设置初始密码</button>
             </div>
         </div>
 
-        <!-- 重置密码面板（默认隐藏，切换显示） -->
-        <div id="resetPanel" style="display:none;">
-            <div style="margin:10px 0;">
-                <label style="color:#111827;display:flex;align-items:center;gap:6px;">
-                    <span>🔒</span>输入旧密码
+        <!-- 面板2：首次设置初始密码面板（无弹窗） -->
+        <div id="panelInit" style="display:none;">
+            <div style="margin-bottom:24px;">
+                <label style="color:#111827;display:flex;align-items:center;gap:6px;font-size:15px;margin-bottom:8px;">
+                    <span>🗝️</span>创建访问密码
                 </label>
-                <input type="password" id="oldPwdInput" placeholder="请输入当前旧密码" style="width:100%;box-sizing:border-box;padding:12px;margin-top:8px;border-radius:8px;font-size:16px;border:1px solid #ddd;background:#fff;color:#111827;">
+                <input type="password" id="initPwdInput" placeholder="自定义你的访问密码" style="width:100%;box-sizing:border-box;padding:12px;margin:0;border-radius:8px;font-size:16px;border:1px solid #ddd;background:#fff;color:#111827;">
             </div>
-            <div style="margin:10px 0;">
-                <label style="color:#111827;display:flex;align-items:center;gap:6px;">
+            <div style="display:flex;gap:12px;">
+                <button id="confirmInitBtn" style="flex:1;padding:14px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:17px;font-weight:500;">确认创建</button>
+                <button id="backFromInitBtn" style="flex:1;padding:14px;border:none;border-radius:10px;font-size:17px;color:#2563eb;background:#f3f4f6;">返回登录</button>
+            </div>
+        </div>
+
+        <!-- 面板3：重置密码面板（旧密码+新密码双输入） -->
+        <div id="panelReset" style="display:none;">
+            <div style="margin-bottom:12px;">
+                <label style="color:#111827;display:flex;align-items:center;gap:6px;font-size:15px;margin-bottom:8px;">
+                    <span>🔒</span>当前旧密码
+                </label>
+                <input type="password" id="oldPwdInput" placeholder="输入现有密码" style="width:100%;box-sizing:border-box;padding:12px;margin:0;border-radius:8px;font-size:16px;border:1px solid #ddd;background:#fff;color:#111827;">
+            </div>
+            <div style="margin-bottom:24px;">
+                <label style="color:#111827;display:flex;align-items:center;gap:6px;font-size:15px;margin-bottom:8px;">
                     <span>🗝️</span>设置新密码
                 </label>
-                <input type="password" id="newPwdInput" placeholder="请设置新访问密码" style="width:100%;box-sizing:border-box;padding:12px;margin-top:8px;border-radius:8px;font-size:16px;border:1px solid #ddd;background:#fff;color:#111827;">
+                <input type="password" id="newPwdInput" placeholder="设置全新访问密码" style="width:100%;box-sizing:border-box;padding:12px;margin:0;border-radius:8px;font-size:16px;border:1px solid #ddd;background:#fff;color:#111827;">
             </div>
-            <div style="display:flex;gap:8px;margin-top:10px;">
-                <button id="confirmResetBtn" style="flex:1;padding:10px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-size:15px;">确认修改</button>
-                <button id="backLoginBtn" style="flex:1;padding:10px;border:1px solid #ddd;background:#f3f4f6;border-radius:8px;font-size:15px;color:#333;">返回登录</button>
+            <div style="display:flex;gap:12px;">
+                <button id="confirmResetBtn" style="flex:1;padding:14px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:17px;font-weight:500;">确认修改</button>
+                <button id="backFromResetBtn" style="flex:1;padding:14px;border:none;border-radius:10px;font-size:17px;color:#2563eb;background:#f3f4f6;">返回登录</button>
             </div>
-        </div>
-
-        <div style="display:flex;gap:12px;margin-top:24px;" id="btnRow">
-            <button id="loginBtn" style="flex:1;padding:14px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:17px;font-weight:500;">确认登录</button>
-            <button id="pwdActionBtn" style="flex:1;padding:14px;border:none;border-radius:10px;font-size:17px;color:#2563eb;background:#f3f4f6;">设置初始密码</button>
         </div>
     </div>
 </div>
 
-<!-- 主页面，未登录永久隐藏，已删除退出登录按钮 -->
+<!-- 主页面，无退出按钮，登录前永久隐藏 -->
 <div id="mainPage" style="display:none;">
-    <!-- 这里粘贴你所有CRM原有页面代码 -->
-</div>
-
-<!-- 主页面，未登录永久隐藏 -->
-<div id="mainPage" style="display:none;">
-    <!-- 退出按钮放在页面最顶部 -->
-    <button onclick="logout()" style="position:fixed;top:12px;right:12px;z-index:100;padding:6px 14px;border-radius:8px;border:none;background:#ef4444;color:#fff;font-size:14px;">退出登录</button>
-
-    <!-- 这里粘贴你所有CRM原有页面代码 -->
+    <!-- 粘贴你全部CRM页面原有代码 -->
 </div>
 
 <div class="app-container">
@@ -1273,102 +1278,136 @@ body::before {
 </script>
 <!-- 下面是登录JS代码 -->
 <script>
-// 页面元素
+<script>
+// 全局DOM元素
 const loginMask = document.getElementById('loginMask');
 const mainPage = document.getElementById('mainPage');
+const boxTitle = document.getElementById('boxTitle');
+const tipText = document.getElementById('tipText');
+
+// 登录面板
+const panelLogin = document.getElementById('panelLogin');
 const pwdInput = document.getElementById('pwdInput');
 const loginBtn = document.getElementById('loginBtn');
-const pwdActionBtn = document.getElementById('pwdActionBtn');
-const tipText = document.getElementById('tipText');
-const loginPanel = document.getElementById('loginPanel');
-const resetPanel = document.getElementById('resetPanel');
-const btnRow = document.getElementById('btnRow');
+const switchActionBtn = document.getElementById('switchActionBtn');
+
+// 初始化密码面板
+const panelInit = document.getElementById('panelInit');
+const initPwdInput = document.getElementById('initPwdInput');
+const confirmInitBtn = document.getElementById('confirmInitBtn');
+const backFromInitBtn = document.getElementById('backFromInitBtn');
+
+// 重置密码面板
+const panelReset = document.getElementById('panelReset');
 const oldPwdInput = document.getElementById('oldPwdInput');
 const newPwdInput = document.getElementById('newPwdInput');
 const confirmResetBtn = document.getElementById('confirmResetBtn');
-const backLoginBtn = document.getElementById('backLoginBtn');
+const backFromResetBtn = document.getElementById('backFromResetBtn');
 
-// 初始化登录系统
+// 页面初始化逻辑
 function initLoginSystem(){
-    // 关闭页面自动退出：sessionStorage关闭标签自动清空
+    // 关闭标签自动退出：会话存储关闭页面自动清空
     sessionStorage.removeItem('crmIsLogin');
-    // 登录时锁定滚动
+    // 登录时锁定页面滚动
     document.body.classList.add('lock-scroll');
     mainPage.style.display = 'none';
     loginMask.style.display = 'flex';
-    // 默认展示登录面板
-    loginPanel.style.display = 'block';
-    resetPanel.style.display = 'none';
-    btnRow.style.display = 'flex';
+    // 默认显示登录面板
+    showPanel('login');
 
-    const savedPassword = localStorage.getItem('crmLoginPwd');
-    if(!savedPassword || savedPassword === ''){
-        pwdActionBtn.innerText = '设置初始密码';
+    const savedPwd = localStorage.getItem('crmLoginPwd');
+    if(!savedPwd || savedPwd === ''){
+        // 无密码：右侧按钮显示【设置初始密码】
+        switchActionBtn.innerText = '设置初始密码';
     }else{
-        pwdActionBtn.innerText = '重置密码';
+        // 已有密码：右侧按钮切换为【重置密码】
+        switchActionBtn.innerText = '重置密码';
+    }
+}
+
+// 统一面板切换函数（保证三个面板尺寸完全一致）
+function showPanel(type){
+    // 全部面板先隐藏
+    panelLogin.style.display = 'none';
+    panelInit.style.display = 'none';
+    panelReset.style.display = 'none';
+    tipText.style.display = 'none';
+
+    switch(type){
+        case 'login':
+            boxTitle.innerText = 'AnsonCRM 登录验证';
+            panelLogin.style.display = 'block';
+            pwdInput.value = '';
+            break;
+        case 'init':
+            boxTitle.innerText = '创建访问密码';
+            panelInit.style.display = 'block';
+            initPwdInput.value = '';
+            break;
+        case 'reset':
+            boxTitle.innerText = '修改访问密码';
+            panelReset.style.display = 'block';
+            oldPwdInput.value = '';
+            newPwdInput.value = '';
+            break;
     }
 }
 
 document.addEventListener('DOMContentLoaded', initLoginSystem);
 
-// 登录按钮
-loginBtn.addEventListener('click', function(){
-    const inputPwd = pwdInput.value.trim();
+// 登录按钮点击
+loginBtn.addEventListener('click', ()=>{
+    const input = pwdInput.value.trim();
     const realPwd = localStorage.getItem('crmLoginPwd');
-    if(inputPwd === realPwd){
+    if(input === realPwd){
         loginMask.style.display = 'none';
         mainPage.style.display = 'block';
-        tipText.style.display = 'none';
-        // 登录成功解除滚动锁定
         document.body.classList.remove('lock-scroll');
         sessionStorage.setItem('crmIsLogin','1');
     }else{
+        tipText.innerText = '密码错误，请重新输入';
         tipText.style.display = 'block';
         pwdInput.value = '';
         pwdInput.focus();
     }
 })
 
-// 回车登录
-pwdInput.addEventListener('keydown', function(e){
+// 登录输入框回车快捷登录
+pwdInput.addEventListener('keydown', (e)=>{
     if(e.key === 'Enter') loginBtn.click();
 })
 
-// 右侧按钮切换逻辑：首次设置 / 打开重置面板
-pwdActionBtn.addEventListener('click', function(){
+// 右侧切换按钮：无密码→初始化面板 / 有密码→重置面板
+switchActionBtn.addEventListener('click', ()=>{
     const savedPwd = localStorage.getItem('crmLoginPwd');
     if(!savedPwd || savedPwd === ''){
-        // 首次无密码，直接创建
-        const newInitPwd = prompt('首次使用，请设置专属访问密码：');
-        if(newInitPwd && newInitPwd.trim() !== ''){
-            localStorage.setItem('crmLoginPwd', newInitPwd.trim());
-            alert('初始密码创建成功，请输入密码登录！');
-            pwdActionBtn.innerText = '重置密码';
-        }else{
-            alert('密码不能为空，设置已取消');
-        }
+        showPanel('init');
     }else{
-        // 已有密码，切换到内置重置面板，无弹窗
-        loginPanel.style.display = 'none';
-        btnRow.style.display = 'none';
-        resetPanel.style.display = 'block';
-        tipText.style.display = 'none';
-        oldPwdInput.value = '';
-        newPwdInput.value = '';
-        oldPwdInput.focus();
+        showPanel('reset');
     }
 })
 
-// 返回登录面板
-backLoginBtn.addEventListener('click', function(){
-    resetPanel.style.display = 'none';
-    loginPanel.style.display = 'block';
-    btnRow.style.display = 'flex';
-    tipText.style.display = 'none';
+// ---------------------- 初始化密码面板逻辑（无弹窗） ----------------------
+confirmInitBtn.addEventListener('click', ()=>{
+    const newPwd = initPwdInput.value.trim();
+    if(newPwd === ''){
+        tipText.innerText = '密码不能为空';
+        tipText.style.display = 'block';
+        initPwdInput.focus();
+        return;
+    }
+    // 保存初始密码
+    localStorage.setItem('crmLoginPwd', newPwd);
+    tipText.innerText = '密码创建成功，请登录';
+    tipText.style.display = 'block';
+    // 更新按钮文字
+    switchActionBtn.innerText = '重置密码';
+    setTimeout(()=>showPanel('login'), 1200);
 })
+backFromInitBtn.addEventListener('click', ()=>showPanel('login'));
 
-// 面板内确认修改密码（无弹窗，页面内输入校验）
-confirmResetBtn.addEventListener('click', function(){
+// ---------------------- 重置密码面板逻辑（无弹窗） ----------------------
+confirmResetBtn.addEventListener('click', ()=>{
     const realPwd = localStorage.getItem('crmLoginPwd');
     const oldVal = oldPwdInput.value.trim();
     const newVal = newPwdInput.value.trim();
@@ -1381,21 +1420,174 @@ confirmResetBtn.addEventListener('click', function(){
         oldPwdInput.focus();
         return;
     }
-    if(newVal === '' || newVal.length < 1){
+    if(newVal === ''){
         tipText.innerText = '新密码不能为空';
         tipText.style.display = 'block';
         newPwdInput.focus();
         return;
     }
-    // 修改成功
+    // 修改密码成功，刷新页面重登
     localStorage.setItem('crmLoginPwd', newVal);
-    tipText.innerText = '密码修改成功，请重新登录';
+    tipText.innerText = '密码修改成功，正在刷新';
     tipText.style.display = 'block';
-    // 1秒后刷新回到登录
-    setTimeout(()=>{
-        location.reload();
-    },1200);
+    setTimeout(()=>location.reload(), 1200);
 })
+backFromResetBtn.addEventListener('click', ()=>showPanel('login'));
+</script><script>
+// 全局DOM元素
+const loginMask = document.getElementById('loginMask');
+const mainPage = document.getElementById('mainPage');
+const boxTitle = document.getElementById('boxTitle');
+const tipText = document.getElementById('tipText');
+
+// 登录面板
+const panelLogin = document.getElementById('panelLogin');
+const pwdInput = document.getElementById('pwdInput');
+const loginBtn = document.getElementById('loginBtn');
+const switchActionBtn = document.getElementById('switchActionBtn');
+
+// 初始化密码面板
+const panelInit = document.getElementById('panelInit');
+const initPwdInput = document.getElementById('initPwdInput');
+const confirmInitBtn = document.getElementById('confirmInitBtn');
+const backFromInitBtn = document.getElementById('backFromInitBtn');
+
+// 重置密码面板
+const panelReset = document.getElementById('panelReset');
+const oldPwdInput = document.getElementById('oldPwdInput');
+const newPwdInput = document.getElementById('newPwdInput');
+const confirmResetBtn = document.getElementById('confirmResetBtn');
+const backFromResetBtn = document.getElementById('backFromResetBtn');
+
+// 页面初始化逻辑
+function initLoginSystem(){
+    // 关闭标签自动退出：会话存储关闭页面自动清空
+    sessionStorage.removeItem('crmIsLogin');
+    // 登录时锁定页面滚动
+    document.body.classList.add('lock-scroll');
+    mainPage.style.display = 'none';
+    loginMask.style.display = 'flex';
+    // 默认显示登录面板
+    showPanel('login');
+
+    const savedPwd = localStorage.getItem('crmLoginPwd');
+    if(!savedPwd || savedPwd === ''){
+        // 无密码：右侧按钮显示【设置初始密码】
+        switchActionBtn.innerText = '设置初始密码';
+    }else{
+        // 已有密码：右侧按钮切换为【重置密码】
+        switchActionBtn.innerText = '重置密码';
+    }
+}
+
+// 统一面板切换函数（保证三个面板尺寸完全一致）
+function showPanel(type){
+    // 全部面板先隐藏
+    panelLogin.style.display = 'none';
+    panelInit.style.display = 'none';
+    panelReset.style.display = 'none';
+    tipText.style.display = 'none';
+
+    switch(type){
+        case 'login':
+            boxTitle.innerText = 'AnsonCRM 登录验证';
+            panelLogin.style.display = 'block';
+            pwdInput.value = '';
+            break;
+        case 'init':
+            boxTitle.innerText = '创建访问密码';
+            panelInit.style.display = 'block';
+            initPwdInput.value = '';
+            break;
+        case 'reset':
+            boxTitle.innerText = '修改访问密码';
+            panelReset.style.display = 'block';
+            oldPwdInput.value = '';
+            newPwdInput.value = '';
+            break;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', initLoginSystem);
+
+// 登录按钮点击
+loginBtn.addEventListener('click', ()=>{
+    const input = pwdInput.value.trim();
+    const realPwd = localStorage.getItem('crmLoginPwd');
+    if(input === realPwd){
+        loginMask.style.display = 'none';
+        mainPage.style.display = 'block';
+        document.body.classList.remove('lock-scroll');
+        sessionStorage.setItem('crmIsLogin','1');
+    }else{
+        tipText.innerText = '密码错误，请重新输入';
+        tipText.style.display = 'block';
+        pwdInput.value = '';
+        pwdInput.focus();
+    }
+})
+
+// 登录输入框回车快捷登录
+pwdInput.addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter') loginBtn.click();
+})
+
+// 右侧切换按钮：无密码→初始化面板 / 有密码→重置面板
+switchActionBtn.addEventListener('click', ()=>{
+    const savedPwd = localStorage.getItem('crmLoginPwd');
+    if(!savedPwd || savedPwd === ''){
+        showPanel('init');
+    }else{
+        showPanel('reset');
+    }
+})
+
+// ---------------------- 初始化密码面板逻辑（无弹窗） ----------------------
+confirmInitBtn.addEventListener('click', ()=>{
+    const newPwd = initPwdInput.value.trim();
+    if(newPwd === ''){
+        tipText.innerText = '密码不能为空';
+        tipText.style.display = 'block';
+        initPwdInput.focus();
+        return;
+    }
+    // 保存初始密码
+    localStorage.setItem('crmLoginPwd', newPwd);
+    tipText.innerText = '密码创建成功，请登录';
+    tipText.style.display = 'block';
+    // 更新按钮文字
+    switchActionBtn.innerText = '重置密码';
+    setTimeout(()=>showPanel('login'), 1200);
+})
+backFromInitBtn.addEventListener('click', ()=>showPanel('login'));
+
+// ---------------------- 重置密码面板逻辑（无弹窗） ----------------------
+confirmResetBtn.addEventListener('click', ()=>{
+    const realPwd = localStorage.getItem('crmLoginPwd');
+    const oldVal = oldPwdInput.value.trim();
+    const newVal = newPwdInput.value.trim();
+    tipText.style.display = 'none';
+
+    if(oldVal !== realPwd){
+        tipText.innerText = '旧密码输入错误';
+        tipText.style.display = 'block';
+        oldPwdInput.value = '';
+        oldPwdInput.focus();
+        return;
+    }
+    if(newVal === ''){
+        tipText.innerText = '新密码不能为空';
+        tipText.style.display = 'block';
+        newPwdInput.focus();
+        return;
+    }
+    // 修改密码成功，刷新页面重登
+    localStorage.setItem('crmLoginPwd', newVal);
+    tipText.innerText = '密码修改成功，正在刷新';
+    tipText.style.display = 'block';
+    setTimeout(()=>location.reload(), 1200);
+})
+backFromResetBtn.addEventListener('click', ()=>showPanel('login'));
 </script>
 </body>
 </html>
