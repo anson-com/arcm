@@ -314,6 +314,23 @@ body::before {
     min-width: 8px;
     flex-shrink:0;
 }
+
+/* 仅手机端生效，PC完全保持原样 */
+@media (max-width: 640px) {
+    /* 登录弹窗打开时，隐藏顶部白色留白条 */
+    body.lock-scroll::before {
+        display: none !important;
+    }
+    /* 登录磨砂遮罩向上铺满刘海状态栏，无留白 */
+    #loginMask {
+        padding-top: env(safe-area-inset-top) !important;
+        box-sizing: border-box !important;
+    }
+    /* 登录弹窗顶部增加安全边距，文字不被刘海遮挡 */
+    #loginBox {
+        padding-top: max(30px, env(safe-area-inset-top) + 16px) !important;
+    }
+}
     </style>
 </head>
 <body>
