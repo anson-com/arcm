@@ -12,7 +12,8 @@
     <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='40' fill='%232563eb'/%3E%3Ctext x='96' y='120' font-size='90' text-anchor='middle' fill='white'%3E★%3C/text%3E%3C/svg%3E">
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#f6f9fc">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232563eb'/><text x='50' y='65' font-size='50' text-anchor='middle' fill='white'>★</text></svg>">
+    <!-- 浏览器标签页图标 -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%232563eb'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle' fill='white'>★</text></svg>">
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -383,7 +384,16 @@ body::before {
 
 <div class="app-container">
     <header class="header">
-        <div class="logo-area"><i class="fas fa-address-book"></i><h1> Anson <span>CRM</span></h1></div>
+
+
+      <div class="logo-area">
+  <svg width="48" height="48" viewBox="0 0 100 100" style="background:#dbeafe; border-radius:14px; padding:8px;">
+    <circle cx="50" cy="50" r="50" fill="#2563eb"/>
+    <text x="50" y="65" font-size="55" text-anchor="middle" fill="white">★</text>
+  </svg>
+  <h1>Anson <span>CRM</span></h1>
+</div>
+
         <div class="stats header-stats">
         <div class="stat-item"><i class="fas fa-users"></i> 总客户 <strong id="totalCount">0</strong></div>
         <div class="stat-item"><i class="fas fa-phone"></i> 互动记录 <strong id="interactionCount">0</strong></div>
@@ -520,7 +530,7 @@ body::before {
     <div class="modal">
         <h2><i class="fas fa-info-circle"></i> 版权信息</h2>
         <div class="copyright-text">
-            <p>©版本号：AnsonCRM2026.2.0</p>
+            <p>© 版本号：AnsonCRM2026.2.0</p>
             <p>开发作者：Anson</p>
             <p>联系QQ：59253359</p>
             <p style="margin-top:12px;">系统版权归Anson所有，严禁私自篡改盗用</p>
@@ -585,7 +595,7 @@ body::before {
             } else {
                 contacts = [
                     {
-                        id: '1', name: 'Anson', company: '©版权开发所有者', phone: 'QQ：59253359',
+                        id: '1', name: 'Anson', company: '© 版权开发所有者', phone: 'QQ：59253359',
                         email: '59253359@qq.com', product: '数据信息保护，AI智能管理系统',
                         industry: 'IT互联网',
                         exhibition: DEFAULT_EXHIBITION,
@@ -1312,13 +1322,19 @@ const backFromResetBtn = document.getElementById('backFromResetBtn');
 const eyeOld = document.getElementById('eyeOld');
 const eyeNew = document.getElementById('eyeNew');
 
+// 阻止手机下拉回弹、滚动溢出
+function stopMobileOverscroll(e) {
+    e.preventDefault();
+}
+
 // 页面初始化
 function initLoginSystem(){
     // 已删除强制清空登录代码：刷新页面保留登录，仅关闭标签自动失效
     document.body.classList.add('lock-scroll');
+    // 手机禁止下拉溢出
+    document.addEventListener('touchmove', stopMobileOverscroll, { passive:false });
     mainPage.style.display = 'none';
     loginMask.style.display = 'flex';
-    // 默认展示登录面板
     showPanel('login');
 
     const savedPwd = localStorage.getItem('crmLoginPwd');
@@ -1333,6 +1349,8 @@ function initLoginSystem(){
         loginMask.style.display = 'none';
         mainPage.style.display = 'block';
         document.body.classList.remove('lock-scroll');
+        // 登录成功解除手机滚动限制
+        document.removeEventListener('touchmove', stopMobileOverscroll);
     }
 }
 
@@ -1382,7 +1400,10 @@ loginBtn.addEventListener('click', ()=>{
     if(input === realPwd){
         loginMask.style.display = 'none';
         mainPage.style.display = 'block';
+        tipText.style.display = 'none';
         document.body.classList.remove('lock-scroll');
+        // 登录成功移除滚动拦截
+        document.removeEventListener('touchmove', stopMobileOverscroll);
         sessionStorage.setItem('crmIsLogin','1');
     }else{
         tipText.innerText = '密码错误，请重新输入';
@@ -1451,42 +1472,38 @@ confirmResetBtn.addEventListener('click', ()=>{
 })
 backFromResetBtn.addEventListener('click', ()=>showPanel('login'));
 
-// ==================== 简约线条眼睛切换逻辑（匹配你截图样式） ====================
-// 登录密码框
+// ==================== 简约线条眼睛切换逻辑 ====================
 eyeLogin.onclick = function(){
     if(pwdInput.type === 'password'){
         pwdInput.type = 'text';
-        this.innerText = '◎';
+        this.innerText = '👁';
     }else{
         pwdInput.type = 'password';
         this.innerText = '◡';
     }
 }
-// 首次创建密码框
 eyeInit.onclick = function(){
     if(initPwdInput.type === 'password'){
         initPwdInput.type = 'text';
-        this.innerText = '◎';
+        this.innerText = '👁';
     }else{
         initPwdInput.type = 'password';
         this.innerText = '◡';
     }
 }
-// 重置-旧密码框
 eyeOld.onclick = function(){
     if(oldPwdInput.type === 'password'){
         oldPwdInput.type = 'text';
-        this.innerText = '◎';
+        this.innerText = '👁';
     }else{
         oldPwdInput.type = 'password';
         this.innerText = '◡';
     }
 }
-// 重置-新密码框
 eyeNew.onclick = function(){
     if(newPwdInput.type === 'password'){
         newPwdInput.type = 'text';
-        this.innerText = '◎';
+        this.innerText = '👁';
     }else{
         newPwdInput.type = 'password';
         this.innerText = '◡';
