@@ -1,12 +1,12 @@
-// 缓存版本号，更新代码修改此数字即可刷新缓存
+// 缓存版本号，更新页面/图标代码时修改数字刷新缓存
 const CACHE_VER = "AnsonCRM-PWA-v2.0.0";
-// 需要离线缓存的静态资源
+// 离线必须缓存的核心本地文件
 const CACHE_FILES = [
   "./index.html",
   "./manifest.json"
 ];
 
-// 安装SW，预缓存文件
+// 安装：预缓存核心文件到本地浏览器
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_VER).then((cache) => {
@@ -15,7 +15,7 @@ self.addEventListener("install", (event) => {
   );
 });
 
-// 激活时清理旧缓存
+// 激活：自动清理旧版本缓存，不占用本地空间
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
@@ -27,11 +27,19 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-// 拦截请求，优先离线缓存，无缓存走网络
+// 离线请求拦截策略：优先本地缓存，断网自动兜底首页
 self.addEventListener("fetch", (event) => {
+  const req = event.request;
+  // 所有POST提交操作（保存客户、改密码等）直接走原生逻辑，不缓存
+  if (req.method !== "GET") return;
+  // 只缓存本地同源文件，外部在线字体、图标不参与缓存
+  const url = new URL(req.url);
+  if (url.origin !== self.location.origin) return;
+
   event.respondWith(
-    caches.match(event.request).then((cacheRes) => {
-      return cacheRes || fetch(event.request);
+    caches.match(req).then((cacheRes) => {
+      // 有本地缓存直接打开；无缓存尝试联网；完全断网返回缓存首页保证可用
+      return cacheRes || fetch(req).catch(() => caches.match("./index.html"));
     })
   );
 });
