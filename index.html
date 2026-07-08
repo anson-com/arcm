@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -378,17 +379,20 @@ input[type="password"]::-ms-reveal { display:none; }
 
 <!-- 1、登录弹窗遮罩（独立无嵌套、无重复ID） -->
 <div id="loginMask">
-    <div id="loginBox" style="padding:32px 24px 34px 24px;">
-        <div style="text-align:center;margin-bottom:20px;">
-            <svg width="72" height="72" viewBox="0 0 100 100" style="display:inline-block;">
-                <circle cx="50" cy="50" r="50" fill="#2563eb"/>
-                <text x="50" y="68" font-size="50" text-anchor="middle" fill="#ffffff">★</text>
-            </svg>
-        </div>
-        <h2 id="boxTitle" style="text-align:center;font-size:24px;margin:0 0 24px 0;font-weight:700;">
-            <span style="color:#111827;">Anson</span> <span style="color:#9ca3af;">CRM</span>
-        </h2>
-        <p id="tipText" style="color:#ef4444;display:none;text-align:center;margin:8px 0 16px 0;min-height:24px;"></p>
+<div id="loginBox" style="padding:32px 24px 34px 24px;">
+    <!-- 固定顶部LOGO+标题（移出#boxTitle外部，JS无法清空，和重置密码界面完全统一尺寸、间距、样式） -->
+    <div style="text-align:center;margin-bottom:20px;">
+        <svg width="72" height="72" viewBox="0 0 100 100" style="display:inline-block;">
+            <circle cx="50" cy="50" r="50" fill="#2563eb"/>
+            <text x="50" y="68" font-size="50" text-anchor="middle" fill="#ffffff">★</text>
+        </svg>
+    </div>
+    <h2 style="text-align:center;font-size:24px;margin:0 0 24px 0;font-weight:700;">
+        <span style="color:#111827;">Anson</span> <span style="color:#9ca3af;">CRM</span>
+    </h2>
+    <!-- 原JS操作的boxTitle标签仅作空白占位，原有JS逻辑完全兼容无需修改 -->
+    <h2 id="boxTitle" style="display:none;margin:0 0 24px 0;font-weight:700;"></h2>
+    <p id="tipText" style="color:#ef4444;display:none;text-align:center;margin:8px 0 16px 0;min-height:24px;"></p>
         <!-- 登录面板 -->
         <div id="panelLogin">
             <div style="margin-bottom:24px;position:relative;">
