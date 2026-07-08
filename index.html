@@ -1314,9 +1314,7 @@ const eyeNew = document.getElementById('eyeNew');
 
 // 页面初始化
 function initLoginSystem(){
-    // sessionStorage关闭标签自动清空登录，实现关页自动退出
-    sessionStorage.removeItem('crmIsLogin');
-    // 登录弹窗锁定页面滚动
+    // 已删除强制清空登录代码：刷新页面保留登录，仅关闭标签自动失效
     document.body.classList.add('lock-scroll');
     mainPage.style.display = 'none';
     loginMask.style.display = 'flex';
@@ -1328,6 +1326,13 @@ function initLoginSystem(){
         switchActionBtn.innerText = '设置初始密码';
     }else{
         switchActionBtn.innerText = '重置密码';
+    }
+
+    // 刷新页面读取会话，有登录记录直接进入系统
+    if(sessionStorage.getItem('crmIsLogin') === '1'){
+        loginMask.style.display = 'none';
+        mainPage.style.display = 'block';
+        document.body.classList.remove('lock-scroll');
     }
 }
 
@@ -1345,14 +1350,14 @@ function showPanel(type){
             panelLogin.style.display = 'block';
             pwdInput.value = '';
             pwdInput.type = 'password';
-            eyeLogin.innerText = '👁';
+            eyeLogin.innerText = '◡';
             break;
         case 'init':
             boxTitle.innerText = '创建访问密码';
             panelInit.style.display = 'block';
             initPwdInput.value = '';
             initPwdInput.type = 'password';
-            eyeInit.innerText = '👁';
+            eyeInit.innerText = '◡';
             break;
         case 'reset':
             boxTitle.innerText = '修改访问密码';
@@ -1361,13 +1366,13 @@ function showPanel(type){
             newPwdInput.value = '';
             oldPwdInput.type = 'password';
             newPwdInput.type = 'password';
-            eyeOld.innerText = '👁';
-            eyeNew.innerText = '👁';
+            eyeOld.innerText = '◡';
+            eyeNew.innerText = '◡';
             break;
     }
 }
 
-// DOM加载完成后执行初始化，修复线上资源加载顺序BUG
+// DOM加载完成后执行初始化
 document.addEventListener('DOMContentLoaded', initLoginSystem);
 
 // 登录按钮逻辑
@@ -1411,7 +1416,7 @@ confirmInitBtn.addEventListener('click', ()=>{
         initPwdInput.focus();
         return;
     }
-    localStorage.setItem('crmLoginPwd', newPwd);
+    localStorage.setItem('crmLoginPwd', newPwd.trim());
     tipText.innerText = '密码创建成功，请登录';
     tipText.style.display = 'block';
     switchActionBtn.innerText = '重置密码';
@@ -1427,64 +1432,64 @@ confirmResetBtn.addEventListener('click', ()=>{
     tipText.style.display = 'none';
 
     if(oldVal !== realPwd){
-        tipText.innerText = '旧密码输入错误';
+        tipText.innerText = '旧密码输入错误，无权修改密码！';
         tipText.style.display = 'block';
         oldPwdInput.value = '';
         oldPwdInput.focus();
         return;
     }
     if(newVal === ''){
-        tipText.innerText = '新密码不能为空';
+        tipText.innerText = '新密码不能为空，修改取消';
         tipText.style.display = 'block';
         newPwdInput.focus();
         return;
     }
-    localStorage.setItem('crmLoginPwd', newVal);
+    localStorage.setItem('crmLoginPwd', newVal.trim());
     tipText.innerText = '密码修改成功，页面即将刷新';
     tipText.style.display = 'block';
     setTimeout(()=>location.reload(), 1200);
 })
 backFromResetBtn.addEventListener('click', ()=>showPanel('login'));
 
-// ==================== 简约图标密码显隐切换逻辑（修复残留BUG） ====================
+// ==================== 简约线条眼睛切换逻辑（匹配你截图样式） ====================
 // 登录密码框
 eyeLogin.onclick = function(){
     if(pwdInput.type === 'password'){
         pwdInput.type = 'text';
-        this.innerText = '☼';
+        this.innerText = '◎';
     }else{
         pwdInput.type = 'password';
-        this.innerText = '👁';
+        this.innerText = '◡';
     }
 }
 // 首次创建密码框
 eyeInit.onclick = function(){
     if(initPwdInput.type === 'password'){
         initPwdInput.type = 'text';
-        this.innerText = '☼';
+        this.innerText = '◎';
     }else{
         initPwdInput.type = 'password';
-        this.innerText = '👁';
+        this.innerText = '◡';
     }
 }
 // 重置-旧密码框
 eyeOld.onclick = function(){
     if(oldPwdInput.type === 'password'){
         oldPwdInput.type = 'text';
-        this.innerText = '☼';
+        this.innerText = '◎';
     }else{
         oldPwdInput.type = 'password';
-        this.innerText = '👁';
+        this.innerText = '◡';
     }
 }
 // 重置-新密码框
 eyeNew.onclick = function(){
     if(newPwdInput.type === 'password'){
         newPwdInput.type = 'text';
-        this.innerText = '☼';
+        this.innerText = '◎';
     }else{
         newPwdInput.type = 'password';
-        this.innerText = '👁';
+        this.innerText = '◡';
     }
 }
 </script>
