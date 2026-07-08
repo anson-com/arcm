@@ -347,6 +347,1635 @@ body::before {
 }
 #loginBox, #resetBox {
     background:#fff;
+    border-radius:39px;
+    width:100%;
+    max-width:300px;
+    box-shadow:0 10px 40px rgba(0,0,0,0.18);
+}
+#initPwdBox {
+    background:#ffffff;
+    padding:32px 24px 34px 24px;
+    border-radius:39px;
+    width:100%;
+    max-width:300px;
+    margin:40px auto;
+    box-shadow:0 10px 40px rgba(0,0,0,0.18);
+    display:none;
+}
+#initPwdBox.show {
+    display:block;
+}
+input[type="password"]::-ms-reveal { display:none; }
+    </style>
+</head>
+<body>
+<div id="pwaSplash" style="position:fixed;inset:0;background:#f6f9fc;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:320px;">
+    <svg width="90" height="90" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="50" fill="#2563eb"/>
+        <text x="50" y="68" font-size="50" text-anchor="middle" fill="white">★</text>
+    </svg>
+    <span style="font-size:25px;font-weight:700;color:#1e293b;">AnsonCRM</span>
+</div>
+
+<!-- 1、登录弹窗遮罩（独立无嵌套、无重复ID） -->
+<div id="loginMask">
+<div id="loginBox" style="padding:32px 24px 34px 24px;">
+    <!-- 固定顶部LOGO+标题（移出#boxTitle外部，JS无法清空，和重置密码界面完全统一尺寸、间距、样式） -->
+    <div style="text-align:center;margin-bottom:20px;">
+        <svg width="72" height="72" viewBox="0 0 100 100" style="display:inline-block;">
+            <circle cx="50" cy="50" r="50" fill="#2563eb"/>
+            <text x="50" y="68" font-size="50" text-anchor="middle" fill="#ffffff">★</text>
+        </svg>
+    </div>
+    <h2 style="text-align:center;font-size:24px;margin:0 0 24px 0;font-weight:700;">
+        <span style="color:#111827;">Anson</span><span style="color:#9ca3af;">CRM</span>
+    </h2>
+    <!-- 原JS操作的boxTitle标签仅作空白占位，原有JS逻辑完全兼容无需修改 -->
+    <h2 id="boxTitle" style="display:none;margin:0 0 24px 0;font-weight:700;"></h2>
+    <p id="tipText" style="color:#ef4444;display:none;text-align:center;margin:8px 0 16px 0;min-height:24px;"></p>
+        <!-- 登录面板 -->
+        <div id="panelLogin">
+            <div style="margin-bottom:24px;position:relative;">
+              <input id="pwdInput" type="password" placeholder="请输入登录密码" style="width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #e2e8f0;border-radius:14px;font-size:15px;outline:none;transition:0.2s all;"
+                onfocus="this.style.borderColor='#2563eb';this.style.boxShadow='0 0 0 3px rgba(37,99,235,0.1)';"
+                onblur="this.style.borderColor='#e2e8f0';this.style.boxShadow='none';">
+              <span id="eyeLogin" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:#64748b;">◡</span>
+            </div>
+            <div style="display:flex;gap:12px;margin-top:6px;">
+              <button id="loginBtn" style="flex:1;padding:13px 0;background:#2563eb;color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:600;">确认登录</button>
+              <button id="switchActionBtn" style="flex:1;padding:13px 0;background:#f1f5f9;color:#2563eb;border:none;border-radius:12px;font-size:16px;font-weight:600;">重置密码</button>
+            </div>
+        </div>
+        <!-- 初始化密码面板 -->
+        <div id="panelInit" style="display:none;">
+            <div style="margin-bottom:24px;position:relative;">
+              <input id="initPwdInput" type="password" placeholder="首次使用请设置登录密码" style="width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #e2e8f0;border-radius:14px;font-size:15px;outline:none;transition:0.2s all;"
+                onfocus="this.style.borderColor='#2563eb';this.style.boxShadow='0 0 0 3px rgba(37,99,235,0.1)';"
+                onblur="this.style.borderColor='#e2e8f0';this.style.boxShadow='none';">
+              <span id="eyeInit" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:#64748b;">◡</span>
+            </div>
+            <div style="display:flex;gap:12px;margin-top:6px;">
+              <button id="confirmInitBtn" style="flex:1;padding:13px 0;background:#2563eb;color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:600;">完成设置</button>
+              <button id="backFromInitBtn" style="flex:1;padding:13px 0;background:#f1f5f9;color:#2563eb;border:none;border-radius:12px;font-size:16px;font-weight:600;">返回</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 2、重置密码独立遮罩面板（单独DOM，无ID重复） -->
+<div id="resetMask">
+    <div id="resetBox" style="padding:32px 24px 34px 24px;">
+        <div style="text-align:center;margin-bottom:20px;">
+            <svg width="72" height="72" viewBox="0 0 100 100" style="display:inline-block;">
+                <circle cx="50" cy="50" r="50" fill="#2563eb"/>
+                <text x="50" y="68" font-size="50" text-anchor="middle" fill="#ffffff">★</text>
+            </svg>
+        </div>
+        <h2 style="text-align:center;font-size:24px;margin:0 0 24px 0;font-weight:700;">
+            <span style="color:#111827;">Anson</span><span style="color:#9ca3af;">CRM</span>
+        </h2>
+        <p id="resetTipText" style="color:#ef4444;display:none;text-align:center;margin:8px 0 16px 0;min-height:24px;"></p>
+        <div style="margin-bottom:16px;position:relative;">
+          <input id="oldPwdInput" type="password" placeholder="请输入旧密码" style="width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #e2e8f0;border-radius:14px;font-size:15px;outline:none;transition:0.2s all;"
+            onfocus="this.style.borderColor='#2563eb';this.style.boxShadow='0 0 0 3px rgba(37,99,235,0.1)';"
+            onblur="this.style.borderColor='#e2e8f0';this.style.boxShadow='none';">
+          <span id="eyeOld" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:#64748b;">◡</span>
+        </div>
+        <div style="margin-bottom:24px;position:relative;">
+          <input id="newPwdInput" type="password" placeholder="请设置新密码" style="width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #e2e8f0;border-radius:14px;font-size:15px;outline:none;transition:0.2s all;"
+            onfocus="this.style.borderColor='#2563eb';this.style.boxShadow='0 0 0 3px rgba(37,99,235,0.1)';"
+            onblur="this.style.borderColor='#e2e8f0';this.style.boxShadow='none';">
+          <span id="eyeNew" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:#64748b;">◡</span>
+        </div>
+        <div style="display:flex;gap:12px;margin-top:6px;">
+          <button id="confirmResetBtn" style="flex:1;padding:13px 0;background:#2563eb;color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:600;">保存新密码</button>
+          <button id="backFromResetBtn" style="flex:1;padding:13px 0;background:#f1f5f9;color:#2563eb;border:none;border-radius:12px;font-size:16px;font-weight:600;">返回</button>
+        </div>
+    </div>
+</div>
+
+<!-- 3、首次设置密码独立卡片（无遮罩，单独ID不重复） -->
+<div id="initPwdBox">
+  <div style="text-align:center;margin-bottom:20px;">
+    <svg width="72" height="72" viewBox="0 0 100 100" style="display:inline-block;">
+      <circle cx="50" cy="50" r="50" fill="#2563eb"/>
+      <text x="50" y="68" font-size="50" text-anchor="middle" fill="#ffffff">★</text>
+    </svg>
+  </div>
+  <h2 style="text-align:center;font-size:24px;margin:0 0 24px 0;font-weight:700;">
+    <span style="color:#111827;">Anson</span><span style="color:#9ca3af;">CRM</span>
+  </h2>
+  <div style="margin-bottom:24px;position:relative;">
+    <input id="initSinglePwd" type="password" placeholder="首次使用请设置登录密码" style="width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #e2e8f0;border-radius:14px;font-size:15px;outline:none;transition:0.2s all;"
+      onfocus="this.style.borderColor='#2563eb';this.style.boxShadow='0 0 0 3px rgba(37,99,235,0.1)';"
+      onblur="this.style.borderColor='#e2e8f0';this.style.boxShadow='none';">
+    <span id="eyeSingleInit" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:#64748b;">◡</span>
+  </div>
+  <button id="setInitSingleBtn" style="width:100%;padding:13px 0;background:#2563eb;color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:600;">完成设置</button>
+</div>
+
+<!-- 主页面容器 -->
+<div id="mainPage" style="display:none;">
+<div class="app-container">
+    <header class="header">
+        <div class="logo-area">
+  <svg width="48" height="48" viewBox="0 0 100 100" style="background:#dbeafe; border-radius:14px; padding:10px;">
+    <circle cx="50" cy="50" r="50" fill="#2563eb"/>
+    <text x="50" y="68" font-size="52" text-anchor="middle" fill="white">★</text>
+  </svg>
+  <h1>Anson <span>CRM</span></h1>
+</div>
+        <div class="stats header-stats">
+        <div class="stat-item"><i class="fas fa-users"></i> 总客户 <strong id="totalCount">0</strong></div>
+        <div class="stat-item"><i class="fas fa-phone"></i> 互动记录 <strong id="interactionCount">0</strong></div>
+    </div>
+        <div class="header-actions">
+            <button class="btn btn-outline btn-sm" id="manageIndustryBtn"><i class="fas fa-tags"></i> 行业分类管理</button>
+            <button class="btn btn-outline btn-sm" id="manageExhibitionBtn"><i class="fas fa-building"></i> 展会分类管理</button>
+            <button class="btn btn-outline btn-sm" id="exportBtn"><i class="fas fa-download"></i> 导出备份</button>
+            <button class="btn btn-outline btn-sm" id="importBtn"><i class="fas fa-upload"></i> 导入备份</button>
+            <button class="btn btn-danger btn-sm" id="resetAllDataBtn"><i class="fas fa-trash-alt"></i> 清空全部数据</button>
+            <button class="btn btn-outline btn-sm" id="copyrightBtn"><i class="fas fa-info-circle"></i> 版权信息</button>
+            <input type="file" id="importInput" accept=".json" style="display:none">
+        </div>
+    </header>
+   
+    <div class="toolbar">
+        <div class="search-wrapper"><i class="fas fa-search"></i><input type="text" id="searchInput" placeholder="搜索客户、公司、电话、行业、展会..."></div>
+        <div class="select-wrapper">
+            <select id="industryFilter">
+                <option value="">全部行业</option>
+            </select>
+        </div>
+        <div class="select-wrapper">
+            <select id="exhibitionFilter">
+                <option value="">全部展会</option>
+            </select>
+        </div>
+        <button class="btn btn-primary" id="addBtn"><i class="fas fa-plus"></i> 添加客户</button>
+    </div>
+    <div class="grid" id="contactGrid"></div>
+</div>
+</div>
+
+<!-- 添加客户弹窗 -->
+<div class="modal-overlay" id="contactModal">
+    <div class="modal">
+        <h2 id="modalTitle"><i class="fas fa-user-plus"></i> 添加客户</h2>
+        <form id="contactForm">
+            <input type="hidden" id="editId" value="">
+            <div class="form-row">
+                <div class="form-group"><label>姓名 *</label><input type="text" id="name" required></div>
+                <div class="form-group"><label>公司</label><input type="text" id="company"></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><label>电话 *</label><input type="text" id="phone" required></div>
+                <div class="form-group"><label>邮箱</label><input type="email" id="email"></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><label>网址</label><input type="text" id="website" placeholder="https://example.com/"></div>
+                <div class="form-group"><label>产品</label><input type="text" id="product" placeholder="主要产品/服务"></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>所属行业</label>
+                    <select id="industry">
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>所属展会</label>
+                    <select id="exhibition">
+                    </select>
+                </div>
+            </div>
+            <div class="form-group"><label>备注</label><textarea id="notes"></textarea></div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-outline" id="closeModalBtn">取消</button>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> 保存</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 新增互动弹窗 -->
+<div class="modal-overlay" id="interactionModal">
+    <div class="modal">
+        <h2><i class="fas fa-comment-dots"></i> 添加互动</h2>
+        <form id="interactionForm">
+            <input type="hidden" id="interactionContactId" value="">
+            <div class="form-group">
+                <label>类型</label>
+            <select id="interactionType">
+                <option value="电话">📞 电话</option>
+                <option value="微信">💬 微信</option>
+                <option value="QQ">🐧 QQ</option>
+                <option value="会面">🤝 会面</option>
+                <option value="邮件">✉️ 邮件</option>
+                <option value="其他">📝 其他</option>
+            </select>
+            </div>
+            <div class="form-group">
+                <label>内容</label>
+                <textarea id="interactionContent" required></textarea>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-outline" id="closeInteractionBtn">取消</button>
+                <button type="submit" class="btn btn-success"><i class="fas fa-plus-circle"></i> 添加</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 行业分类管理弹窗 -->
+<div class="modal-overlay" id="industryManageModal">
+    <div class="modal">
+        <h2><i class="fas fa-tags"></i> 行业分类管理</h2>
+        <div id="industryListWrap"></div>
+        <div class="add-tag-row">
+            <input type="text" id="newIndustryInput" placeholder="输入新行业名称">
+            <button type="button" class="btn btn-primary" id="addNewIndustryBtn"><i class="fas fa-plus"></i> 新增</button>
+        </div>
+        <div class="modal-actions" style="margin-top:14px;">
+            <button type="button" class="btn btn-outline" id="closeIndustryManageBtn">关闭</button>
+        </div>
+    </div>
+</div>
+
+<!-- 展会分类管理弹窗 -->
+<div class="modal-overlay" id="exhibitionManageModal">
+    <div class="modal">
+        <h2><i class="fas fa-building"></i> 展会分类管理</h2>
+        <div id="exhibitionListWrap"></div>
+        <div class="add-tag-row">
+            <input type="text" id="newExhibitionInput" placeholder="输入新展会名称">
+            <button type="button" class="btn btn-primary" id="addNewExhibitionBtn"><i class="fas fa-plus"></i> 新增</button>
+        </div>
+        <div class="modal-actions" style="margin-top:14px;">
+            <button type="button" class="btn btn-outline" id="closeExhibitionManageBtn">关闭</button>
+        </div>
+    </div>
+</div>
+
+<!-- 版权信息弹窗 -->
+<div class="modal-overlay" id="copyrightModal">
+    <div class="modal">
+        <h2><i class="fas fa-info-circle"></i> 版权信息</h2>
+        <div class="copyright-text">
+            <p>© 版本号：AnsonCRM2026.2.0</p>
+            <p>开发作者：Anson</p>
+            <p>联系QQ：59253359</p>
+            <p style="margin-top:12px;">系统版权归Anson所有，严禁私自篡改盗用</p>
+        </div>
+        <div class="modal-actions" style="margin-top:24px;justify-content:center;">
+            <button type="button" class="btn btn-primary" id="closeCopyrightBtn">确定</button>
+        </div>
+    </div>
+</div>
+
+<script>
+window.addEventListener('load',()=>{
+    setTimeout(()=>{
+        const splash = document.getElementById('pwaSplash');
+        if(splash) splash.style.display = 'none';
+    },1500);
+});
+</script>
+
+<script>
+    let contacts = [];
+    let industryList = [];
+    const DEFAULT_INDUSTRY = '其他行业';
+    let exhibitionList = [];
+    const DEFAULT_EXHIBITION = '未归类展会';
+
+    function openExternalUrl(url) {
+        try {
+            if (!url || url.trim() === '') return;
+            const targetUrl = url.trim();
+            if (window.cordova && cordova.InAppBrowser) {
+                cordova.InAppBrowser.open(targetUrl, '_system');
+                return;
+            }
+            if (typeof require !== 'undefined') {
+                try {
+                    const { shell } = require('electron');
+                    shell.openExternal(targetUrl);
+                } catch (err) {
+                    window.open(targetUrl, '_blank');
+                }
+                return;
+            }
+            window.open(targetUrl, '_blank');
+        } catch (e) {
+            console.error('打开链接失败', e);
+        }
+    }
+
+    const industryFilterEl = document.getElementById('industryFilter');
+    const industrySelectEl = document.getElementById('industry');
+    const exhibitionFilterEl = document.getElementById('exhibitionFilter');
+    const exhibitionSelectEl = document.getElementById('exhibition');
+
+    function loadData() {
+        try {
+            const rawContact = localStorage.getItem('crm_contacts');
+            if (rawContact) {
+                contacts = JSON.parse(rawContact);
+                contacts = contacts.map(c => ({
+                    ...c,
+                    industry: c.industry || DEFAULT_INDUSTRY,
+                    exhibition: c.exhibition || DEFAULT_EXHIBITION,
+                    interactions: c.interactions || [],
+                    website: c.website || '',
+                    product: c.product || ''
+                }));
+            } else {
+                contacts = [
+                    {
+                        id: '1', name: 'Anson', company: '© 版权开发所有者', phone: 'QQ：59253359',
+                        email: '59253359@qq.com', product: '数据信息保护，AI智能管理系统',
+                        industry: 'IT互联网',
+                        exhibition: DEFAULT_EXHIBITION,
+                        notes: '专注个人数据信息资产安全，轻量化本地防泄露解决方案',
+                        interactions: [{ type: '电话', content: '版权所有，请勿篡改盗用', date: Date.now() - 3600000 }]
+                    }
+                ];
+                saveContactStorage();
+            }
+        } catch (e) {
+            console.error('加载客户数据失败', e);
+            contacts = [];
+        }
+
+        try {
+            const rawInd = localStorage.getItem('crm_industry_list');
+            if (rawInd) {
+                industryList = JSON.parse(rawInd);
+            } else {
+                industryList = ['IT互联网','建筑工程','教育培训','商贸零售','文化传媒','制造加工','金融财税','医疗医美', DEFAULT_INDUSTRY];
+                saveIndustryStorage();
+            }
+        } catch (e) {
+            console.error('加载行业数据失败', e);
+            industryList = [DEFAULT_INDUSTRY];
+            saveIndustryStorage();
+        }
+
+        try {
+            const rawExh = localStorage.getItem('crm_exhibition_list');
+            if (rawExh) {
+                exhibitionList = JSON.parse(rawExh);
+            } else {
+                exhibitionList = [DEFAULT_EXHIBITION];
+                saveExhibitionStorage();
+            }
+        } catch (e) {
+            console.error('加载展会数据失败', e);
+            exhibitionList = [DEFAULT_EXHIBITION];
+            saveExhibitionStorage();
+        }
+
+        refreshAllSelectOption();
+        renderIndustryManageList();
+        renderExhibitionManageList();
+        updateStats();
+        render();
+    }
+
+    function resetAllData() {
+        try {
+            if (!confirm('⚠️ Anson提醒您：此操作会永久删除【全部客户数据+所有互动记录】，仅保留行业分类、展会分类，客户数据无法恢复！\n请务必提前备份⚠️')) return;
+            if (!confirm('⚠️再次警告：一旦清空所有客户彻底删除，是否确认？')) return;
+            localStorage.removeItem('crm_contacts');
+            contacts = [];
+            updateStats();
+            render();
+            alert('所有客户数据已清空，行业、展会分类已保留');
+        } catch (e) {
+            console.error('清空数据失败', e);
+            alert('操作异常，请刷新页面重试');
+        }
+    }
+
+    function saveIndustryStorage() {
+        try {
+            localStorage.setItem('crm_industry_list', JSON.stringify(industryList));
+        } catch (e) {
+            console.error('保存行业失败', e);
+        }
+    }
+    function saveExhibitionStorage() {
+        try {
+            localStorage.setItem('crm_exhibition_list', JSON.stringify(exhibitionList));
+        } catch (e) {
+            console.error('保存展会失败', e);
+        }
+    }
+    function saveContactStorage() {
+        try {
+            localStorage.setItem('crm_contacts', JSON.stringify(contacts));
+            refreshAllSelectOption();
+            updateStats();
+        } catch (e) {
+            console.error('保存客户失败', e);
+            alert('数据保存失败，本地存储空间不足');
+        }
+    }
+
+    function refreshAllSelectOption() {
+        try {
+            industryFilterEl.innerHTML = '<option value="">全部行业</option>';
+            industryList.forEach(name => {
+                const opt = document.createElement('option');
+                opt.value = name;
+                opt.innerText = name;
+                industryFilterEl.appendChild(opt);
+            });
+            exhibitionFilterEl.innerHTML = '<option value="">全部展会</option>';
+            exhibitionList.forEach(name => {
+                const opt = document.createElement('option');
+                opt.value = name;
+                opt.innerText = name;
+                exhibitionFilterEl.appendChild(opt);
+            });
+
+            industrySelectEl.innerHTML = '';
+            let industryDefaultIndex = 0;
+            industryList.forEach((name, idx) => {
+                const opt = document.createElement('option');
+                opt.value = name;
+                opt.innerText = name;
+                industrySelectEl.appendChild(opt);
+                if(name === DEFAULT_INDUSTRY) industryDefaultIndex = idx;
+            });
+            industrySelectEl.selectedIndex = industryDefaultIndex;
+
+            exhibitionSelectEl.innerHTML = '';
+            let exhibitionDefaultIndex = 0;
+            exhibitionList.forEach((name, idx) => {
+                const opt = document.createElement('option');
+                opt.value = name;
+                opt.innerText = name;
+                exhibitionSelectEl.appendChild(opt);
+                if(name === DEFAULT_EXHIBITION) exhibitionDefaultIndex = idx;
+            });
+            exhibitionSelectEl.selectedIndex = exhibitionDefaultIndex;
+        } catch (e) {
+            console.error('刷新下拉选项失败', e);
+        }
+    }
+
+    function renderIndustryManageList() {
+        try {
+            const wrap = document.getElementById('industryListWrap');
+            let html = '';
+            industryList.forEach((item, idx) => {
+                html += `<div class="manage-item-row"><span>${escapeHtml(item)}</span><button class="manage-del-btn" data-index="${idx}"><i class="fas fa-trash"></i></button></div>`;
+            });
+            wrap.innerHTML = html;
+        } catch (e) {
+            console.error('渲染行业列表失败', e);
+        }
+    }
+    function addNewIndustry() {
+        try {
+            const input = document.getElementById('newIndustryInput');
+            const val = input.value.trim();
+            if (!val) return alert('请输入行业名称');
+            if (industryList.includes(val)) return alert('该行业已存在');
+            industryList.unshift(val);
+            saveIndustryStorage();
+            refreshAllSelectOption();
+            renderIndustryManageList();
+            input.value = '';
+        } catch (e) {
+            console.error('新增行业失败', e);
+            alert('新增分类异常');
+        }
+    }
+    function deleteIndustry(index) {
+        try {
+            const targetName = industryList[index];
+            if(targetName === DEFAULT_INDUSTRY){
+                return alert(`默认兜底分类【${DEFAULT_INDUSTRY}】禁止删除`);
+            }
+            if(!confirm(`确定删除行业【${targetName}】？已绑定该行业的客户将自动归入【${DEFAULT_INDUSTRY}】`)) return;
+            contacts.forEach(c => {
+                if(c.industry === targetName) c.industry = DEFAULT_INDUSTRY;
+            });
+            industryList.splice(index,1);
+            saveIndustryStorage();
+            saveContactStorage();
+            refreshAllSelectOption();
+            renderIndustryManageList();
+            render();
+        } catch (e) {
+            console.error('删除行业失败', e);
+            alert('删除操作异常');
+        }
+    }
+
+    function renderExhibitionManageList() {
+        try {
+            const wrap = document.getElementById('exhibitionListWrap');
+            let html = '';
+            exhibitionList.forEach((item, idx) => {
+                html += `<div class="manage-item-row"><span>${escapeHtml(item)}</span><button class="manage-del-btn" data-index="${idx}"><i class="fas fa-trash"></i></button></div>`;
+            });
+            wrap.innerHTML = html;
+        } catch (e) {
+            console.error('渲染展会列表失败', e);
+        }
+    }
+    function addNewExhibition() {
+        try {
+            const input = document.getElementById('newExhibitionInput');
+            const val = input.value.trim();
+            if (!val) return alert('请输入展会名称');
+            if (exhibitionList.includes(val)) return alert('该展会已存在');
+            exhibitionList.unshift(val);
+            saveExhibitionStorage();
+            refreshAllSelectOption();
+            renderExhibitionManageList();
+            input.value = '';
+        } catch (e) {
+            console.error('新增展会失败', e);
+            alert('新增分类异常');
+        }
+    }
+    function deleteExhibition(index) {
+        try {
+            const targetName = exhibitionList[index];
+            if(targetName === DEFAULT_EXHIBITION){
+                return alert(`默认兜底分类【${DEFAULT_EXHIBITION}】禁止删除`);
+            }
+            if(!confirm(`确定删除展会【${targetName}】？已绑定该展会的客户将自动归入【${DEFAULT_EXHIBITION}】`)) return;
+            contacts.forEach(c => {
+                if(c.exhibition === targetName) c.exhibition = DEFAULT_EXHIBITION;
+            });
+            exhibitionList.splice(index,1);
+            saveExhibitionStorage();
+            saveContactStorage();
+            refreshAllSelectOption();
+            renderExhibitionManageList();
+            render();
+        } catch (e) {
+            console.error('删除展会失败', e);
+            alert('删除操作异常');
+        }
+    }
+
+    function updateStats() {
+        try {
+            document.getElementById('totalCount').textContent = contacts.length;
+            const total = contacts.reduce((acc, c) => acc + (c.interactions?.length || 0), 0);
+            document.getElementById('interactionCount').textContent = total;
+        } catch (e) {
+            console.error('更新统计数据失败', e);
+        }
+    }
+
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    function render() {
+        try {
+            const keyword = document.getElementById('searchInput').value.toLowerCase().trim();
+            const selectIndustry = industryFilterEl.value;
+            const selectExhibition = exhibitionFilterEl.value;
+
+            let filtered = contacts.filter(c => {
+                const matchSearch = keyword === '' || (
+                    c.name.toLowerCase().includes(keyword) ||
+                    (c.company && c.company.toLowerCase().includes(keyword)) ||
+                    c.phone.includes(keyword) ||
+                    (c.email && c.email.toLowerCase().includes(keyword)) ||
+                    (c.product && c.product.toLowerCase().includes(keyword)) ||
+                    (c.industry && c.industry.toLowerCase().includes(keyword)) ||
+                    (c.exhibition && c.exhibition.toLowerCase().includes(keyword))
+                );
+                const matchIndustry = selectIndustry === '' || c.industry === selectIndustry;
+                const matchExhibition = selectExhibition === '' || c.exhibition === selectExhibition;
+                return matchSearch && matchIndustry && matchExhibition;
+            });
+
+            const grid = document.getElementById('contactGrid');
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="empty-state"><i class="fas fa-search"></i><h3>没有匹配的客户</h3><p>更换搜索关键词、行业或展会分类试试</p></div>`;
+                return;
+            }
+
+            const groupMap = {};
+            filtered.forEach(item => {
+                if (!groupMap[item.exhibition]) groupMap[item.exhibition] = [];
+                groupMap[item.exhibition].push(item);
+            });
+
+            let html = '';
+            Object.keys(groupMap).forEach(exhibitionName => {
+                html += `<div class="group-block"><h3 class="group-title">${escapeHtml(exhibitionName)}（${groupMap[exhibitionName].length}家客户）</h3><div class="group-card-wrap">`;
+                groupMap[exhibitionName].forEach(c => {
+                    const interactions = c.interactions || [];
+                    const recent = interactions.slice(-3).reverse();
+                    html += `
+                    <div class="contact-card" data-cid="${escapeHtml(c.id)}">
+                        <div class="card-header">
+                            <div>
+                                <div class="card-name">${escapeHtml(c.name)}</div>
+                                <div class="card-company">${escapeHtml(c.company) || '未登记公司'}</div>
+                                <div class="tag-row">
+                                    <span class="card-industry-tag">${escapeHtml(c.industry)}</span>
+                                    <span class="card-exhibition-tag">${escapeHtml(c.exhibition)}</span>
+                                </div>
+                            </div>
+                            <div class="card-actions">
+                                <button class="btn btn-icon btn-sm edit-btn" data-id="${c.id}" title="编辑"><i class="fas fa-pen"></i></button>
+                                <button class="btn btn-icon btn-sm delete-btn" data-id="${c.id}" title="删除" style="color:#ef4444;"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <div class="card-details">
+                            <div><i class="fas fa-phone"></i> ${escapeHtml(c.phone)}</div>
+                            ${c.email ? `<div><i class="fas fa-envelope"></i> <a href="mailto:${escapeHtml(c.email)}">${escapeHtml(c.email)}</a></div>` : ''}
+                            ${c.website ? `<div><i class="fas fa-globe"></i> <span style="color:#2563eb;cursor:pointer;text-decoration:underline;" onclick="openExternalUrl('${escapeHtml(c.website)}')">${escapeHtml(c.website)}</span></div>` : ''}
+                            ${c.product ? `<div><i class="fas fa-tag"></i> ${escapeHtml(c.product)}</div>` : ''}
+                        </div>
+                        ${c.notes ? `<div class="card-notes"><i class="fas fa-pencil-alt" style="margin-right:6px;color:#64748b;"></i>${escapeHtml(c.notes)}</div>` : ''}
+                        <div class="interactions-section">
+                            <div class="interactions-header">
+                                <span><i class="fas fa-clock"></i> 最近互动</span>
+                                <button class="btn btn-primary btn-sm interaction-add-btn" data-id="${c.id}"><i class="fas fa-plus"></i> 记录</button>
+                            </div>
+                            ${interactions.length === 0 ? '<div style="font-size:12px;color:#94a3b8;padding:4px 0;">暂无互动记录</div>' :
+                            `<div class="interaction-list">${recent.map((inter, idx) => {
+                                const realIndex = interactions.length - 1 - idx;
+                                const date = new Date(inter.date).toLocaleString('zh-CN', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
+                                let cls = '';
+                                if(inter.type === '电话') cls = 'phone';
+                                else if(inter.type === '微信') cls = 'wechat';
+                                else if(inter.type === 'QQ') cls = 'qq';
+                                else if(inter.type === '会面') cls = 'meeting';
+                                else if(inter.type === '邮件') cls = 'email';
+                                return `<div class="interaction-item"><div><span class="badge ${cls}">${inter.type}</span> <span>${escapeHtml(inter.content)}</span> <span style="margin-left:auto;color:#94a3b8;font-size:10px;">${date}</span></div><i class="fas fa-times del-inter" data-index="${realIndex}"></i></div>`;
+                            }).join('')}${interactions.length > 3 ? `<div style="font-size:11px;color:#94a3b8;text-align:right;">共 ${interactions.length} 条</div>` : ''}</div>`}
+                        </div>
+                    </div>`;
+                });
+                html += `</div></div>`;
+            });
+            grid.innerHTML = html;
+        } catch (e) {
+            console.error('渲染客户列表失败', e);
+            document.getElementById('contactGrid').innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>列表渲染异常</h3><p>请刷新页面恢复</p></div>`;
+        }
+    }
+
+    function openModal(id = null) {
+        try {
+            const modal = document.getElementById('contactModal');
+            if(modal.classList.contains('active')) return;
+            document.body.classList.add('modal-open');
+            const form = document.getElementById('contactForm');
+            form.reset();
+            document.getElementById('editId').value = '';
+            refreshAllSelectOption();
+            if (id) {
+                const c = contacts.find(p => p.id === id);
+                if (!c) return;
+                document.getElementById('modalTitle').innerHTML = '<i class="fas fa-user-edit"></i> 编辑客户';
+                document.getElementById('editId').value = id;
+                document.getElementById('name').value = c.name;
+                document.getElementById('company').value = c.company || '';
+                document.getElementById('phone').value = c.phone;
+                document.getElementById('email').value = c.email || '';
+                document.getElementById('industry').value = c.industry;
+                document.getElementById('exhibition').value = c.exhibition;
+                document.getElementById('website').value = c.website || '';
+                document.getElementById('product').value = c.product || '';
+                document.getElementById('notes').value = c.notes || '';
+            } else {
+                document.getElementById('modalTitle').innerHTML = '<i class="fas fa-user-plus"></i> 添加客户';
+            }
+            modal.classList.add('active');
+        } catch (e) {
+            console.error('打开客户弹窗失败', e);
+        }
+    }
+    function closeModal() {
+        try {
+            document.getElementById('contactModal').classList.remove('active');
+            checkModalOpen();
+        } catch (e) {
+            console.error('关闭客户弹窗失败', e);
+        }
+    }
+
+    function saveContact(e) {
+        try {
+            e.preventDefault();
+            const id = document.getElementById('editId').value;
+            const name = document.getElementById('name').value.trim();
+            const company = document.getElementById('company').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const industry = document.getElementById('industry').value;
+            const exhibition = document.getElementById('exhibition').value;
+            let websiteRaw = document.getElementById('website').value.trim();
+            let websiteFinal = websiteRaw;
+
+            if (websiteRaw) {
+                if (!websiteRaw.startsWith('http://') && !websiteRaw.startsWith('https://')) {
+                    websiteFinal = 'https://' + websiteRaw;
+                }
+            }
+
+            const product = document.getElementById('product').value.trim();
+            const notes = document.getElementById('notes').value.trim();
+            if (!name || !phone) return alert('姓名和电话为必填项');
+
+            if (id) {
+                const idx = contacts.findIndex(c => c.id === id);
+                if (idx !== -1) {
+                    contacts[idx] = {
+                        ...contacts[idx],
+                        name, company, phone, email, industry, exhibition,
+                        website: websiteFinal,
+                        product, notes
+                    };
+                }
+            } else {
+                contacts.push({
+                    id: Date.now() + '-' + Math.random().toString(36).substr(2, 6),
+                    name, company, phone, email, industry, exhibition,
+                    website: websiteFinal,
+                    product, notes,
+                    interactions: []
+                });
+            }
+            saveContactStorage();
+            render();
+            closeModal();
+        } catch (e) {
+            console.error('保存客户失败', e);
+            alert('保存数据异常，请重试');
+        }
+    }
+
+    function deleteContact(id) {
+        try {
+            if (!confirm('确定删除该客户及所有互动记录？')) return;
+            contacts = contacts.filter(c => c.id !== id);
+            saveContactStorage();
+            render();
+        } catch (e) {
+            console.error('删除客户失败', e);
+            alert('删除异常');
+        }
+    }
+
+    function openInteractionModal(contactId) {
+        try {
+            const modal = document.getElementById('interactionModal');
+            if(modal.classList.contains('active')) return;
+            document.body.classList.add('modal-open');
+            document.getElementById('interactionContactId').value = contactId;
+            document.getElementById('interactionForm').reset();
+            modal.classList.add('active');
+        } catch (e) {
+            console.error('打开互动弹窗失败', e);
+        }
+    }
+    function closeInteractionModal() {
+        try {
+            document.getElementById('interactionModal').classList.remove('active');
+            checkModalOpen();
+        } catch (e) {
+            console.error('关闭互动弹窗失败', e);
+        }
+    }
+    function checkModalOpen() {
+        try {
+            const hasActive = document.querySelector('.modal-overlay.active');
+            if (!hasActive) document.body.classList.remove('modal-open');
+        } catch (e) {
+            console.error('检测弹窗状态失败', e);
+        }
+    }
+    function saveInteraction(e) {
+        try {
+            e.preventDefault();
+            const contactId = document.getElementById('interactionContactId').value;
+            const type = document.getElementById('interactionType').value;
+            const content = document.getElementById('interactionContent').value.trim();
+            if (!content) return alert('请输入互动内容');
+            const contact = contacts.find(c => c.id === contactId);
+            if (!contact) return alert('客户不存在');
+            contact.interactions.push({ type, content, date: Date.now() });
+            saveContactStorage();
+            render();
+            closeInteractionModal();
+        } catch (e) {
+            console.error('保存互动失败', e);
+            alert('互动记录保存异常');
+        }
+    }
+      function deleteSingleInteraction(cid, index) {
+        try {
+            if (!confirm('确定删除这条互动记录？')) return;
+            const customer = contacts.find(c => c.id === cid);
+            if (!customer) return;
+            customer.interactions.splice(index, 1);
+            saveContactStorage();
+            render();
+        } catch (e) {
+            console.error('删除单条互动失败', e);
+            alert('删除互动记录异常');
+        }
+    }
+
+    function openIndustryManageModal() {
+        try {
+            const modal = document.getElementById('industryManageModal');
+            if (modal.classList.contains('active')) return;
+            document.body.classList.add('modal-open');
+            modal.classList.add('active');
+            renderIndustryManageList();
+        } catch (e) {
+            console.error('打开行业管理弹窗失败', e);
+        }
+    }
+    function closeIndustryManageModal() {
+        try {
+            document.getElementById('industryManageModal').classList.remove('active');
+            checkModalOpen();
+        } catch (e) {
+            console.error('关闭行业弹窗失败', e);
+        }
+    }
+    function openExhibitionManageModal() {
+        try {
+            const modal = document.getElementById('exhibitionManageModal');
+            if (modal.classList.contains('active')) return;
+            document.body.classList.add('modal-open');
+            modal.classList.add('active');
+            renderExhibitionManageList();
+        } catch (e) {
+            console.error('打开展会管理弹窗失败', e);
+        }
+    }
+    function closeExhibitionManageModal() {
+        try {
+            document.getElementById('exhibitionManageModal').classList.remove('active');
+            checkModalOpen();
+        } catch (e) {
+            console.error('关闭展会弹窗失败', e);
+        }
+    }
+
+    function openCopyrightModal() {
+        try {
+            const modal = document.getElementById('copyrightModal');
+            if (modal.classList.contains('active')) return;
+            document.body.classList.add('modal-open');
+            modal.classList.add('active');
+        } catch (e) {
+            console.error('打开版权弹窗失败', e);
+        }
+    }
+    function closeCopyrightModal() {
+        try {
+            document.getElementById('copyrightModal').classList.remove('active');
+            checkModalOpen();
+        } catch (e) {
+            console.error('关闭版权弹窗失败', e);
+        }
+    }
+
+    function exportData() {
+        try {
+            const exportObj = {
+                customerList: contacts,
+                industryList: industryList,
+                exhibitionList: exhibitionList
+            };
+            const dataStr = JSON.stringify(exportObj, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `AnsonCRM_backup_${new Date().toISOString().slice(0,10)}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        } catch (e) {
+            console.error('导出备份失败', e);
+            alert('导出备份失败');
+        }
+    }
+    function importData(file) {
+        try {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (!data.customerList || !data.industryList || !data.exhibitionList) throw new Error('备份格式不正确');
+                    const isCover = confirm(`检测到完整备份数据，确定【覆盖】当前所有客户、行业、展会？取消则选择【追加导入】`);
+                    const newIndList = data.industryList.filter(item => !industryList.includes(item));
+                    industryList = isCover ? data.industryList : [...newIndList, ...industryList];
+                    industryList = [...new Set(industryList)];
+                    saveIndustryStorage();
+                    const newExhList = data.exhibitionList.filter(item => !exhibitionList.includes(item));
+                    exhibitionList = isCover ? data.exhibitionList : [...newExhList, ...exhibitionList];
+                    exhibitionList = [...new Set(exhibitionList)];
+                    saveExhibitionStorage();
+                    const formatList = data.customerList.map(c => ({
+                        industry: c.industry || DEFAULT_INDUSTRY,
+                        exhibition: c.exhibition || DEFAULT_EXHIBITION,
+                        ...c,
+                        interactions: c.interactions || [],
+                        website: c.website || '',
+                        product: c.product || ''
+                    }));
+                    if(isCover){
+                        contacts = formatList;
+                    }else{
+                        const existIds = contacts.map(item=>item.id);
+                        const newList = formatList.filter(item=>!existIds.includes(item.id));
+                        contacts = [...contacts, ...newList];
+                    }
+                    saveContactStorage();
+                    refreshAllSelectOption();
+                    render();
+                    alert('导入成功！');
+                } catch (err) {
+                    alert('导入失败：' + err.message);
+                }
+            };
+            reader.readAsText(file);
+            document.getElementById('importInput').value = '';
+        } catch (e) {
+            console.error('导入文件失败', e);
+            alert('读取导入文件异常');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        loadData();
+        document.getElementById('addBtn').addEventListener('click', () => openModal());
+        document.getElementById('manageIndustryBtn').addEventListener('click', openIndustryManageModal);
+        document.getElementById('manageExhibitionBtn').addEventListener('click', openExhibitionManageModal);
+        document.getElementById('resetAllDataBtn').addEventListener('click', resetAllData);
+        document.getElementById('copyrightBtn').addEventListener('click', openCopyrightModal);
+        document.getElementById('closeCopyrightBtn').addEventListener('click', closeCopyrightModal);
+        document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+        document.getElementById('closeInteractionBtn').addEventListener('click', closeInteractionModal);
+        document.getElementById('closeIndustryManageBtn').addEventListener('click', closeIndustryManageModal);
+        document.getElementById('closeExhibitionManageBtn').addEventListener('click', closeExhibitionManageModal);
+        document.getElementById('contactForm').addEventListener('submit', saveContact);
+        document.getElementById('interactionForm').addEventListener('submit', saveInteraction);
+        document.getElementById('addNewIndustryBtn').addEventListener('click', addNewIndustry);
+        document.getElementById('addNewExhibitionBtn').addEventListener('click', addNewExhibition);
+        document.getElementById('exportBtn').addEventListener('click', exportData);
+        document.getElementById('importBtn').addEventListener('click', () => document.getElementById('importInput').click());
+        document.getElementById('importInput').addEventListener('change', function(e) {
+            if (this.files.length) importData(this.files[0]);
+        });
+        document.getElementById('searchInput').addEventListener('input', render);
+        industryFilterEl.addEventListener('change', render);
+        exhibitionFilterEl.addEventListener('change', render);
+
+        document.getElementById('industryListWrap').addEventListener('click', function(e) {
+            const delBtn = e.target.closest('.manage-del-btn');
+            if(delBtn) deleteIndustry(Number(delBtn.dataset.index));
+        });
+        document.getElementById('exhibitionListWrap').addEventListener('click', function(e) {
+            const delBtn = e.target.closest('.manage-del-btn');
+            if(delBtn) deleteExhibition(Number(delBtn.dataset.index));
+        });
+
+        document.getElementById('contactGrid').addEventListener('click', function(e) {
+            const editBtn = e.target.closest('.edit-btn');
+            if (editBtn) { openModal(editBtn.dataset.id); return; }
+            const delBtn = e.target.closest('.delete-btn');
+            if (delBtn) { deleteContact(delBtn.dataset.id); return; }
+            const interBtn = e.target.closest('.interaction-add-btn');
+            if (interBtn) { openInteractionModal(interBtn.dataset.id); return; }
+            const delInterBtn = e.target.closest('.del-inter');
+            if(delInterBtn){
+                const card = delInterBtn.closest('.contact-card');
+                const cid = card.dataset.cid;
+                const index = Number(delInterBtn.dataset.index);
+                deleteSingleInteraction(cid, index);
+            }
+        });
+
+        document.querySelectorAll('.modal-overlay').forEach(el => {
+            el.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                    checkModalOpen();
+                }
+            });
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal-overlay.active').forEach(el => el.classList.remove('active'));
+                checkModalOpen();
+            }
+        });
+    });
+</script>
+
+<!-- 登录逻辑完整JS（修复DOM匹配，适配新版三套面板ID，无冲突不卡死） -->
+<script>
+// 绑定全部DOM元素
+const loginMask = document.getElementById('loginMask');
+const resetMask = document.getElementById('resetMask');
+const initPwdBox = document.getElementById('initPwdBox');
+const mainPage = document.getElementById('mainPage');
+const boxTitle = document.getElementById('boxTitle');
+const tipText = document.getElementById('tipText');
+const resetTipText = document.getElementById('resetTipText');
+
+// 登录面板元素
+const panelLogin = document.getElementById('panelLogin');
+const pwdInput = document.getElementById('pwdInput');
+const loginBtn = document.getElementById('loginBtn');
+const switchActionBtn = document.getElementById('switchActionBtn');
+const eyeLogin = document.getElementById('eyeLogin');
+
+// 初始化密码弹窗内面板
+const panelInit = document.getElementById('panelInit');
+const initPwdInput = document.getElementById('initPwdInput');
+const confirmInitBtn = document.getElementById('confirmInitBtn');
+const backFromInitBtn = document.getElementById('backFromInitBtn');
+const eyeInit = document.getElementById('eyeInit');
+
+// 独立重置密码面板元素
+const oldPwdInput = document.getElementById('oldPwdInput');
+const newPwdInput = document.getElementById('newPwdInput');
+const confirmResetBtn = document.getElementById('confirmResetBtn');
+const backFromResetBtn = document.getElementById('backFromResetBtn');
+const eyeOld = document.getElementById('eyeOld');
+const eyeNew = document.getElementById('eyeNew');
+
+// 无遮罩初始化卡片元素
+const initSinglePwd = document.getElementById('initSinglePwd');
+const setInitSingleBtn = document.getElementById('setInitSingleBtn');
+const eyeSingleInit = document.getElementById('eyeSingleInit');
+
+// 阻止手机下拉回弹、滚动溢出
+function stopMobileOverscroll(e) {
+    e.preventDefault();
+}
+
+// 页面初始化登录系统
+function initLoginSystem(){
+    document.body.classList.add('lock-scroll');
+    document.addEventListener('touchmove', stopMobileOverscroll, { passive:false });
+    mainPage.style.display = 'none';
+    loginMask.classList.add('show');
+    resetMask.classList.remove('show');
+    initPwdBox.classList.remove('show');
+    showPanel('login');
+
+    const savedPwd = localStorage.getItem('crmLoginPwd');
+    if(!savedPwd || savedPwd === ''){
+        switchActionBtn.innerText = '设置初始密码';
+    }else{
+        switchActionBtn.innerText = '重置密码';
+    }
+
+    // 会话缓存免登录
+    if(sessionStorage.getItem('crmIsLogin') === '1'){
+        loginMask.classList.remove('show');
+        mainPage.style.display = 'block';
+        document.body.classList.remove('lock-scroll');
+        document.removeEventListener('touchmove', stopMobileOverscroll);
+    }
+}
+
+// 切换登录弹窗内子面板（登录/初次设置密码）
+function showPanel(type){
+    panelLogin.style.display = 'none';
+    panelInit.style.display = 'none';
+    tipText.style.display = 'none';
+
+    switch(type){
+        case 'login':
+            boxTitle.innerText = '';
+            panelLogin.style.display = 'block';
+            pwdInput.value = '';
+            pwdInput.type = 'password';
+            eyeLogin.innerText = '◡';
+            break;
+        case 'init':
+            boxTitle.innerText = '';
+            panelInit.style.display = 'block';
+            initPwdInput.value = '';
+            initPwdInput.type = 'password';
+            eyeInit.innerText = '◡';
+            break;
+    }
+}
+
+// DOM加载完成执行登录初始化
+document.addEventListener('DOMContentLoaded', initLoginSystem);
+
+// 登录按钮逻辑
+loginBtn.addEventListener('click', ()=>{
+    const input = pwdInput.value.trim();
+    const realPwd = localStorage.getItem('crmLoginPwd');
+    if(input === realPwd){
+        loginMask.classList.remove('show');
+        mainPage.style.display = 'block';
+        tipText.style.display = 'none';
+        document.body.classList.remove('lock-scroll');
+        document.removeEventListener('touchmove', stopMobileOverscroll);
+        sessionStorage.setItem('crmIsLogin','1');
+    }else{
+        tipText.innerText = '密码错误，请重新输入';
+        tipText.style.display = 'block';
+        pwdInput.value = '';
+        pwdInput.focus();
+    }
+})
+
+// 输入框回车快捷登录
+pwdInput.addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter') loginBtn.click();
+})
+
+// 切换按钮：初始密码/重置密码
+switchActionBtn.addEventListener('click', ()=>{
+    const savedPwd = localStorage.getItem('crmLoginPwd');
+    if(!savedPwd || savedPwd === ''){
+        showPanel('init');
+    }else{
+        loginMask.classList.remove('show');
+        resetMask.classList.add('show');
+        oldPwdInput.value = '';
+        newPwdInput.value = '';
+        resetTipText.style.display = 'none';
+    }
+})
+
+// 【登录弹窗内-初次设置密码】确认按钮
+confirmInitBtn.addEventListener('click', ()=>{
+    const newPwd = initPwdInput.value.trim();
+    if(newPwd === ''){
+        tipText.innerText = '密码不能为空';
+        tipText.style.display = 'block';
+        initPwdInput.focus();
+        return;
+    }
+    localStorage.setItem('crmLoginPwd', newPwd.trim());
+    tipText.innerText = '密码创建成功，请登录';
+    tipText.style.display = 'block';
+    switchActionBtn.innerText = '重置密码';
+    setTimeout(()=>showPanel('login'), 1200);
+})
+backFromInitBtn.addEventListener('click', ()=>showPanel('login'));
+
+// 【独立重置密码弹窗】保存新密码
+confirmResetBtn.addEventListener('click', ()=>{
+    const realPwd = localStorage.getItem('crmLoginPwd');
+    const oldVal = oldPwdInput.value.trim();
+    const newVal = newPwdInput.value.trim();
+    resetTipText.style.display = 'none';
+
+    if(oldVal !== realPwd){
+        resetTipText.innerText = '旧密码输入错误，无权修改密码！';
+        resetTipText.style.display = 'block';
+        oldPwdInput.value = '';
+        oldPwdInput.focus();
+        return;
+    }
+    if(newVal === ''){
+        resetTipText.innerText = '新密码不能为空，修改取消';
+        resetTipText.style.display = 'block';
+        newPwdInput.focus();
+        return;
+    }
+    localStorage.setItem('crmLoginPwd', newVal.trim());
+    resetTipText.innerText = '密码修改成功，页面即将刷新';
+    resetTipText.style.display = 'block';
+    setTimeout(()=>location.reload(), 1200);
+})
+backFromResetBtn.addEventListener('click', ()=>{
+    resetMask.classList.remove('show');
+    loginMask.classList.add('show');
+})
+
+// 密码显示/隐藏切换图标
+eyeLogin.onclick = function(){
+    if(pwdInput.type === 'password'){
+        pwdInput.type = 'text';
+        this.innerText = '👁';
+    }else{
+        pwdInput.type = 'password';
+        this.innerText = '◡';
+    }
+}
+eyeInit.onclick = function(){
+    if(initPwdInput.type === 'password'){
+        initPwdInput.type = 'text';
+        this.innerText = '👁';
+    }else{
+        initPwdInput.type = 'password';
+        this.innerText = '◡';
+    }
+}
+eyeOld.onclick = function(){
+    if(oldPwdInput.type === 'password'){
+        oldPwdInput.type = 'text';
+        this.innerText = '👁';
+    }else{
+        oldPwdInput.type = 'password';
+        this.innerText = '◡';
+    }
+}
+eyeNew.onclick = function(){
+    if(newPwdInput.type === 'password'){
+        newPwdInput.type = 'text';
+        this.innerText = '👁';
+    }else{
+        newPwdInput.type = 'password';
+        this.innerText = '◡';
+    }
+}
+eyeSingleInit.onclick = function(){
+    if(initSinglePwd.type === 'password'){
+        initSinglePwd.type = 'text';
+        this.innerText = '👁';
+    }else{
+        initSinglePwd.type = 'password';
+        this.innerText = '◡';
+    }
+}
+setInitSingleBtn.addEventListener('click',()=>{
+    const val = initSinglePwd.value.trim();
+    if(!val){
+        alert('密码不能为空');
+        return;
+    }
+    localStorage.setItem('crmLoginPwd',val);
+    alert('初始密码设置完成，请刷新页面登录');
+    location.reload();
+})
+</script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AnsonCRM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="ACRM">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='50' fill='%232563eb'/%3E%3Ctext x='50' y='65' font-size='50' text-anchor='middle' fill='white'%3E★%3C/text%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='40' fill='%232563eb'/%3E%3Ctext x='96' y='120' font-size='90' text-anchor='middle' fill='white'%3E★%3C/text%3E%3C/svg%3E">
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#f6f9fc">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%232563eb'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle' fill='white'>★</text></svg>
+   
+ <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js')
+                .catch(err => console.log('SW注册失败', err));
+            });
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: env(safe-area-inset-top);
+    background: #f6f9fc;
+    z-index: 998;
+    pointer-events: none;
+}
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Inter',sans-serif; background:#f6f9fc; color:#1e293b; padding:24px; min-height:100vh; display:flex; justify-content:center; }
+        body.modal-open { overflow: hidden; }
+        body.lock-scroll { overflow:hidden !important; }
+        body.lock-scroll::before { display:none !important; }
+        .app-container { max-width:1280px; width:100%; }
+        .header { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; margin-bottom:32px; gap:16px; }
+        .logo-area { display:flex; align-items:center; gap:12px; }
+        .logo-area i { font-size:28px; color:#2563eb; background:#dbeafe; padding:10px; border-radius:14px; }
+        .logo-area h1 { font-size:24px; font-weight:700; letter-spacing:-0.5px; }
+        .logo-area span { color:#64748b; font-weight:400; }
+        .header-actions { display:flex; gap:10px; flex-wrap:wrap; }
+        .btn { display:inline-flex; align-items:center; gap:8px; padding:8px 18px; border-radius:40px; border:none; font-weight:600; font-size:14px; cursor:pointer; transition:all .2s ease; background:#fff; color:#1e293b; box-shadow:0 1px 3px rgba(0,0,0,0.04); border:1px solid #e2e8f0; }
+        .btn-primary { background:#2563eb; color:#fff; border-color:#2563eb; }
+        .btn-primary:hover { background:#1d4ed8; transform:translateY(-1px); box-shadow:0 4px 12px rgba(37,99,235,0.3); }
+        .btn-success { background:#059669; color:#fff; border-color:#059669; }
+        .btn-success:hover { background:#047857; transform:translateY(-1px); box-shadow:0 4px 12px rgba(5,150,105,0.3); }
+        .btn-outline { background:transparent; border:1px solid #cbd5e1; }
+        .btn-outline:hover { background:#f1f5f9; }
+        .btn-danger { background:#ef4444; color:#fff; border-color:#ef4444; }
+        .btn-danger:hover { background:#dc2626; box-shadow:0 4px 12px rgba(239,68,68,0.3); transform:translateY(-1px); }
+        .btn-sm { padding:4px 12px; font-size:12px; }
+        .btn-icon { padding:8px 10px; }
+        .toolbar { display:flex; flex-wrap:wrap; gap:16px; align-items:center; margin-bottom:28px; background:#fff; padding:16px 20px; border-radius:20px; box-shadow:0 1px 4px rgba(0,0,0,0.04); border:1px solid #eef2f6; }
+        .search-wrapper { flex:1; min-width:200px; position:relative; }
+        .search-wrapper i { position:absolute; left:14px; top:50%; transform:translateY(-50%); color:#94a3b8; }
+        .search-wrapper input { width:100%; padding:10px 18px 10px 42px; border-radius:40px; border:1px solid #e2e8f0; font-size:14px; background:#f8fafc; transition:all .2s; }
+        .search-wrapper input:focus { outline:none; border-color:#2563eb; background:#fff; box-shadow:0 0 0 3px rgba(37,99,235,0.1); }
+        .select-wrapper { min-width:160px; }
+        .select-wrapper select { width:100%; padding:9px 12px; border-radius:14px; border:1px solid #e2e8f0; font-size:14px; background:#fafcff; }
+        .stats { display:flex; gap:20px; margin-bottom:24px; flex-wrap:wrap; }
+        .stat-item { background:#fff; padding:8px 24px 8px 20px; border-radius:40px; border:1px solid #eef2f6; display:flex; align-items:center; gap:10px; font-size:14px; font-weight:500; }
+        .stat-item i { color:#2563eb; font-size:16px; }
+        .stat-item strong { font-size:18px; margin-left:4px; }
+        .grid { display:flex; flex-direction:column; gap:30px; }
+        .group-title { font-size:16px; font-weight:600; color:#334155; padding-bottom:10px; border-bottom:1px solid #e2e8f0; margin-bottom:15px; }
+        .group-card-wrap { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:20px; }
+        .contact-card { background:#fff; border-radius:20px; padding:20px 22px 18px; border:1px solid #eef2f6; transition:all .2s; box-shadow:0 2px 6px rgba(0,0,0,0.02); display:flex; flex-direction:column; }
+        .contact-card:hover { border-color:#cbd5e1; box-shadow:0 8px 20px rgba(0,0,0,0.04); transform:translateY(-2px); }
+        .card-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; }
+        .card-name { font-weight:700; font-size:18px; letter-spacing:-0.3px; }
+        .card-company { font-size:14px; color:#475569; font-weight:500; margin-top:2px; }
+        .tag-row { display:flex; gap:6px; flex-wrap:wrap; margin:6px 0; }
+        .card-industry-tag { display:inline-block; font-size:11px; padding:2px 8px; background:#eff6ff; color:#2563eb; border-radius:10px; }
+        .card-exhibition-tag { display:inline-block; font-size:11px; padding:2px 8px; background:#f0fdf4; color:#059669; border-radius:10px; }
+        .card-actions { display:flex; gap:4px; flex-shrink:0; }
+        .card-actions .btn { background:transparent; border:none; padding:4px 6px; color:#94a3b8; font-size:14px; }
+        .card-actions .btn:hover { color:#1e293b; background:#f1f5f9; }
+        .card-details { font-size:14px; color:#334155; margin:6px 0 12px; display:flex; flex-direction:column; gap:4px; }
+        .card-details i { width:20px; color:#64748b; font-size:13px; }
+        .card-details a { color:#2563eb; text-decoration:none; }
+        .card-details a:hover { text-decoration:underline; }
+        .card-notes { font-size:14px; color:#475569; background:#f8fafc; padding:8px 12px; border-radius:12px; margin:8px 0 12px; border-left:3px solid #dbeafe; }
+        .interactions-section { margin-top:auto; border-top:1px solid #f1f5f9; padding-top:12px; }
+        .interactions-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+        .interactions-header span { font-size:12px; font-weight:600; text-transform:uppercase; color:#94a3b8; letter-spacing:0.4px; }
+        .interaction-list { max-height:70px; overflow-y:auto; font-size:13px; color:#475569; display:flex; flex-direction:column; gap:4px; }
+        .interaction-list::-webkit-scrollbar { width:3px; }
+        .interaction-list::-webkit-scrollbar-thumb { background:#cbd5e1; border-radius:10px; }
+        .interaction-item { display:flex; align-items:center; gap:8px; background:#f8fafc; padding:2px 10px 2px 8px; border-radius:20px; font-size:12px; justify-content:space-between; }
+        .interaction-item .badge { font-size:9px; font-weight:700; text-transform:uppercase; padding:1px 6px; border-radius:20px; background:#e2e8f0; color:#475569; }
+        .interaction-item .badge.phone { background:#dbeafe; color:#1d4ed8; }
+        .interaction-item .badge.wechat { background:#d1fae5; color:#065f46; }
+        .interaction-item .badge.qq { background:#fef3c7; color:#b45309; }
+        .interaction-item .badge.meeting { background:#e0e7ff; color:#4338ca; }
+        .interaction-item .badge.email { background:#fce7f3; color:#be185d; }
+        .interaction-item .del-inter { color:#ef4444; cursor:pointer; padding:0 4px; transition:0.2s; }
+        .interaction-item .del-inter:hover { color:#dc2626; transform:scale(1.1); }
+        .empty-state { grid-column:1/-1; text-align:center; padding:60px 20px; color:#94a3b8; }
+        .empty-state i { font-size:48px; margin-bottom:16px; opacity:0.5; }
+        .empty-state h3 { color:#475569; margin-bottom:4px; }
+        .modal-overlay { display:none; position:fixed; inset:0; background:rgba(15,23,42,0.3); backdrop-filter:blur(4px); justify-content:center; align-items:center; z-index:999; padding:20px; }
+        .modal-overlay.active { display:flex; }
+        .modal {
+    background: #fff;
+    max-width: 560px;
+    width: 100%;
+    border-radius: 28px;
+    padding: 24px 20px;
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+    animation: fadeUp .2s ease;
+}
+        @keyframes fadeUp { from { opacity:0; transform:scale(0.96) translateY(10px); } to { opacity:1; transform:scale(1) translateY(0); } }
+        .modal h2 { font-size:22px; font-weight:700; margin-bottom:20px; display:flex; align-items:center; gap:10px; }
+        .modal h2 i { color:#2563eb; }
+        .form-group { margin-bottom:16px; }
+        .form-group label { display:block; font-weight:600; font-size:13px; color:#475569; margin-bottom:4px; }
+        .form-group input, .form-group textarea, .form-group select { width:100%; padding:10px 14px; border-radius:14px; border:1px solid #e2e8f0; font-size:14px; transition:.2s; background:#fafcff; }
+        .form-group input:focus, .form-group textarea:focus { outline:none; border-color:#2563eb; box-shadow:0 0 0 3px rgba(37,99,235,0.1); }
+        .form-group textarea { min-height:60px; resize:vertical; }
+        .form-row { display:flex; gap:12px; flex-wrap:wrap; }
+        .form-row .form-group { flex:1; min-width:120px; }
+        .modal-actions { display:flex; justify-content:flex-end; gap:10px; margin-top:24px; }
+
+        .manage-item-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1px 18px;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    margin-bottom: 4px;
+    background: #ffffff;
+    transition: 0.2s ease all;
+    min-height: 14px;
+    font-size: 14px;
+}
+.manage-item-row:hover {
+    background: #f0f7ff;
+    border-color: #cbd5e1;
+}
+        .manage-del-btn {
+            color:#ef4444;
+            background:none;
+            border:none;
+            cursor:pointer;
+            width:30px;
+            height:30px;
+            border-radius:50%;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            transition:0.2s ease all;
+        }
+        .manage-del-btn:hover {
+            background:#fee2e2;
+            color:#dc2626;
+        }
+
+        .add-tag-row {
+            display:flex;
+            gap:6px;
+            margin-top:4px;
+            align-items:center;
+            flex-wrap:wrap;
+        }
+       .add-tag-row input {
+    flex: 1;
+    min-width: 220px;
+    padding: 1px 18px;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    font-size: 13px;
+    background: #fff;
+    transition: all 0.2s ease;
+    min-height: 32px;
+}
+        .add-tag-row input::placeholder {
+            color:#94a3b8;
+        }
+        .add-tag-row input:hover {
+            border-color:#cbd5e1;
+            background:#f0f7ff;
+        }
+        .add-tag-row input:focus {
+            outline:none;
+            border-color:#2563eb;
+            background:#f8faff;
+            box-shadow:0 0 0 4px rgba(37,99,235,0.1);
+        }
+    .add-tag-row .btn {
+    padding: 5px 18px;
+    border-radius: 20px;
+    font-size: 14px;
+    gap: 6px;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(37,99,235,0.15);
+    min-height: 24px;
+}
+        .add-tag-row .btn:hover {
+            box-shadow:0 6px 16px rgba(37,99,235,0.3);
+        }
+
+        .copyright-text { line-height:1.8; text-align:center; color:#475569; }
+    @media (max-width:640px) {
+    body { padding:12px; }
+    .header {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+        padding: 0;
+        margin: 0 -12px 20px -12px;
+    }
+    .logo-area {
+        flex-shrink: 0;
+        min-width: 130px;
+        padding-left: 12px;
+    }
+    .header-stats {
+        flex: 1;
+        min-width: 0;
+        margin: 0 6px 0 0;
+        gap: 4px;
+        justify-content: flex-end;
+    }
+    .header-stats .stat-item {
+        flex-shrink: 1;
+        white-space: nowrap;
+        padding: 2px 6px 2px 4px;
+        font-size: 9px;
+        gap: 2px;
+    }
+    .header-stats .stat-item strong {
+        font-size: 12px;
+    }
+    .header-actions {
+        justify-content: center;
+        width: 100%;
+        margin-top:6px;
+        gap: 14px;
+        row-gap: 8px; 
+        padding: 0 12px;
+    }
+
+    .toolbar { flex-direction:column; align-items:stretch; }
+    .stats { gap:10px; }
+    .stat-item { padding:6px 16px; }
+    .group-card-wrap { grid-template-columns:1fr; }
+    .add-tag-row {
+        flex-direction:column;
+        gap:10px;
+    }
+    .add-tag-row input {
+        width:100%;
+    }
+    .add-tag-row .btn {
+        width:100%;
+        justify-content:center;
+    }
+
+    .modal h2 {
+        text-align: left;
+    }
+    .form-group label,
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        text-align: left;
+    }
+    .modal-actions {
+        justify-content: flex-end !important;
+    }
+    #copyrightModal .copyright-text {
+        text-align: center !important;
+    }
+}
+.header-stats {
+    display: flex;
+    gap: 12px;
+    flex-wrap: nowrap;
+    align-items: center;
+    align-self: center;
+    flex: 1;
+    justify-content: flex-end;
+    margin: 0 20px;
+}
+.header-stats .stat-item {
+    display: flex;
+    align-items: center;
+    min-width: 8px;
+    flex-shrink:0;
+}
+
+@media (max-width: 640px) {
+    #loginMask {
+        padding-top: env(safe-area-inset-top) !important;
+        padding-bottom: env(safe-area-inset-bottom) !important;
+    }
+    #loginBox {
+        padding-top: max(30px, env(safe-area-inset-top) + 16px) !important;
+    }
+    #initPwdBox {
+        width: 100%;
+        max-width: unset;
+        margin: 20px 12px;
+    }
+}
+
+@media (min-width:641px){
+    #pwaSplash{display:none !important;}
+}
+
+#loginBox button:active,
+#resetBox button:active,
+#initPwdBox button:active {
+  opacity:0.85;
+  transform:scale(0.97);
+  transition:0.1s;
+}
+/* 登录遮罩通用居中 */
+#loginMask, #resetMask {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background:rgba(0,0,0,0.55);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+    padding: 0 12px;
+}
+#loginMask.show, #resetMask.show {
+    display:flex;
+}
+#loginBox, #resetBox {
+    background:#fff;
     border-radius:24px;
     width:100%;
     max-width:300px;
