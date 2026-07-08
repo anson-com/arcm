@@ -340,7 +340,7 @@ body::before {
         <div id="panelInit" style="display:none;">
             <div style="margin-bottom:24px;">
                 <label style="color:#111827;display:flex;align-items:center;gap:6px;font-size:15px;margin-bottom:8px;">
-                    <span>🗝️</span>创建访问密码
+                    <span>🔑</span>首次使用创建密码
                 </label>
                 <input type="password" id="initPwdInput" placeholder="自定义你的访问密码" style="width:100%;box-sizing:border-box;padding:12px;margin:0;border-radius:8px;font-size:16px;border:1px solid #ddd;background:#fff;color:#111827;">
             </div>
@@ -360,7 +360,7 @@ body::before {
             </div>
             <div style="margin-bottom:24px;">
                 <label style="color:#111827;display:flex;align-items:center;gap:6px;font-size:15px;margin-bottom:8px;">
-                    <span>🗝️</span>设置新密码
+                    <span>🔑</span>设置新密码
                 </label>
                 <input type="password" id="newPwdInput" placeholder="设置全新访问密码" style="width:100%;box-sizing:border-box;padding:12px;margin:0;border-radius:8px;font-size:16px;border:1px solid #ddd;background:#fff;color:#111827;">
             </div>
@@ -1495,7 +1495,7 @@ function showPanel(type){
             pwdInput.value = '';
             break;
         case 'init':
-            boxTitle.innerText = '创建访问密码';
+            boxTitle.innerText = '首次使用创建密码';
             panelInit.style.display = 'block';
             initPwdInput.value = '';
             break;
