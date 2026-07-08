@@ -334,10 +334,12 @@ body::before {
     </div>
 </div>
 
+<!-- 主页面，未登录永久隐藏 -->
 <div id="mainPage" style="display:none;">
-<!-- 你原有全部CRM页面内容 + 退出登录按钮 -->
-<button onclick="logout()" style="position:fixed;top:12px;right:12px;z-index:100;padding:6px 14px;border-radius:8px;border:none;background:#ef4444;color:#fff;font-size:14px;">退出登录</button>
-<!-- 你的原有代码 -->
+    <!-- 退出按钮放在页面最顶部 -->
+    <button onclick="logout()" style="position:fixed;top:12px;right:12px;z-index:100;padding:6px 14px;border-radius:8px;border:none;background:#ef4444;color:#fff;font-size:14px;">退出登录</button>
+
+    <!-- 这里粘贴你所有CRM原有页面代码 -->
 </div>
 
 <div class="app-container">
@@ -1241,6 +1243,7 @@ body::before {
 </script>
 <!-- 下面是登录JS代码 -->
 <script>
+// 锁定页面元素
 const loginMask = document.getElementById('loginMask');
 const mainPage = document.getElementById('mainPage');
 const pwdInput = document.getElementById('pwdInput');
@@ -1248,74 +1251,81 @@ const loginBtn = document.getElementById('loginBtn');
 const pwdActionBtn = document.getElementById('pwdActionBtn');
 const tipText = document.getElementById('tipText');
 
-window.onload = function(){
-    const savedPwd = localStorage.getItem('crmLoginPwd');
-    // 每次刷新强制清空登录状态，必须重输密码
+// 页面加载立即执行，兜底修复线上首次空白/逻辑错乱BUG
+function initLoginSystem(){
+    // 1. 每次打开页面强制清空临时登录会话，杜绝免登漏洞
     sessionStorage.removeItem('crmIsLogin');
+    // 2. 默认隐藏主页面，只展示登录框
     mainPage.style.display = 'none';
     loginMask.style.display = 'flex';
 
-    if (!savedPwd) {
-        // 首次打开，无密码：按钮显示【设置初始密码】
-        pwdActionBtn.innerText = "设置初始密码";
-    } else {
-        // 已有密码：按钮显示【重置密码】
-        pwdActionBtn.innerText = "重置密码";
+    // 读取本地存储的密码
+    const savedPassword = localStorage.getItem('crmLoginPwd');
+
+    if(!savedPassword || savedPassword === ''){
+        // 线上首次访问、本地无密码：按钮固定为【设置初始密码】
+        pwdActionBtn.innerText = '设置初始密码';
+    }else{
+        // 已有密码：按钮切换为【重置密码】
+        pwdActionBtn.innerText = '重置密码';
     }
 }
 
+// 页面DOM加载完成再执行（解决GitHub线上资源加载顺序BUG）
+document.addEventListener('DOMContentLoaded', initLoginSystem);
+
 // 登录按钮逻辑
-loginBtn.onclick = function(){
-    const inputVal = pwdInput.value.trim();
+loginBtn.addEventListener('click', function(){
+    const inputPwd = pwdInput.value.trim();
     const realPwd = localStorage.getItem('crmLoginPwd');
-    if(inputVal === realPwd){
+    if(inputPwd === realPwd){
         loginMask.style.display = 'none';
         mainPage.style.display = 'block';
         tipText.style.display = 'none';
-        sessionStorage.setItem('crmIsLogin', '1');
+        sessionStorage.setItem('crmIsLogin','1');
     }else{
         tipText.style.display = 'block';
         pwdInput.value = '';
         pwdInput.focus();
     }
-}
+})
 
-// 回车快捷登录
-pwdInput.onkeydown = function(e){
+// 回车登录
+pwdInput.addEventListener('keydown', function(e){
     if(e.key === 'Enter') loginBtn.click();
-}
+})
 
-// 【核心修复】一个按钮两种逻辑：首次设密码 / 登录后重置密码
-pwdActionBtn.onclick = function(){
+// 切换密码按钮核心逻辑：分首次设置 / 已有密码重置
+pwdActionBtn.addEventListener('click', function(){
     const savedPwd = localStorage.getItem('crmLoginPwd');
-    if (!savedPwd) {
-        // 场景1：首次打开，无旧密码，直接设置初始密码
-        const newInitPwd = prompt('首次使用，请设置访问密码：');
+    // 场景1：线上首次打开，无密码，无需旧密码直接创建
+    if(!savedPwd || savedPwd === ''){
+        const newInitPwd = prompt('首次使用，请设置专属访问密码：');
         if(newInitPwd && newInitPwd.trim() !== ''){
             localStorage.setItem('crmLoginPwd', newInitPwd.trim());
-            alert('初始密码设置完成，请输入密码登录！');
-            pwdActionBtn.innerText = "重置密码";
+            alert('初始密码创建成功，请输入密码登录！');
+            pwdActionBtn.innerText = '重置密码';
         }else{
-            alert('密码不能为空，设置取消');
+            alert('密码不能为空，设置已取消');
         }
     }else{
-        // 场景2：已有密码，重置密码必须验证旧密码
-        const oldPwdCheck = prompt('请输入当前旧密码验证身份：');
-        if(oldPwdCheck === null) return;
-        if(oldPwdCheck.trim() !== savedPwd){
-            alert('旧密码输入错误，无权修改密码！');
+        // 场景2：已有密码，修改必须校验旧密码
+        const oldCheck = prompt('请输入当前旧密码验证身份：');
+        if(oldCheck === null) return;
+        if(oldCheck.trim() !== savedPwd){
+            alert('旧密码错误，无法修改密码！');
             return;
         }
-        const newPwd = prompt('验证通过，请设置新的访问密码：');
+        const newPwd = prompt('验证通过，请设置新密码：');
         if(newPwd && newPwd.trim() !== ''){
             localStorage.setItem('crmLoginPwd', newPwd.trim());
-            alert('密码修改成功，页面将刷新重新登录');
+            alert('密码修改完成，页面刷新重新登录');
             location.reload();
         }else{
             alert('新密码不能为空，修改取消');
         }
     }
-}
+})
 
 // 退出登录函数
 function logout(){
