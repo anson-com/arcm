@@ -15,13 +15,12 @@
     <link rel="manifest" href="./manifest.json">
 <!-- ServiceWorker注册脚本 -->
 <script>
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        // 改为绝对根路径 + 限定缓存作用域
-        navigator.serviceWorker.register('/service-worker.js', { scope: './' })
-        .catch(err => console.log('SW注册失败', err));
-    });
-}
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js')
+                .catch(err => console.log('SW注册失败', err));
+            });
+        }
 </script>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
