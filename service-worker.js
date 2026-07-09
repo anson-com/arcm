@@ -1,5 +1,5 @@
 // 缓存版本号，更新页面/图标代码时修改数字刷新缓存
-const CACHE_VER = "AnsonCRM-PWA-v2.0.0";
+const CACHE_VER = "AnsonCRMv2.0.0";
 // 离线必须缓存的核心本地文件
 const CACHE_FILES = [
   "./index.html",
