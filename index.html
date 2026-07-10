@@ -285,7 +285,27 @@ body::before {
     #copyrightModal .copyright-text {
         text-align: center !important;
     }
+
+/* ==========下面这段复制粘贴到这个大括号内部========== */
+    /* 手机端筛选分页三控件同行均分自适应缩放 */
+    .toolbar .search-wrapper {
+        width: 100%;
+    }
+    .toolbar .select-group {
+        display: flex;
+        gap: 10px;
+        width: 100%;
+    }
+    .toolbar .select-group .select-wrapper {
+        flex: 1;
+        min-width: 0;
+    }
+    .toolbar #addBtn {
+        width: 100%;
+    }
+    /* ===================================================== */
 }
+
 .header-stats {
     display: flex;
     gap: 12px;
@@ -432,6 +452,11 @@ html, body {
     max-width: 100%;
   }
 }
+
+/* PC端保持原有横向布局，不产生任何变化 */
+.select-group {
+    display: contents;
+}
     </style>
 </head>
 <body>
@@ -568,10 +593,11 @@ html, body {
         </div>
     </header>
    
-    <div class="toolbar">
-        <div class="search-wrapper"><i class="fas fa-search"></i><input type="text" id="searchInput" placeholder="搜索客户、公司、电话、行业、展会..."></div>
-        <!-- 新增分页下拉，样式与原有筛选下拉完全统一 -->
-        
+<div class="toolbar">
+    <div class="search-wrapper"><i class="fas fa-search"></i><input type="text" id="searchInput" placeholder="搜索客户、公司、电话、行业、展会..."></div>
+
+    <!-- 新增包裹容器，仅包裹三个select-wrapper -->
+    <div class="select-group">
         <div class="select-wrapper">
             <select id="industryFilter">
                 <option value="">全部行业</option>
@@ -582,14 +608,15 @@ html, body {
                 <option value="">全部展会</option>
             </select>
         </div>
-<!-- 分页下拉移到展会筛选后方、添加客户按钮前方 -->
-<div class="select-wrapper">
+        <div class="select-wrapper">
             <select id="pageFilter">
                 <option value="1">    第 1 页</option>
             </select>
         </div>
-        <button class="btn btn-primary" id="addBtn"><i class="fas fa-plus"></i> 添加客户</button>
     </div>
+
+    <button class="btn btn-primary" id="addBtn"><i class="fas fa-plus"></i> 添加客户</button>
+</div>
     <div class="grid" id="contactGrid"></div>
 </div>
 </div>
