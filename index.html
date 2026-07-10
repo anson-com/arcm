@@ -568,11 +568,7 @@ body {
     <div class="toolbar">
         <div class="search-wrapper"><i class="fas fa-search"></i><input type="text" id="searchInput" placeholder="搜索客户、公司、电话、行业、展会..."></div>
         <!-- 新增分页下拉，样式与原有筛选下拉完全统一 -->
-        <div class="select-wrapper">
-            <select id="pageFilter">
-                <option value="1">    第 1 页</option>
-            </select>
-        </div>
+        
         <div class="select-wrapper">
             <select id="industryFilter">
                 <option value="">全部行业</option>
@@ -581,6 +577,12 @@ body {
         <div class="select-wrapper">
             <select id="exhibitionFilter">
                 <option value="">全部展会</option>
+            </select>
+        </div>
+<!-- 分页下拉移到展会筛选后方、添加客户按钮前方 -->
+<div class="select-wrapper">
+            <select id="pageFilter">
+                <option value="1">    第 1 页</option>
             </select>
         </div>
         <button class="btn btn-primary" id="addBtn"><i class="fas fa-plus"></i> 添加客户</button>
@@ -757,14 +759,14 @@ window.addEventListener('load',()=>{
     const totalPage = Math.ceil(totalFilterCount / PAGE_SIZE);
     pageFilterEl.innerHTML = '';
     if(totalPage <= 0) {
-        pageFilterEl.innerHTML = `<option value="1">第 1 页 | 共 0 页</option>`;
+        pageFilterEl.innerHTML = `<option value="1">第 1 页 ｜ 共 0 页</option>`;
         currentPage = 1;
         return;
     }
     for(let i = 1; i <= totalPage; i++) {
         const opt = document.createElement('option');
         opt.value = i;
-        opt.innerText = `第 ${i} 页 | 共 ${totalPage} 页`;
+        opt.innerText = `第 ${i} 页｜共 ${totalPage} 页`;
         if(Number(opt.value) === currentPage) opt.selected = true;
         pageFilterEl.appendChild(opt);
     }
