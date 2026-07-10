@@ -370,27 +370,37 @@ input[type="password"]::-ms-reveal { display:none; }
 html, body {
   overflow-x: hidden !important;
 }
-body {
-  min-height: 120vh;
-  overflow-y: scroll !important;
-  padding: 24px;
-}
 
-/* 主容器最大宽度固定1600px，适配5张300px标准卡片 */
+/* 主容器最大宽度固定1800px */
 .app-container {
-  max-width: 1600px;
-  width: min(100%, 1600px);
+  max-width: 1800px;
+  width: min(100%, 1800px);
   margin: 0 auto;
 }
 
-/* 网格布局保持原生300px卡片尺寸，大屏一行5张，所有卡片靠左排列 */
+/* 基础网格：窗口窄于5列总宽度时，卡片最小300px，自动换行 */
 .group-card-wrap {
   display: grid;
-  grid-template-columns: repeat(5, minmax(300px, 1fr)); /* 强制固定5列，不自动自适应 */
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 20px;
   width: 100%;
   overflow-x: hidden;
-  justify-items: start;
+  justify-items: center;
+}
+
+/* 宽度足够放下5张卡片时，锁定5列，卡片自适应均分展开 */
+@media (min-width: calc(300px * 5 + 20px * 4)) {
+  .group-card-wrap {
+    /* 5等分，卡片自由拉伸铺满整行 */
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    /* 5张卡片整体铺满容器，居中不留白扩散 */
+    justify-items: stretch;
+  }
+  /* 宽屏模式下取消卡片最大宽度限制，允许自适应拉伸 */
+  .group-card-wrap .contact-card {
+    max-width: unset;
+    width: 100%;
+  }
 }
 
 /* 仅只剩1张卡片时，卡片固定300px宽度、靠左摆放，不拉伸放大 */
