@@ -17,7 +17,6 @@
 <script>
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        // 改为绝对根路径 + 限定缓存作用域
         navigator.serviceWorker.register('/service-worker.js', { scope: './' })
         .catch(err => console.log('SW注册失败', err));
     });
@@ -444,10 +443,9 @@ body {
     </span>
 </div>
 
-<!-- 1、登录弹窗遮罩（独立无嵌套、无重复ID） -->
+<!-- 1、登录弹窗遮罩 -->
 <div id="loginMask">
 <div id="loginBox" style="padding:32px 24px 34px 24px;">
-    <!-- 固定顶部LOGO+标题（移出#boxTitle外部，JS无法清空，和重置密码界面完全统一尺寸、间距、样式） -->
     <div style="text-align:center;margin-bottom:20px;">
         <svg width="72" height="72" viewBox="0 0 100 100" style="display:inline-block;">
             <circle cx="50" cy="50" r="50" fill="#2563eb"/>
@@ -458,10 +456,8 @@ body {
     <span style="color:#111827;font-weight:700;">Anson</span>
     <span style="color:#9ca3af;font-weight:400;">CRM</span>
 </h2>
-    <!-- 原JS操作的boxTitle标签仅作空白占位，原有JS逻辑完全兼容无需修改 -->
     <h2 id="boxTitle" style="display:none;margin:0 0 24px 0;font-weight:700;"></h2>
     <p id="tipText" style="color:#ef4444;display:none;text-align:center;margin:8px 0 16px 0;min-height:24px;"></p>
-        <!-- 登录面板 -->
         <div id="panelLogin">
             <div style="margin-bottom:24px;position:relative;">
               <input id="pwdInput" type="password" placeholder="请输入登录密码" style="width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #e2e8f0;border-radius:14px;font-size:15px;outline:none;transition:0.2s all;"
@@ -474,7 +470,6 @@ body {
               <button id="switchActionBtn" style="flex:1;padding:12px 0;background:#f1f5f9;color:#2563eb;border:none;border-radius:50px;font-size:16px;font-weight:560;">重置密码</button>
             </div>
         </div>
-        <!-- 初始化密码面板 -->
         <div id="panelInit" style="display:none;">
             <div style="margin-bottom:24px;position:relative;">
               <input id="initPwdInput" type="password" placeholder="首次使用请设置登录密码" style="width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #e2e8f0;border-radius:14px;font-size:15px;outline:none;transition:0.2s all;"
@@ -490,7 +485,7 @@ body {
     </div>
 </div>
 
-<!-- 2、重置密码独立遮罩面板（单独DOM，无ID重复） -->
+<!-- 2、重置密码独立遮罩面板 -->
 <div id="resetMask">
     <div id="resetBox" style="padding:32px 24px 34px 24px;">
         <div style="text-align:center;margin-bottom:20px;">
@@ -523,7 +518,7 @@ body {
     </div>
 </div>
 
-<!-- 3、首次设置密码独立卡片（无遮罩，单独ID不重复） -->
+<!-- 3、首次设置密码独立卡片 -->
 <div id="initPwdBox">
   <div style="text-align:center;margin-bottom:20px;">
     <svg width="72" height="72" viewBox="0 0 100 100" style="display:inline-block;">
@@ -572,6 +567,12 @@ body {
    
     <div class="toolbar">
         <div class="search-wrapper"><i class="fas fa-search"></i><input type="text" id="searchInput" placeholder="搜索客户、公司、电话、行业、展会..."></div>
+        <!-- 新增分页下拉，样式与原有筛选下拉完全统一 -->
+        <div class="select-wrapper">
+            <select id="pageFilter">
+                <option value="1">第 1 页</option>
+            </select>
+        </div>
         <div class="select-wrapper">
             <select id="industryFilter">
                 <option value="">全部行业</option>
@@ -712,6 +713,10 @@ window.addEventListener('load',()=>{
 </script>
 
 <script>
+    // 分页全局配置
+    const PAGE_SIZE = 30;
+    let currentPage = 1;
+
     let contacts = [];
     let industryList = [];
     const DEFAULT_INDUSTRY = '其他行业';
@@ -745,6 +750,37 @@ window.addEventListener('load',()=>{
     const industrySelectEl = document.getElementById('industry');
     const exhibitionFilterEl = document.getElementById('exhibitionFilter');
     const exhibitionSelectEl = document.getElementById('exhibition');
+    const pageFilterEl = document.getElementById('pageFilter');
+
+    // 刷新分页下拉页码列表
+    function refreshPageOptions(totalFilterCount) {
+        const totalPage = Math.ceil(totalFilterCount / PAGE_SIZE);
+        pageFilterEl.innerHTML = '';
+        if(totalPage <= 0) {
+            pageFilterEl.innerHTML = `<option value="1">第 1 页</option>`;
+            currentPage = 1;
+            return;
+        }
+        for(let i = 1; i <= totalPage; i++) {
+            const opt = document.createElement('option');
+            opt.value = i;
+            opt.innerText = `第 ${i} 页`;
+            if(Number(opt.value) === currentPage) opt.selected = true;
+            pageFilterEl.appendChild(opt);
+        }
+        // 当前页超过总页数自动切回第一页
+        if(currentPage > totalPage) {
+            currentPage = 1;
+            pageFilterEl.value = 1;
+        }
+    }
+
+    // 截取当前分页数据
+    function getPageData(filteredList) {
+        const startIdx = (currentPage - 1) * PAGE_SIZE;
+        const endIdx = startIdx + PAGE_SIZE;
+        return filteredList.slice(startIdx, endIdx);
+    }
 
     function loadData() {
         try {
@@ -788,6 +824,7 @@ window.addEventListener('load',()=>{
         } catch (e) {
             console.error('加载行业数据失败', e);
             industryList = [DEFAULT_INDUSTRY];
+
             saveIndustryStorage();
         }
 
@@ -1033,6 +1070,11 @@ window.addEventListener('load',()=>{
                 return matchSearch && matchIndustry && matchExhibition;
             });
 
+            // 刷新分页下拉
+            refreshPageOptions(filtered.length);
+            // 获取当前页数据
+            const pageData = getPageData(filtered);
+
             const grid = document.getElementById('contactGrid');
             if (filtered.length === 0) {
                 grid.innerHTML = `<div class="empty-state"><i class="fas fa-search"></i><h3>没有匹配的客户</h3><p>更换搜索关键词、行业或展会分类试试</p></div>`;
@@ -1040,7 +1082,7 @@ window.addEventListener('load',()=>{
             }
 
             const groupMap = {};
-            filtered.forEach(item => {
+            pageData.forEach(item => {
                 if (!groupMap[item.exhibition]) groupMap[item.exhibition] = [];
                 groupMap[item.exhibition].push(item);
             });
@@ -1252,7 +1294,7 @@ window.addEventListener('load',()=>{
             alert('互动记录保存异常');
         }
     }
-      function deleteSingleInteraction(cid, index) {
+    function deleteSingleInteraction(cid, index) {
         try {
             if (!confirm('确定删除这条互动记录？')) return;
             const customer = contacts.find(c => c.id === cid);
@@ -1412,9 +1454,24 @@ window.addEventListener('load',()=>{
         document.getElementById('importInput').addEventListener('change', function(e) {
             if (this.files.length) importData(this.files[0]);
         });
-        document.getElementById('searchInput').addEventListener('input', render);
-        industryFilterEl.addEventListener('change', render);
-        exhibitionFilterEl.addEventListener('change', render);
+        // 搜索、行业、展会筛选切换，重置到第一页
+        document.getElementById('searchInput').addEventListener('input', function(){
+            currentPage = 1;
+            render();
+        });
+        industryFilterEl.addEventListener('change', function(){
+            currentPage = 1;
+            render();
+        });
+        exhibitionFilterEl.addEventListener('change', function(){
+            currentPage = 1;
+            render();
+        });
+        // 分页切换事件
+        pageFilterEl.addEventListener('change', function(){
+            currentPage = Number(this.value);
+            render();
+        });
 
         document.getElementById('industryListWrap').addEventListener('click', function(e) {
             const delBtn = e.target.closest('.manage-del-btn');
@@ -1458,7 +1515,7 @@ window.addEventListener('load',()=>{
     });
 </script>
 
-<!-- 登录逻辑完整JS（修复DOM匹配，适配新版三套面板ID，无冲突不卡死） -->
+<!-- 登录逻辑完整JS -->
 <script>
 // 绑定全部DOM元素
 const loginMask = document.getElementById('loginMask');
