@@ -9,8 +9,12 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="ACRM">
     <meta name="theme-color" content="#f6f9fc">
-    <!--PWA ServiceWorker-->
-    <script>
+    <!--图标、PWA配置资源-->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='50' fill='%232563eb'/%3E%3Ctext x='50' y='55' font-size='50' text-anchor='middle' fill='white'%3E★%3C/text%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" sizes="180x180" href="./logo.png">
+    <link rel="manifest" href="./manifest.json">
+<!-- ServiceWorker注册脚本 -->
+<script>
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('/service-worker.js', { scope: './' })
@@ -19,7 +23,7 @@ if ('serviceWorker' in navigator) {
 }
 </script>
   
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -40,13 +44,12 @@ body::before {
         body.modal-open { overflow: hidden; }
         body.lock-scroll { overflow:hidden !important; }
         body.lock-scroll::before { display:none !important; }
-        .app-container { max-width:1600px; width:100%; }
-        .header { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; margin-bottom:32px; gap:16px; position:relative; }
+        .app-container { max-width:1280px; width:100%; }
+        .header { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; margin-bottom:32px; gap:16px; }
         .logo-area { display:flex; align-items:center; gap:12px; }
-        .logo-area svg { background:#dbeafe; border-radius:14px; padding:10px; }
+        .logo-area i { font-size:28px; color:#2563eb; background:#dbeafe; padding:10px; border-radius:14px; }
         .logo-area h1 { font-size:24px; font-weight:700; letter-spacing:-0.5px; }
         .logo-area span { color:#64748b; font-weight:400; }
-        .header-stats { display:flex; gap:12px; flex-wrap: nowrap; align-items: center; align-self: center; flex: 1; justify-content: flex-end; margin: 0 20px; }
         .header-actions { display:flex; gap:10px; flex-wrap:wrap; }
         .btn { display:inline-flex; align-items:center; gap:8px; padding:8px 18px; border-radius:40px; border:none; font-weight:600; font-size:14px; cursor:pointer; transition:all .2s ease; background:#fff; color:#1e293b; box-shadow:0 1px 3px rgba(0,0,0,0.04); border:1px solid #e2e8f0; }
         .btn-primary { background:#2563eb; color:#fff; border-color:#2563eb; }
@@ -70,9 +73,9 @@ body::before {
         .stat-item { background:#fff; padding:8px 24px 8px 20px; border-radius:40px; border:1px solid #eef2f6; display:flex; align-items:center; gap:10px; font-size:14px; font-weight:500; }
         .stat-item i { color:#2563eb; font-size:16px; }
         .stat-item strong { font-size:18px; margin-left:4px; }
-        .grid { display:flex; flex-direction:column; gap:30px; padding-bottom:100px; }
+        .grid { display:flex; flex-direction:column; gap:30px; }
         .group-title { font-size:16px; font-weight:600; color:#334155; padding-bottom:10px; border-bottom:1px solid #e2e8f0; margin-bottom:15px; }
-        .group-card-wrap { display:grid; grid-template-columns:repeat(5, minmax(300px, 1fr)); gap:20px; }
+        .group-card-wrap { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:20px; }
         .contact-card { background:#fff; border-radius:20px; padding:20px 22px 18px; border:1px solid #eef2f6; transition:all .2s; box-shadow:0 2px 6px rgba(0,0,0,0.02); display:flex; flex-direction:column; }
         .contact-card:hover { border-color:#cbd5e1; box-shadow:0 8px 20px rgba(0,0,0,0.04); transform:translateY(-2px); }
         .card-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; }
@@ -102,8 +105,8 @@ body::before {
         .interaction-item .badge.qq { background:#fef3c7; color:#b45309; }
         .interaction-item .badge.meeting { background:#e0e7ff; color:#4338ca; }
         .interaction-item .badge.email { background:#fce7f3; color:#be185d; }
-        .del-inter { color:#ef4444; cursor:pointer; padding:0 4px; transition:0.2s; }
-        .del-inter:hover { color:#dc2626; transform:scale(1.1); }
+        .interaction-item .del-inter { color:#ef4444; cursor:pointer; padding:0 4px; transition:0.2s; }
+        .interaction-item .del-inter:hover { color:#dc2626; transform:scale(1.1); }
         .empty-state { grid-column:1/-1; text-align:center; padding:60px 20px; color:#94a3b8; }
         .empty-state i { font-size:48px; margin-bottom:16px; opacity:0.5; }
         .empty-state h3 { color:#475569; margin-bottom:4px; }
@@ -210,119 +213,48 @@ body::before {
         }
 
         .copyright-text { line-height:1.8; text-align:center; color:#475569; }
-
-/* 方案一 移动端专属样式 */
-.mobile-stat-row {
-    display: none;
-    gap:10px;
-    margin-bottom:16px;
-}
-.mobile-menu-trigger {
-    display: none;
-}
-.mobile-float-menu {
-    position: static;
-    opacity: 1;
-    visibility: visible;
-    pointer-events: all;
-}
-.select-group {
-    display: contents;
-}
-
     @media (max-width:640px) {
     body { padding:12px; }
-    /* Header超窄紧凑布局 */
     .header {
         flex-direction: row;
-        flex-wrap: nowrap;
+        flex-wrap: wrap;
         align-items: center;
-        justify-content: space-between;
         gap: 10px;
-        margin: 0 -12px 12px -12px;
-        padding: 0 12px;
+        padding: 0;
+        margin: 0 -12px 20px -12px;
     }
     .logo-area {
         flex-shrink: 0;
-        min-width: 110px;
-        padding-left: 0;
+        min-width: 130px;
+        padding-left: 12px;
     }
-    .logo-area h1 {
-        font-size: 20px;
-    }
-    .logo-area svg {
-        width: 36px;
-        height: 36px;
-        padding:6px;
-    }
-    /* PC端顶部统计行手机隐藏 */
     .header-stats {
-        display: none !important;
+        flex: 1;
+        min-width: 0;
+        margin: 0 6px 0 0;
+        gap: 4px;
+        justify-content: flex-end;
     }
-    /* 显示汉堡菜单按钮 */
-    .mobile-menu-trigger {
-        display: inline-flex;
-        flex-shrink:0;
+    .header-stats .stat-item {
+        flex-shrink: 1;
+        white-space: nowrap;
+        padding: 2px 6px 2px 4px;
+        font-size: 9px;
+        gap: 2px;
     }
-    /* 下拉悬浮菜单 */
-    .mobile-float-menu {
-        position: absolute;
-        top: calc(100% + 8px);
-        right: 12px;
-        width: calc(100% - 24px);
-        background:#fff;
-        box-shadow:0 6px 20px rgba(0,0,0,0.12);
-        border-radius:16px;
-        padding:14px;
-        flex-wrap: wrap;
-        gap:8px;
-        z-index:99;
-        opacity:0;
-        visibility:hidden;
-        pointer-events:none;
-        transition:0.2s ease all;
+    .header-stats .stat-item strong {
+        font-size: 12px;
     }
-    .mobile-float-menu.active {
-        opacity:1;
-        visibility:visible;
-        pointer-events:all;
-    }
-    /* 手机专属统计胶囊栏显示 */
-    .mobile-stat-row {
-        display: flex;
-    }
-
-    .toolbar { 
-        flex-direction:column; 
-        align-items:stretch;
-        gap:14px;
-        padding:16px;
-    }
-    .search-wrapper input {
-        padding:12px 18px 12px 44px;
-        font-size:15px;
-    }
-    .select-group {
-        display: flex;
-        gap:10px;
+    .header-actions {
+        justify-content: center;
         width: 100%;
-    }
-    .select-group .select-wrapper {
-        flex:1;
-        min-width:0;
-    }
-    /* 添加客户按钮底部悬浮固定 */
-    #addBtn {
-        padding:14px 0;
-        font-size:16px;
-        position:fixed;
-        bottom:16px;
-        left:12px;
-        width: calc(100% - 24px);
-        z-index:98;
-        box-shadow:0 4px 16px rgba(37,99,235,0.25);
+        margin-top:6px;
+        gap: 14px;
+        row-gap: 8px; 
+        padding: 0 12px;
     }
 
+    .toolbar { flex-direction:column; align-items:stretch; }
     .stats { gap:10px; }
     .stat-item { padding:6px 16px; }
     .group-card-wrap { grid-template-columns:1fr; }
@@ -353,7 +285,27 @@ body::before {
     #copyrightModal .copyright-text {
         text-align: center !important;
     }
+
+/* ==========下面这段复制粘贴到这个大括号内部========== */
+    /* 手机端筛选分页三控件同行均分自适应缩放 */
+    .toolbar .search-wrapper {
+        width: 100%;
+    }
+    .toolbar .select-group {
+        display: flex;
+        gap: 10px;
+        width: 100%;
+    }
+    .toolbar .select-group .select-wrapper {
+        flex: 1;
+        min-width: 0;
+    }
+    .toolbar #addBtn {
+        width: 100%;
+    }
+    /* ===================================================== */
 }
+
 .header-stats {
     display: flex;
     gap: 12px;
@@ -377,10 +329,12 @@ body::before {
         padding-bottom: env(safe-area-inset-bottom) !important;
     }
     #loginBox {
-        padding-top: max(32px, env(safe-area-inset-top));
+        padding-top: max(30px, env(safe-area-inset-top) + 16px) !important;
     }
     #initPwdBox {
-        padding-top: max(32px, env(safe-area-inset-top));
+        width: 100%;
+        max-width: unset;
+        margin: 20px 12px;
     }
 }
 
@@ -436,36 +390,42 @@ input[type="password"]::-ms-reveal { display:none; }
 html, body {
   overflow-x: hidden !important;
 }
-body {
-  min-height: 120vh;
-  overflow-y: scroll !important;
-  padding: 24px;
-}
 
-/* 主容器最大宽度固定1600px，大屏一行5张卡片 */
+/* 主容器最大宽度固定1800px */
 .app-container {
-  max-width: 1600px;
-  width: min(100%, 1600px);
+  max-width: 1800px;
+  width: min(100%, 1800px);
   margin: 0 auto;
 }
 
-/* 网格布局5列固定 */
+/* 基础网格：窗口窄于5列总宽度时，卡片最小300px，自动换行 */
 .group-card-wrap {
   display: grid;
-  grid-template-columns: repeat(5, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 20px;
   width: 100%;
   overflow-x: hidden;
-  justify-items: start;
+  justify-items: center;
 }
 
-/* 单卡片兜底宽度 */
-.group-card-wrap:has(.contact-card:only-child) .contact-card {
-  width: 300px;
-  max-width: 300px;
+/* 宽度足够放下5张卡片时，锁定5列，卡片自适应均分展开 */
+@media (min-width: calc(300px * 5 + 20px * 4)) {
+  .group-card-wrap {
+    /* 5等分，卡片自由拉伸铺满整行 */
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    /* 5张卡片整体铺满容器，居中不留白扩散 */
+    justify-items: stretch;
+  }
+  /* 宽屏模式下取消卡片最大宽度限制，允许自适应拉伸 */
+  .group-card-wrap .contact-card {
+    max-width: unset;
+    width: 100%;
+  }
 }
 
-/* 自动换行超长文本 */
+
+
+/* 超长备注、网址自动换行，杜绝卡片横向溢出 */
 .contact-card {
   overflow-x: hidden !important;
   width: 100%;
@@ -479,18 +439,23 @@ body {
   overflow-wrap: anywhere !important;
 }
 
-/* 手机单列卡片 */
+/* 移动端适配，手机端自动单列铺满屏幕 */
 @media (max-width:640px) {
   body {
     padding: 12px;
   }
   .group-card-wrap {
-    grid-template-columns:1fr;
+    grid-template-columns: 1fr;
   }
   .group-card-wrap:has(.contact-card:only-child) .contact-card {
     width: 100%;
     max-width: 100%;
   }
+}
+
+/* PC端保持原有横向布局，不产生任何变化 */
+.select-group {
+    display: contents;
 }
     </style>
 </head>
@@ -506,7 +471,7 @@ body {
     </span>
 </div>
 
-<!-- 登录弹窗遮罩 -->
+<!-- 1、登录弹窗遮罩 -->
 <div id="loginMask">
 <div id="loginBox" style="padding:32px 24px 34px 24px;">
     <div style="text-align:center;margin-bottom:20px;">
@@ -548,7 +513,7 @@ body {
     </div>
 </div>
 
-<!-- 重置密码弹窗 -->
+<!-- 2、重置密码独立遮罩面板 -->
 <div id="resetMask">
     <div id="resetBox" style="padding:32px 24px 34px 24px;">
         <div style="text-align:center;margin-bottom:20px;">
@@ -581,7 +546,7 @@ body {
     </div>
 </div>
 
-<!-- 初始化密码卡片备用 -->
+<!-- 3、首次设置密码独立卡片 -->
 <div id="initPwdBox">
   <div style="text-align:center;margin-bottom:20px;">
     <svg width="72" height="72" viewBox="0 0 100 100" style="display:inline-block;">
@@ -605,7 +570,6 @@ body {
 <!-- 主页面容器 -->
 <div id="mainPage" style="display:none;">
 <div class="app-container">
-    <!-- 方案一 Header 代码 -->
     <header class="header">
         <div class="logo-area">
   <svg width="48" height="48" viewBox="0 0 100 100" style="background:#dbeafe; border-radius:14px; padding:10px;">
@@ -614,12 +578,11 @@ body {
   </svg>
   <h1>Anson <span>CRM</span></h1>
 </div>
-    <!-- 移动端汉堡按钮 -->
-    <button class="btn btn-outline btn-sm mobile-menu-trigger" id="mobileMenuTrigger">
-        <i class="fas fa-bars"></i>
-    </button>
-    <!-- 折叠菜单面板 -->
-    <div class="header-actions mobile-float-menu" id="mobileFloatMenu">
+        <div class="stats header-stats">
+        <div class="stat-item"><i class="fas fa-users"></i> 客户 <strong id="totalCount">0</strong></div>
+        <div class="stat-item"><i class="fas fa-phone"></i> 记录 <strong id="interactionCount">0</strong></div>
+    </div>
+        <div class="header-actions">
             <button class="btn btn-outline btn-sm" id="manageIndustryBtn"><i class="fas fa-tags"></i> 行业分类管理</button>
             <button class="btn btn-outline btn-sm" id="manageExhibitionBtn"><i class="fas fa-building"></i> 展会分类管理</button>
             <button class="btn btn-danger btn-sm" id="resetAllDataBtn"><i class="fas fa-trash-alt"></i> 清空数据</button>
@@ -627,35 +590,33 @@ body {
             <button class="btn btn-outline btn-sm" id="importBtn"><i class="fas fa-upload"></i> 导入备份</button>
             <button class="btn btn-outline btn-sm" id="copyrightBtn"><i class="fas fa-info-circle"></i> 版权信息</button>
             <input type="file" id="importInput" accept=".json" style="display:none">
-    </div>
-</header>
-<!-- 手机端统计胶囊栏，PC隐藏 -->
-<div class="mobile-stat-row">
-    <div class="stat-item"><i class="fas fa-users"></i> 客户 <strong id="totalCount">0</strong></div>
-    <div class="stat-item"><i class="fas fa-phone"></i> 记录 <strong id="interactionCount">0</strong></div>
-</div>
-   
-    <div class="toolbar">
-        <div class="search-wrapper"><i class="fas fa-search"></i><input type="text" id="searchInput" placeholder="搜索客户、公司、电话、行业、展会..."></div>
-        <div class="select-group">
-            <div class="select-wrapper">
-                <select id="industryFilter">
-                    <option value="">全部行业</option>
-                </select>
-            </div>
-            <div class="select-wrapper">
-                <select id="exhibitionFilter">
-                    <option value="">全部展会</option>
-                </select>
-            </div>
-            <div class="select-wrapper">
-                <select id="pageFilter">
-                    <option value="1">    第 1 页</option>
-                </select>
-            </div>
         </div>
-        <button class="btn btn-primary" id="addBtn"><i class="fas fa-plus"></i> 添加客户</button>
+    </header>
+   
+<div class="toolbar">
+    <div class="search-wrapper"><i class="fas fa-search"></i><input type="text" id="searchInput" placeholder="搜索客户、公司、电话、行业、展会..."></div>
+
+    <!-- 新增包裹容器，仅包裹三个select-wrapper -->
+    <div class="select-group">
+        <div class="select-wrapper">
+            <select id="industryFilter">
+                <option value="">全部行业</option>
+            </select>
+        </div>
+        <div class="select-wrapper">
+            <select id="exhibitionFilter">
+                <option value="">全部展会</option>
+            </select>
+        </div>
+        <div class="select-wrapper">
+            <select id="pageFilter">
+                <option value="1">    第 1 页</option>
+            </select>
+        </div>
     </div>
+
+    <button class="btn btn-primary" id="addBtn"><i class="fas fa-plus"></i> 添加客户</button>
+</div>
     <div class="grid" id="contactGrid"></div>
 </div>
 </div>
@@ -675,8 +636,8 @@ body {
                 <div class="form-group"><label>邮箱</label><input type="email" id="email"></div>
             </div>
             <div class="form-row">
-                <div class="form-group"><label>网址</label><input type="text" id="website" placeholder="https://xxx.com"></div>
-                <div class="form-group"><label>主营产品</label><input type="text" id="product"></div>
+                <div class="form-group"><label>网址</label><input type="text" id="website" placeholder="https://example.com/"></div>
+                <div class="form-group"><label>产品</label><input type="text" id="product" placeholder="主要产品/服务"></div>
             </div>
             <div class="form-row">
                 <div class="form-group">
@@ -702,27 +663,27 @@ body {
 <!-- 新增互动弹窗 -->
 <div class="modal-overlay" id="interactionModal">
     <div class="modal">
-        <h2><i class="fas fa-comment-dots"></i> 添加互动记录</h2>
+        <h2><i class="fas fa-comment-dots"></i> 添加互动</h2>
         <form id="interactionForm">
             <input type="hidden" id="interactionContactId" value="">
             <div class="form-group">
-                <label>沟通类型</label>
+                <label>类型</label>
             <select id="interactionType">
                 <option value="电话">📞 电话</option>
                 <option value="微信">💬 微信</option>
                 <option value="QQ">🐧 QQ</option>
-                <option value="会面">🤝 线下会面</option>
-                <option value="邮件">📧 邮件</option>
+                <option value="会面">🤝 会面</option>
+                <option value="邮件">✉️ 邮件</option>
                 <option value="其他">📝 其他</option>
             </select>
             </div>
             <div class="form-group">
-                <label>沟通内容</label>
+                <label>内容</label>
                 <textarea id="interactionContent" required></textarea>
             </div>
             <div class="modal-actions">
                 <button type="button" class="btn btn-outline" id="closeInteractionBtn">取消</button>
-                <button type="submit" class="btn btn-success"><i class="fas fa-plus-circle"></i> 保存记录</button>
+                <button type="submit" class="btn btn-success"><i class="fas fa-plus-circle"></i> 添加</button>
             </div>
         </form>
     </div>
@@ -732,12 +693,12 @@ body {
 <div class="modal-overlay" id="industryManageModal">
     <div class="modal">
         <h2><i class="fas fa-tags"></i> 行业分类管理</h2>
+        <div id="industryListWrap"></div>
         <div class="add-tag-row">
             <input type="text" id="newIndustryInput" placeholder="输入新行业名称">
             <button type="button" class="btn btn-primary" id="addNewIndustryBtn"><i class="fas fa-plus"></i> 新增</button>
         </div>
-        <div id="industryListWrap" style="margin-top:16px;"></div>
-        <div class="modal-actions" style="margin-top:24px;">
+        <div class="modal-actions" style="margin-top:14px;">
             <button type="button" class="btn btn-outline" id="closeIndustryManageBtn">关闭</button>
         </div>
     </div>
@@ -747,12 +708,12 @@ body {
 <div class="modal-overlay" id="exhibitionManageModal">
     <div class="modal">
         <h2><i class="fas fa-building"></i> 展会分类管理</h2>
+        <div id="exhibitionListWrap"></div>
         <div class="add-tag-row">
             <input type="text" id="newExhibitionInput" placeholder="输入新展会名称">
             <button type="button" class="btn btn-primary" id="addNewExhibitionBtn"><i class="fas fa-plus"></i> 新增</button>
         </div>
-        <div id="exhibitionListWrap" style="margin-top:16px;"></div>
-        <div class="modal-actions" style="margin-top:24px;">
+        <div class="modal-actions" style="margin-top:14px;">
             <button type="button" class="btn btn-outline" id="closeExhibitionManageBtn">关闭</button>
         </div>
     </div>
@@ -796,8 +757,22 @@ window.addEventListener('load',()=>{
 
     function openExternalUrl(url) {
         try {
-            if (!url) return;
-            window.open(url, '_blank');
+            if (!url || url.trim() === '') return;
+            const targetUrl = url.trim();
+            if (window.cordova && cordova.InAppBrowser) {
+                cordova.InAppBrowser.open(targetUrl, '_system');
+                return;
+            }
+            if (typeof require !== 'undefined') {
+                try {
+                    const { shell } = require('electron');
+                    shell.openExternal(targetUrl);
+                } catch (err) {
+                    window.open(targetUrl, '_blank');
+                }
+                return;
+            }
+            window.open(targetUrl, '_blank');
         } catch (e) {
             console.error('打开链接失败', e);
         }
@@ -809,7 +784,7 @@ window.addEventListener('load',()=>{
     const exhibitionSelectEl = document.getElementById('exhibition');
     const pageFilterEl = document.getElementById('pageFilter');
 
-    // 刷新分页下拉
+    // 刷新分页下拉页码列表
     function refreshPageOptions(totalFilterCount) {
     const totalPage = Math.ceil(totalFilterCount / PAGE_SIZE);
     pageFilterEl.innerHTML = '';
@@ -821,17 +796,18 @@ window.addEventListener('load',()=>{
     for(let i = 1; i <= totalPage; i++) {
         const opt = document.createElement('option');
         opt.value = i;
-        opt.innerText = `第 ${i} 页 ｜ 共 ${totalPage} 页`;
+        opt.innerText = `第 ${i} 页｜共 ${totalPage} 页`;
         if(Number(opt.value) === currentPage) opt.selected = true;
         pageFilterEl.appendChild(opt);
     }
+    // 当前页超过总页数自动切回第一页
     if(currentPage > totalPage) {
-        currentPage = totalPage;
-        pageFilterEl.value = currentPage;
+        currentPage = 1;
+        pageFilterEl.value = 1;
     }
 }
 
-    // 截取当前页数据
+    // 截取当前分页数据
     function getPageData(filteredList) {
         const startIdx = (currentPage - 1) * PAGE_SIZE;
         const endIdx = startIdx + PAGE_SIZE;
@@ -880,6 +856,7 @@ window.addEventListener('load',()=>{
         } catch (e) {
             console.error('加载行业数据失败', e);
             industryList = [DEFAULT_INDUSTRY];
+
             saveIndustryStorage();
         }
 
@@ -1125,7 +1102,9 @@ window.addEventListener('load',()=>{
                 return matchSearch && matchIndustry && matchExhibition;
             });
 
+            // 刷新分页下拉
             refreshPageOptions(filtered.length);
+            // 获取当前页数据
             const pageData = getPageData(filtered);
 
             const grid = document.getElementById('contactGrid');
@@ -1566,23 +1545,6 @@ window.addEventListener('load',()=>{
             }
         });
     });
-
-    // ========== 移动端折叠菜单JS ==========
-    const triggerBtn = document.getElementById('mobileMenuTrigger');
-    const floatMenu = document.getElementById('mobileFloatMenu');
-    triggerBtn.addEventListener('click', ()=>{
-        floatMenu.classList.toggle('active');
-    });
-    // 点击空白关闭菜单
-    document.addEventListener('click', (e)=>{
-        if(!triggerBtn.contains(e.target) && !floatMenu.contains(e.target)){
-            floatMenu.classList.remove('active');
-        }
-    })
-    // 点击菜单内按钮自动收起
-    floatMenu.querySelectorAll('.btn').forEach(btn=>{
-        btn.addEventListener('click', ()=>floatMenu.classList.remove('active'));
-    })
 </script>
 
 <!-- 登录逻辑完整JS -->
