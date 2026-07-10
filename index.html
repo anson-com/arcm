@@ -2,9 +2,8 @@
 <html lang="zh-CN">
 <head> 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AnsonCRM</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=3.0, user-scalable=yes, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="ACRM">
@@ -505,6 +504,34 @@ html {
 #mainPage {
   width: 100%;
   min-width: 100%;
+}
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: env(safe-area-inset-top);
+    background: #f6f9fc;
+    z-index: 998;
+    pointer-events: none;
+}
+/* 仅横屏生效，竖屏维持原有padding边距不变 */
+@media screen and (orientation: landscape) {
+    html, body {
+        overflow-x: hidden;
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+    .app-container {
+        width: 100%;
+        max-width: unset;
+    }
+    .toolbar, .header {
+        width: 100%;
+    }
 }
     </style>
 </head>
