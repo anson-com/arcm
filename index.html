@@ -389,7 +389,7 @@ body {
 /* 网格布局保持原生300px卡片尺寸，大屏一行5张，所有卡片靠左排列 */
 .group-card-wrap {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(5, minmax(300px, 1fr)); /* 强制固定5列，不自动自适应 */
   gap: 20px;
   width: 100%;
   overflow-x: hidden;
@@ -570,7 +570,7 @@ body {
         <!-- 新增分页下拉，样式与原有筛选下拉完全统一 -->
         <div class="select-wrapper">
             <select id="pageFilter">
-                <option value="1">第 1 页</option>
+                <option value="1">    第 1 页</option>
             </select>
         </div>
         <div class="select-wrapper">
@@ -754,26 +754,26 @@ window.addEventListener('load',()=>{
 
     // 刷新分页下拉页码列表
     function refreshPageOptions(totalFilterCount) {
-        const totalPage = Math.ceil(totalFilterCount / PAGE_SIZE);
-        pageFilterEl.innerHTML = '';
-        if(totalPage <= 0) {
-            pageFilterEl.innerHTML = `<option value="1">第 1 页</option>`;
-            currentPage = 1;
-            return;
-        }
-        for(let i = 1; i <= totalPage; i++) {
-            const opt = document.createElement('option');
-            opt.value = i;
-            opt.innerText = `第 ${i} 页`;
-            if(Number(opt.value) === currentPage) opt.selected = true;
-            pageFilterEl.appendChild(opt);
-        }
-        // 当前页超过总页数自动切回第一页
-        if(currentPage > totalPage) {
-            currentPage = 1;
-            pageFilterEl.value = 1;
-        }
+    const totalPage = Math.ceil(totalFilterCount / PAGE_SIZE);
+    pageFilterEl.innerHTML = '';
+    if(totalPage <= 0) {
+        pageFilterEl.innerHTML = `<option value="1">第 1 页 | 共 0 页</option>`;
+        currentPage = 1;
+        return;
     }
+    for(let i = 1; i <= totalPage; i++) {
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.innerText = `第 ${i} 页 | 共 ${totalPage} 页`;
+        if(Number(opt.value) === currentPage) opt.selected = true;
+        pageFilterEl.appendChild(opt);
+    }
+    // 当前页超过总页数自动切回第一页
+    if(currentPage > totalPage) {
+        currentPage = 1;
+        pageFilterEl.value = 1;
+    }
+}
 
     // 截取当前分页数据
     function getPageData(filteredList) {
