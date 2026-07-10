@@ -394,7 +394,8 @@ html, body {
 /* 主容器最大宽度固定1800px */
 .app-container {
   max-width: 1800px;
-  width: min(100%, 1800px);
+  width: 100%;
+  flex: 1 1 0;
   margin: 0 auto;
 }
 
@@ -495,6 +496,15 @@ html, body {
         min-width: 120px;
         justify-content: center;
     }
+}
+
+html {
+  width: 100vw;
+  min-width: 100vw;
+}
+#mainPage {
+  width: 100%;
+  min-width: 100%;
 }
     </style>
 </head>
