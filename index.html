@@ -213,7 +213,7 @@ body::before {
         }
 
         .copyright-text { line-height:1.8; text-align:center; color:#475569; }
-    @media (max-width:640px) {
+ @media (max-width:640px) {
     body { padding:12px; }
     .header {
         flex-direction: row;
@@ -461,14 +461,15 @@ html, body {
 /* ===================== 仅新增汉堡菜单样式，无任何原有样式修改 ===================== */
 .mobile-menu-trigger {
     display: none;
+    margin-right: 12px;
 }
+
 .mobile-dropdown-menu {
     display: none;
     position: absolute;
     top: 100%;
-left: 50%;
-transform: translateX(-50%);
-    width: calc(100% - 24px);
+    left: 12px;
+    right: 12px;
     margin-top: 8px;
     background: #fff;
     border-radius: 16px;
@@ -1528,6 +1529,11 @@ function initMobileMenu() {
     const mImport = document.getElementById('importBtnMobile');
     const mCopyright = document.getElementById('copyrightBtnMobile');
     const mImportFile = document.getElementById('importInputMobile');
+
+    // 窗口尺寸变化时强制关闭下拉菜单
+    window.addEventListener('resize', () => {
+        menu.classList.remove('active');
+    });
 
     trigger.addEventListener('click', () => {
         menu.classList.toggle('active');
