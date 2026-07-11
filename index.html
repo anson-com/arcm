@@ -3,7 +3,7 @@
 <head> 
     <meta charset="UTF-8">
     <title>AnsonCRM</title>
-   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=3.0, user-scalable=yes, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=3.0, user-scalable=yes, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="ACRM">
@@ -500,6 +500,7 @@ html, body {
 html {
   width: 100vw;
   min-width: 100vw;
+  -webkit-text-size-adjust: 100%;
 }
 #mainPage {
   width: 100%;
@@ -516,7 +517,26 @@ body::before {
     z-index: 998;
     pointer-events: none;
 }
-/* 仅横屏生效，竖屏维持原有padding边距不变 */
+/* 输入框禁止点击自动放大 */
+input, textarea, select {
+  font-size: 16px;
+}
+
+/* 竖屏：固定24px左右边距、居中、禁止横向溢出 */
+@media screen and (orientation: portrait) {
+  body {
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+    overflow-x: hidden !important;
+    display: flex !important;
+    justify-content: center !important;
+  }
+  .app-container {
+    width: 100%;
+  }
+}
+
+/* 横屏：安全区填充、铺满屏幕、消除黑边 */
 @media screen and (orientation: landscape) {
     html, body {
         overflow-x: hidden;
@@ -524,6 +544,7 @@ body::before {
         padding-right: env(safe-area-inset-right);
         padding-top: env(safe-area-inset-top);
         padding-bottom: env(safe-area-inset-bottom);
+        background: #f6f9fc;
     }
     .app-container {
         width: 100%;
@@ -533,6 +554,7 @@ body::before {
         width: 100%;
     }
 }
+</script>
     </style>
 </head>
 <body>
