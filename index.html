@@ -268,8 +268,14 @@ body::before {
         margin-bottom: 0;
     }
     .toolbar .search-wrapper {
-        width: 100%;
-    }
+    width: 100%;
+    position: sticky;          /* 粘性定位，滚动到顶部时固定 */
+    top: 0;                    /* 贴住视口顶部 */
+    z-index: 100;              /* 高于页面其他内容（底部菜单也低于它） */
+    background: #ffffff;       /* 白色背景，避免文字重叠透出 */
+    border-radius: 40px;       /* 保持与PC一致的圆角 */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); /* 轻微阴影，增强层次感 */
+}
     .toolbar #addBtn {
         width: 100%;
     }
