@@ -214,12 +214,12 @@ body::before {
 
         .copyright-text { line-height:1.8; text-align:center; color:#475569; }
 @media (max-width:640px) {
-    /* ===== 页面整体底部留空 ===== */
+    /* ===== 1. 页面整体底部留空 ===== */
     body {
         padding: 12px 12px 85px 12px;
     }
 
-    /* ===== 头部区域 ===== */
+    /* ===== 2. 头部区域 ===== */
     .header {
         flex-direction: row;
         flex-wrap: wrap;
@@ -259,38 +259,32 @@ body::before {
         padding: 0 12px;
     }
 
-    /* ===== 工具栏：纵向排列 ===== */
+    /* ===== 3. 工具栏：纵向排列（搜索框 + 添加按钮） ===== */
     .toolbar {
         flex-direction: column;
         align-items: stretch;
         gap: 10px;
         padding: 12px 16px 16px 16px;
-        margin-bottom: 1;/* 工具栏和底部间距 */
+        margin-bottom: 0;
     }
     .toolbar .search-wrapper {
-    width: 100%;
-    position: sticky;          /* 粘性定位，滚动到顶部时固定 */
-    top: 0;                    /* 贴住视口顶部 */
-    z-index: 100;              /* 高于页面其他内容（底部菜单也低于它） */
-    background: #ffffff;       /* 白色背景，避免文字重叠透出 */
-    border-radius: 40px;       /* 保持与PC一致的圆角 */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); /* 轻微阴影，增强层次感 */
-}
+        width: 100%;
+    }
     .toolbar #addBtn {
         width: 100%;
     }
 
-    /* ===== ⭐ 下拉菜单固定底部 ===== */
+    /* ===== 4. ⭐ 三个下拉菜单固定悬浮在屏幕底部 ===== */
     .toolbar .select-group {
         position: fixed !important;
-        left: 0px; /* 左右边距 */
-        right: 0px;
-        bottom: 0px;/* 距离页面底部距离 */
+        left: 10px;          /* 【可调】容器左右边距 */
+        right: 10px;
+        bottom: 12px;        /* 【可调】距离屏幕底部距离 */
         display: flex !important;
-        gap: 14px; /* 三个下拉之间的横向间距 */
-        padding: 20px 12px; /* 控制整体高度 → 容器内上下、左右内边距  */
+        gap: 8px;            /* 【可调】三个下拉框之间的横向间距 */
+        padding: 12px 14px;  /* 【可调】容器内边距（上下 左右）→ 控制整体高度 */
         background: #ffffff;
-        border-radius: 0px; /* 圆角大小 */
+        border-radius: 50px; /* 【可调】容器外圆角 */
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
         z-index: 999;
         box-sizing: border-box;
@@ -304,33 +298,31 @@ body::before {
         max-width: 100%;
         box-sizing: border-box;
     }
-    /* ===== ⭐ 所有行业所有展会下拉菜单 分页下拉菜单 ========== */
     .toolbar .select-group .select-wrapper select {
         width: 100%;
         max-width: 100%;
         box-sizing: border-box;
-        padding: 2px 2px; /* 下拉内部上下填充 → 控制单个下拉高度 */
-        font-size: 14px;  /* 下拉文字大小 */
-        border-radius: 39px;/* 圆角大小 *//* 圆角大小 */
+        height: 38px;            /* 【可调】下拉框高度 */
+        line-height: 38px;       /* 与 height 一致，垂直居中 */
+        padding: 0 10px;         /* 【可调】左右内边距 */
+        font-size: 13px;         /* 【可调】文字大小 */
+        border-radius: 20px;     /* 【可调】下拉框自身圆角 */
         border: 1px solid #e2e8f0;
         background: #f1f5f9;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        -webkit-appearance: one;
-        appearance: auto;
+        -webkit-appearance: none;
+        appearance: none;
         min-width: 0;
     }
-
-    }
-    /* ===== ⭐ 分页下拉菜单 ===== */
+    /* 分页下拉单独微调（可选） */
     .toolbar .select-group .select-wrapper:nth-child(3) select {
-     border-radius: 39px;/* 圆角大小 *//* 圆角大小 */
-        background:#f1f5f9;
-        font-size: 14px; /* 分页下拉单独字号 */
+        font-size: 12px;
+        padding: 0 6px;
     }
 
-    /* ===== 卡片单列 ===== */
+    /* ===== 5. 客户卡片单列 ===== */
     .group-card-wrap {
         grid-template-columns: 1fr;
     }
@@ -339,7 +331,7 @@ body::before {
         max-width: 100%;
     }
 
-    /* ===== 其他原有样式（合并） ===== */
+    /* ===== 6. 其他原有手机端样式 ===== */
     .stats {
         gap: 10px;
     }
@@ -372,22 +364,7 @@ body::before {
     #copyrightModal .copyright-text {
         text-align: center !important;
     }
-
-    /* ===== 登录相关 ===== */
-    #loginMask {
-        padding-top: env(safe-area-inset-top) !important;
-        padding-bottom: env(safe-area-inset-bottom) !important;
-    }
-    #loginBox {
-        padding-top: max(30px, env(safe-area-inset-top) + 16px) !important;
-    }
-    #initPwdBox {
-        width: 100%;
-        max-width: unset;
-        margin: 20px 12px;
-    }
 }
-
 
 .header-stats {
     display: flex;
@@ -520,6 +497,20 @@ html, body {
 .card-name {
   word-break: break-all !important;
   overflow-wrap: anywhere !important;
+}
+
+/* 移动端适配，手机端自动单列铺满屏幕 */
+@media (max-width:640px) {
+  body {
+    padding: 12px;
+  }
+  .group-card-wrap {
+    grid-template-columns: 1fr;
+  }
+  .group-card-wrap:has(.contact-card:only-child) .contact-card {
+    width: 100%;
+    max-width: 100%;
+  }
 }
 
 /* PC端保持原有横向布局，不产生任何变化 */
@@ -657,8 +648,8 @@ html {
   <h1>Anson <span>CRM</span></h1>
 </div>
         <div class="stats header-stats">
-        <div class="stat-item"><i class="fas fa-users"></i><strong id="totalCount">0</strong></div>
-        <div class="stat-item"><i class="fas fa-phone"></i><strong id="interactionCount">0</strong></div>
+        <div class="stat-item"><i class="fas fa-users"></i> 客户 <strong id="totalCount">0</strong></div>
+        <div class="stat-item"><i class="fas fa-phone"></i> 记录 <strong id="interactionCount">0</strong></div>
     </div>
         <div class="header-actions">
             <button class="btn btn-outline btn-sm" id="manageIndustryBtn"><i class="fas fa-tags"></i> 行业分类管理</button>
