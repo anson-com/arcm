@@ -466,6 +466,24 @@ html {
   width: 100%;
   min-width: 100%;
 }
+/* 搜索框悬浮 */
+@media (max-width: 768px) {
+  .search-wrapper {
+    position: sticky !important;
+    top: env(safe-area-inset-top);
+    z-index: 99;
+    background: #ffffff;
+    padding: 12px 0; /* 左右内边距交给父容器toolbar控制，自身只留上下 */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    box-sizing: border-box;
+  }
+  /* 刘海屏顶部安全距离补偿 */
+  @supports (top: env(safe-area-inset-top)) {
+    .search-wrapper {
+      padding-top: calc(12px + env(safe-area-inset-top));
+    }
+  }
+}
     </style>
 </head>
 <body>
