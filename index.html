@@ -466,24 +466,6 @@ html {
   width: 100%;
   min-width: 100%;
 }
-/* 搜索框悬浮 */
-@media (max-width: 768px) {
-  .search-wrapper {
-    position: sticky !important;
-    top: env(safe-area-inset-top);
-    z-index: 99;
-    background: #ffffff;
-    padding: 12px 0; /* 左右内边距交给父容器toolbar控制，自身只留上下 */
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    box-sizing: border-box;
-  }
-  /* 刘海屏顶部安全距离补偿 */
-  @supports (top: env(safe-area-inset-top)) {
-    .search-wrapper {
-      padding-top: calc(12px + env(safe-area-inset-top));
-    }
-  }
-}
     </style>
 </head>
 <body>
@@ -816,14 +798,14 @@ window.addEventListener('load',()=>{
     const totalPage = Math.ceil(totalFilterCount / PAGE_SIZE);
     pageFilterEl.innerHTML = '';
     if(totalPage <= 0) {
-        pageFilterEl.innerHTML = `<option value="1">第 1 页 ｜ 共 0 页</option>`;
+        pageFilterEl.innerHTML = `<option value="1">1｜ 共 0 页</option>`;
         currentPage = 1;
         return;
     }
     for(let i = 1; i <= totalPage; i++) {
         const opt = document.createElement('option');
         opt.value = i;
-        opt.innerText = `第 ${i} 页｜共 ${totalPage} 页`;
+        opt.innerText = `${i}｜共 ${totalPage} 页`;
         if(Number(opt.value) === currentPage) opt.selected = true;
         pageFilterEl.appendChild(opt);
     }
