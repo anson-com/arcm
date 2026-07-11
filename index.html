@@ -2,8 +2,9 @@
 <html lang="zh-CN">
 <head> 
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AnsonCRM</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=3.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="ACRM">
@@ -44,7 +45,7 @@ body::before {
         body.lock-scroll { overflow:hidden !important; }
         body.lock-scroll::before { display:none !important; }
         .app-container { max-width:1280px; width:100%; }
-        .header { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; margin-bottom:32px; gap:16px; position:relative; }
+        .header { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; margin-bottom:32px; gap:16px; }
         .logo-area { display:flex; align-items:center; gap:12px; }
         .logo-area i { font-size:28px; color:#2563eb; background:#dbeafe; padding:10px; border-radius:14px; }
         .logo-area h1 { font-size:24px; font-weight:700; letter-spacing:-0.5px; }
@@ -212,7 +213,7 @@ body::before {
         }
 
         .copyright-text { line-height:1.8; text-align:center; color:#475569; }
- @media (max-width:640px) {
+    @media (max-width:640px) {
     body { padding:12px; }
     .header {
         flex-direction: row;
@@ -397,7 +398,6 @@ html, body {
   flex: 1 1 0;
   margin: 0 auto;
 }
-
 /* 基础网格：窗口窄于5列总宽度时，卡片最小300px，自动换行 */
 .group-card-wrap {
   display: grid;
@@ -457,158 +457,15 @@ html, body {
 .select-group {
     display: contents;
 }
-
-/* ===================== 仅新增汉堡菜单样式，无任何原有样式修改 ===================== */
-.mobile-menu-trigger {
-    display: none;
-    margin-right: 12px;
-}
-
-.mobile-dropdown-menu {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 12px;
-    right: 12px;
-    margin-top: 8px;
-    background: #fff;
-    border-radius: 16px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
-    padding: 16px;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-    z-index: 99;
-}
-.mobile-dropdown-menu.active {
-    display: flex;
-}
-@media (max-width: 640px) {
-    .header > .header-actions {
-        display: none !important;
-    }
-    .mobile-menu-trigger {
-        display: inline-flex;
-    }
-    .mobile-dropdown-menu .btn {
-        flex: 1 0 42%;
-        min-width: 120px;
-        justify-content: center;
-    }
-}
-
+/* 全局强制满屏兜底 */
 html {
   width: 100vw;
   min-width: 100vw;
-  min-height: 100vh;
-  background: #f6f9fc;
-  -webkit-text-size-adjust: 100%;
-  scrollbar-gutter: stable both-edges;
-}
-body {
-  min-height: 100vh;
 }
 #mainPage {
   width: 100%;
   min-width: 100%;
 }
-body::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: env(safe-area-inset-top);
-    background: #f6f9fc;
-    z-index: 998;
-    pointer-events: none;
-}
-/* 输入框点击不自动放大 */
-input, textarea, select {
-  font-size: 16px;
-}
-
-/* PC宽屏 ≥641px：锁定1800最大宽度、居中，原有逻辑不变 */
-@media screen and (min-width: 641px) {
-  .app-container {
-    max-width: 1800px !important;
-    width: 100%;
-    flex: 1 1 0;
-    margin: 0 auto;
-  }
-}
-
-/* 手机竖屏 ≤640px：固定左右24px、居中、禁止横向溢出 */
-@media screen and (max-width: 640px) and (orientation: portrait) {
-  body {
-    padding-left: 24px !important;
-    padding-right: 24px !important;
-    overflow-x: hidden !important;
-    display: flex !important;
-    justify-content: center !important;
-  }
-  .app-container {
-    width: 100%;
-    max-width: unset;
-  }
-}
-
-/* 手机横屏 ≤640px：html无左右padding，背景铺满屏幕；仅内容容器避让安全区 */
-@media screen and (max-width: 640px) and (orientation: landscape) {
-    html, body {
-        overflow-x: hidden;
-        /* html/body取消左右padding，背景直接贴屏幕边缘，杜绝黑边 */
-        padding: 0 !important;
-    }
-    /* 仅给内容容器加安全区内边距，文字按钮不被刘海遮挡 */
-    .app-container {
-        width: 100%;
-        max-width: unset !important;
-        padding-left: env(safe-area-inset-left);
-        padding-right: env(safe-area-inset-right);
-        padding-top: env(safe-area-inset-top);
-        padding-bottom: env(safe-area-inset-bottom);
-    }
-    .toolbar, .header {
-        width: 100%;
-    }
-}
-
-
-/* 手机竖屏：左右固定24px、居中、禁止横向溢出 */
-@media screen and (max-width: 640px) and (orientation: portrait) {
-  body {
-    padding-left: 28px !important;
-    padding-right: 12px !important;
-    overflow-x: hidden !important;
-    display: flex !important;
-    justify-content: center !important;
-  }
-  .app-container {
-    width: 100%;
-    max-width: unset;
-  }
-}
-
-/* 手机横屏：适配安全区、铺满屏幕、无黑边 */
-@media screen and (max-width: 640px) and (orientation: landscape) {
-    html, body {
-        overflow-x: hidden;
-        padding-left: env(safe-area-inset-left);
-        padding-right: env(safe-area-inset-right);
-        padding-top: env(safe-area-inset-top);
-        padding-bottom: env(safe-area-inset-bottom);
-        background: #f6f9fc;
-    }
-    .app-container {
-        width: 100%;
-        max-width: unset !important;
-    }
-    .toolbar, .header {
-        width: 100%;
-    }
-}
-</script>
     </style>
 </head>
 <body>
@@ -734,20 +591,6 @@ input, textarea, select {
         <div class="stat-item"><i class="fas fa-users"></i> 客户 <strong id="totalCount">0</strong></div>
         <div class="stat-item"><i class="fas fa-phone"></i> 记录 <strong id="interactionCount">0</strong></div>
     </div>
-
-        <!-- 新增汉堡按钮+下拉菜单 -->
-        <button class="btn btn-outline btn-sm mobile-menu-trigger" id="mobileMenuTrigger">
-            <i class="fas fa-bars"></i>
-        </button>
-        <div class="mobile-dropdown-menu" id="mobileDropMenu">
-    <button class="btn btn-outline btn-sm" id="manageIndustryBtnMobile"><i class="fas fa-tags"></i> 行业分类管理</button>
-    <button class="btn btn-outline btn-sm" id="manageExhibitionBtnMobile"><i class="fas fa-building"></i> 展会分类管理</button>
-    <button class="btn btn-danger btn-sm" id="resetAllDataBtnMobile"><i class="fas fa-trash-alt"></i> 清空数据</button>
-    <button class="btn btn-outline btn-sm" id="exportBtnMobile"><i class="fas fa-download"></i> 导出备份</button>
-    <button class="btn btn-outline btn-sm" id="importBtnMobile"><i class="fas fa-upload"></i> 导入备份</button>
-    <button class="btn btn-outline btn-sm" id="copyrightBtnMobile"><i class="fas fa-info-circle"></i> 版权信息</button>
-    <input type="file" id="importInputMobile" accept=".json" style="display:none">
-</div>
         <div class="header-actions">
             <button class="btn btn-outline btn-sm" id="manageIndustryBtn"><i class="fas fa-tags"></i> 行业分类管理</button>
             <button class="btn btn-outline btn-sm" id="manageExhibitionBtn"><i class="fas fa-building"></i> 展会分类管理</button>
@@ -930,8 +773,7 @@ window.addEventListener('load',()=>{
                 return;
             }
             if (typeof require !== 'undefined') {
-                try
- {
+                try {
                     const { shell } = require('electron');
                     shell.openExternal(targetUrl);
                 } catch (err) {
@@ -967,7 +809,7 @@ window.addEventListener('load',()=>{
         if(Number(opt.value) === currentPage) opt.selected = true;
         pageFilterEl.appendChild(opt);
     }
-    // 当前页超出总页数自动切回第一页
+    // 当前页超过总页数自动切回第一页
     if(currentPage > totalPage) {
         currentPage = 1;
         pageFilterEl.value = 1;
@@ -1023,6 +865,7 @@ window.addEventListener('load',()=>{
         } catch (e) {
             console.error('加载行业数据失败', e);
             industryList = [DEFAULT_INDUSTRY];
+
             saveIndustryStorage();
         }
 
@@ -1630,66 +1473,9 @@ window.addEventListener('load',()=>{
             alert('读取导入文件异常');
         }
     }
-function initMobileMenu() {
-    const trigger = document.getElementById('mobileMenuTrigger');
-    const menu = document.getElementById('mobileDropMenu');
-
-    // 移动端独立按钮
-    const mManageIndustry = document.getElementById('manageIndustryBtnMobile');
-    const mManageExhibition = document.getElementById('manageExhibitionBtnMobile');
-    const mResetData = document.getElementById('resetAllDataBtnMobile');
-    const mExport = document.getElementById('exportBtnMobile');
-    const mImport = document.getElementById('importBtnMobile');
-    const mCopyright = document.getElementById('copyrightBtnMobile');
-    const mImportFile = document.getElementById('importInputMobile');
-
-    // 窗口尺寸变化时强制关闭下拉菜单
-    window.addEventListener('resize', () => {
-        menu.classList.remove('active');
-    });
-
-    trigger.addEventListener('click', () => {
-        menu.classList.toggle('active');
-    });
-    document.addEventListener('click', e => {
-        if (!trigger.contains(e.target) && !menu.contains(e.target)) {
-            menu.classList.remove('active');
-        }
-    });
-
-    // 绑定移动端按钮事件
-    mManageIndustry.addEventListener('click', () => {
-        openIndustryManageModal();
-        setTimeout(() => menu.classList.remove('active'), 100);
-    });
-    mManageExhibition.addEventListener('click', () => {
-        openExhibitionManageModal();
-        setTimeout(() => menu.classList.remove('active'), 100);
-    });
-    mResetData.addEventListener('click', () => {
-        resetAllData();
-        setTimeout(() => menu.classList.remove('active'), 100);
-    });
-    mExport.addEventListener('click', () => {
-        exportData();
-        setTimeout(() => menu.classList.remove('active'), 100);
-    });
-    mImport.addEventListener('click', () => {
-        mImportFile.click();
-        setTimeout(() => menu.classList.remove('active'), 100);
-    });
-    mCopyright.addEventListener('click', () => {
-        openCopyrightModal();
-        setTimeout(() => menu.classList.remove('active'), 100);
-    });
-    mImportFile.addEventListener('change', function (e) {
-        if (this.files.length) importData(this.files[0]);
-    });
-}
 
     document.addEventListener('DOMContentLoaded', function() {
         loadData();
-        initMobileMenu();
         document.getElementById('addBtn').addEventListener('click', () => openModal());
         document.getElementById('manageIndustryBtn').addEventListener('click', openIndustryManageModal);
         document.getElementById('manageExhibitionBtn').addEventListener('click', openExhibitionManageModal);
@@ -1709,6 +1495,7 @@ function initMobileMenu() {
         document.getElementById('importInput').addEventListener('change', function(e) {
             if (this.files.length) importData(this.files[0]);
         });
+        // 搜索、行业、展会筛选切换，重置到第一页
         document.getElementById('searchInput').addEventListener('input', function(){
             currentPage = 1;
             render();
@@ -1721,10 +1508,12 @@ function initMobileMenu() {
             currentPage = 1;
             render();
         });
+        // 分页切换事件
         pageFilterEl.addEventListener('change', function(){
             currentPage = Number(this.value);
             render();
         });
+
         document.getElementById('industryListWrap').addEventListener('click', function(e) {
             const delBtn = e.target.closest('.manage-del-btn');
             if(delBtn) deleteIndustry(Number(delBtn.dataset.index));
@@ -1733,6 +1522,7 @@ function initMobileMenu() {
             const delBtn = e.target.closest('.manage-del-btn');
             if(delBtn) deleteExhibition(Number(delBtn.dataset.index));
         });
+
         document.getElementById('contactGrid').addEventListener('click', function(e) {
             const editBtn = e.target.closest('.edit-btn');
             if (editBtn) { openModal(editBtn.dataset.id); return; }
@@ -1740,14 +1530,15 @@ function initMobileMenu() {
             if (delBtn) { deleteContact(delBtn.dataset.id); return; }
             const interBtn = e.target.closest('.interaction-add-btn');
             if (interBtn) { openInteractionModal(interBtn.dataset.id); return; }
-            const delInter = e.target.closest('.del-inter');
-            if(delInter){
-                const card = delInter.closest('.contact-card');
+            const delInterBtn = e.target.closest('.del-inter');
+            if(delInterBtn){
+                const card = delInterBtn.closest('.contact-card');
                 const cid = card.dataset.cid;
-                const idx = Number(delInter.dataset.index);
-                deleteSingleInteraction(cid, idx);
+                const index = Number(delInterBtn.dataset.index);
+                deleteSingleInteraction(cid, index);
             }
         });
+
         document.querySelectorAll('.modal-overlay').forEach(el => {
             el.addEventListener('click', function(e) {
                 if (e.target === this) {
@@ -1758,7 +1549,7 @@ function initMobileMenu() {
         });
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
-                document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+                document.querySelectorAll('.modal-overlay.active').forEach(el => el.classList.remove('active'));
                 checkModalOpen();
             }
         });
