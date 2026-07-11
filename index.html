@@ -288,7 +288,7 @@ body::before {
         bottom: 0px;/* 距离页面底部距离 */
         display: flex !important;
         gap: 8px; /* 三个下拉之间的横向间距 */
-        padding: 20px 12px; /* 容器内上下、左右内边距 → 控制整体高度 */
+        padding: 10px 12px; /* 容器内上下、左右内边距 → 控制整体高度 */
         background: #ffffff;
         border-radius: 39px; /* 圆角大小 */
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
@@ -304,29 +304,31 @@ body::before {
         max-width: 100%;
         box-sizing: border-box;
     }
-    /* ===== ⭐ 所有行业所有展会下拉菜单 ===== */
+    /* ===== ⭐ 所有行业所有展会下拉菜单 分页下拉菜单 ========== */
     .toolbar .select-group .select-wrapper select {
-        width: 100%;
-        max-width: 100%;
-        box-sizing: border-box;
-        padding: 0px 16px; /* 下拉内部上下填充 → 控制单个下拉高度 */
-        font-size: 12px;  /* 下拉文字大小 */
-        border-radius: 30px;/* 圆角大小 *//* 圆角大小 */
-        border: 1px solid #e2e8f0;
-        background: #f1f5f9;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        -webkit-appearance: auto;
-        appearance: auto;
-        min-width: 0;
-    }
+    .toolbar .select-group .select-wrapper:nth-child(3) select {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    height: 36px;              /* 固定高度，直接控制 */
+    line-height: 36px;         /* 让文字垂直居中（等于 height） */
+    padding: 0 8px;            /* 左右内边距保留，上下为0（由line-height控制） */
+    font-size: 13px;/* 下拉文字大小 */
+    border-radius: 30px;/* 圆角大小 *//* 圆角大小 */
+    border: 1px solid #e2e8f0;
+    background: #fafcff;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    -webkit-appearance: none;   /* 去掉系统默认样式干扰 */
+    min-width: 0;
+}
     /* ===== ⭐ 分页下拉菜单 ===== */
     .toolbar .select-group .select-wrapper:nth-child(3) select {
      border-radius: 30px;/* 圆角大小 *//* 圆角大小 */
-        padding:0px 16px;
+        padding:20px 20px;
         background:#f1f5f9;
-        font-size: 12px; /* 分页下拉单独字号 */
+        font-size: 13px; /* 分页下拉单独字号 */
     }
 
     /* ===== 卡片单列 ===== */
