@@ -2,9 +2,8 @@
 <html lang="zh-CN">
 <head> 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AnsonCRM</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>AnsonCRM</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="ACRM">
@@ -214,9 +213,9 @@ body::before {
 
         .copyright-text { line-height:1.8; text-align:center; color:#475569; }
 @media (max-width:640px) {
-    /* ===== 1. 页面整体底部留空 ===== */
+    /* ===== 1. 页面整体底部留空 + 顶部安全区留白防止悬浮搜索遮挡内容 ===== */
     body {
-        padding: 12px 12px 85px 12px;
+        padding: calc(12px + env(safe-area-inset-top)) 12px 85px 12px;
     }
 
     /* ===== 2. 头部区域 ===== */
@@ -259,13 +258,13 @@ body::before {
         padding: 0 12px;
     }
 
-    /* ===== 3. 工具栏：纵向排列（搜索框 + 添加按钮） ===== */
+    /* ===== 3. 工具栏：纵向排列（搜索框 + 添加按钮） 修复margin缺少px===== */
     .toolbar {
         flex-direction: column;
         align-items: stretch;
         gap: 10px;
-        padding: 12px 12px 12px 12px; /* ===== 搜索框容器四个边距 ===== */
-        margin-bottom: 1;  /* ===== 第一个卡片跟上方的距离 ===== */
+        padding: 12px 12px 12px 12px;
+        margin-bottom: 16px;
     }
     .toolbar .search-wrapper {
         width: 100%;
@@ -277,14 +276,14 @@ body::before {
     /* ===== 4. ⭐ 三个下拉菜单固定悬浮在屏幕底部 ===== */
     .toolbar .select-group {
         position: fixed !important;
-        left: 0px;          /* 【可调】容器左右边距 */
+        left: 0px;
         right: 0px;
-        bottom: 0px;        /* 【可调】距离屏幕底部距离 */
+        bottom: 0px;
         display: flex !important;
-        gap: 8px;            /* 【可调】三个下拉框之间的横向间距 */
-        padding: 8px 8px;  /* 【可调】容器内边距（上下 左右）→ 控制整体高度 */
+        gap: 8px;
+        padding: 8px 8px;
         background: #ffffff;
-        border-radius: 0px; /* 【可调】容器外圆角 */
+        border-radius: 0px;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
         z-index: 999;
         box-sizing: border-box;
@@ -302,11 +301,11 @@ body::before {
         width: 100%;
         max-width: 100%;
         box-sizing: border-box;
-        height: 41px;            /* 【可调】下拉框高度 */
-        line-height: 41px;       /* 与 height 一致，垂直居中 */
-        padding: 0 10px;         /* 【可调】左右内边距 */
-        font-size: 12px;         /* 【可调】文字大小 */
-        border-radius: 50px;     /* 【可调】下拉框自身圆角 */
+        height: 41px;
+        line-height: 41px;
+        padding: 0 10px;
+        font-size: 14px;
+        border-radius: 50px;
         border: 1px solid #e2e8f0;
         background: #f1f5f9;
         overflow: hidden;
@@ -316,9 +315,9 @@ body::before {
         appearance: auto;
         min-width: 0;
     }
-    /* 分页下拉单独微调（可选） */
+    /* 分页下拉单独微调 */
     .toolbar .select-group .select-wrapper:nth-child(3) select {
-        font-size: 12px;
+        font-size: 14px;
         padding: 0 6px;
     }
 
@@ -364,6 +363,51 @@ body::before {
     #copyrightModal .copyright-text {
         text-align: center !important;
     }
+
+    /* ===== 浮动搜索框样式（手机端）修复刘海+过渡动画 ===== */
+#floatingSearch {
+    display: none;
+    position: fixed;
+    top: env(safe-area-inset-top);
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    padding: 10px 12px;
+    padding-top: calc(10px + env(safe-area-inset-top));
+    background: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    box-sizing: border-box;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+    #floatingSearch .search-wrapper {
+        position: relative;
+        width: 100%;
+    }
+    #floatingSearch .search-wrapper i {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        font-size: 16px;
+    }
+    #floatingSearch .search-wrapper input {
+        width: 100%;
+        padding: 10px 18px 10px 42px;
+        border-radius: 40px;
+        border: 1px solid #e2e8f0;
+        font-size: 14px;
+        background: #f8fafc;
+        transition: all .2s;
+        box-sizing: border-box;
+        outline: none;
+    }
+    #floatingSearch .search-wrapper input:focus {
+        border-color: #2563eb;
+        background: #ffffff;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
 }
 
 .header-stats {
@@ -398,6 +442,7 @@ body::before {
     }
 }
 
+    
 @media (min-width:641px){
     #pwaSplash{display:none !important;}
 }
@@ -471,19 +516,14 @@ html, body {
 /* 宽度足够放下5张卡片时，锁定5列，卡片自适应均分展开 */
 @media (min-width: calc(300px * 5 + 20px * 4)) {
   .group-card-wrap {
-    /* 5等分，卡片自由拉伸铺满整行 */
     grid-template-columns: repeat(5, minmax(0, 1fr));
-    /* 5张卡片整体铺满容器，居中不留白扩散 */
     justify-items: stretch;
   }
-  /* 宽屏模式下取消卡片最大宽度限制，允许自适应拉伸 */
   .group-card-wrap .contact-card {
     max-width: unset;
     width: 100%;
   }
 }
-
-
 
 /* 超长备注、网址自动换行，杜绝卡片横向溢出 */
 .contact-card {
@@ -502,7 +542,7 @@ html, body {
 /* 移动端适配，手机端自动单列铺满屏幕 */
 @media (max-width:640px) {
   body {
-    padding: 12px;
+    padding: calc(12px + env(safe-area-inset-top)) 12px 85px 12px;
   }
   .group-card-wrap {
     grid-template-columns: 1fr;
@@ -648,7 +688,7 @@ html {
   <h1>Anson <span>CRM</span></h1>
 </div>
         <div class="stats header-stats">
-        <div class="stat-item"><i class="fas fas fa-user"></i><strong id="totalCount">0</strong></div>
+        <div class="stat-item"><i class="fas fa-user"></i><strong id="totalCount">0</strong></div>
         <div class="stat-item"><i class="fab fa-weixin"></i><strong id="interactionCount">0</strong></div>
     </div>
         <div class="header-actions">
@@ -804,6 +844,15 @@ html {
     </div>
 </div>
 
+<!-- 手机端悬浮搜索框 -->
+<div id="floatingSearch" style="display:none;">
+    <div class="search-wrapper">
+        <i class="fas fa-search"></i>
+        <input type="text" id="floatingSearchInput" placeholder="搜索客户、公司、电话、行业、展会...">
+    </div>
+</div>
+
+<!-- 加载动画脚本 -->
 <script>
 window.addEventListener('load',()=>{
     setTimeout(()=>{
@@ -813,6 +862,7 @@ window.addEventListener('load',()=>{
 });
 </script>
 
+<!-- 主业务逻辑JS -->
 <script>
     // 分页全局配置
     const PAGE_SIZE = 30;
@@ -824,6 +874,7 @@ window.addEventListener('load',()=>{
     let exhibitionList = [];
     const DEFAULT_EXHIBITION = '未归类展会';
 
+    // 外部链接跳转工具函数
     function openExternalUrl(url) {
         try {
             if (!url || url.trim() === '') return;
@@ -843,94 +894,97 @@ window.addEventListener('load',()=>{
             }
             window.open(targetUrl, '_blank');
         } catch (e) {
-            console.error('打开链接失败', e);
+            console.error('链接打开失败', e);
         }
     }
 
+    // DOM元素缓存
     const industryFilterEl = document.getElementById('industryFilter');
     const industrySelectEl = document.getElementById('industry');
     const exhibitionFilterEl = document.getElementById('exhibitionFilter');
     const exhibitionSelectEl = document.getElementById('exhibition');
     const pageFilterEl = document.getElementById('pageFilter');
 
-    // 刷新分页下拉页码列表
+    // 分页下拉渲染
     function refreshPageOptions(totalFilterCount) {
-    const totalPage = Math.ceil(totalFilterCount / PAGE_SIZE);
-    pageFilterEl.innerHTML = '';
-    if(totalPage <= 0) {
-        pageFilterEl.innerHTML = `<option value="1">第 1 页｜共 0 页</option>`;
-        currentPage = 1;
-        return;
+        const totalPage = Math.ceil(totalFilterCount / PAGE_SIZE);
+        pageFilterEl.innerHTML = '';
+        if (totalPage <= 0) {
+            pageFilterEl.innerHTML = `<option value="1">第 1 页｜共 0 页</option>`;
+            currentPage = 1;
+            return;
+        }
+        for (let i = 1; i <= totalPage; i++) {
+            const opt = document.createElement('option');
+            opt.value = i;
+            opt.innerText = `第 ${i} 页｜共 ${totalPage} 页`;
+            if (Number(opt.value) === currentPage) opt.selected = true;
+            pageFilterEl.appendChild(opt);
+        }
+        if (currentPage > totalPage) {
+            currentPage = 1;
+            pageFilterEl.value = 1;
+        }
     }
-    for(let i = 1; i <= totalPage; i++) {
-        const opt = document.createElement('option');
-        opt.value = i;
-        opt.innerText =` 第 ${i} 页｜共 ${totalPage} 页`;
-        if(Number(opt.value) === currentPage) opt.selected = true;
-        pageFilterEl.appendChild(opt);
-    }
-    // 当前页超过总页数自动切回第一页
-    if(currentPage > totalPage) {
-        currentPage = 1;
-        pageFilterEl.value = 1;
-    }
-}
 
-    // 截取当前分页数据
+    // 分页数据截取
     function getPageData(filteredList) {
-        const startIdx = (currentPage - 1) * PAGE_SIZE;
-        const endIdx = startIdx + PAGE_SIZE;
-        return filteredList.slice(startIdx, endIdx);
+        const startIndex = (currentPage - 1) * PAGE_SIZE;
+        const endIndex = startIndex + PAGE_SIZE;
+        return filteredList.slice(startIndex, endIndex);
     }
 
+    // 本地存储加载数据
     function loadData() {
         try {
             const rawContact = localStorage.getItem('crm_contacts');
             if (rawContact) {
                 contacts = JSON.parse(rawContact);
-                contacts = contacts.map(c => ({
-                    ...c,
-                    industry: c.industry || DEFAULT_INDUSTRY,
-                    exhibition: c.exhibition || DEFAULT_EXHIBITION,
-                    interactions: c.interactions || [],
-                    website: c.website || '',
-                    product: c.product || ''
+                contacts = contacts.map(item => ({
+                    ...item,
+                    industry: item.industry || DEFAULT_INDUSTRY,
+                    exhibition: item.exhibition || DEFAULT_EXHIBITION,
+                    interactions: item.interactions || [],
+                    website: item.website || '',
+                    product: item.product || ''
                 }));
             } else {
                 contacts = [
                     {
-                        id: '1', name: 'Anson', company: '© 版权开发所有者', phone: 'QQ：59253359',
-                        email: '59253359@qq.com', product: '数据信息保护，AI智能管理系统',
+                        id: '1',
+                        name: 'Anson',
+                        company: '© 版权开发方',
+                        phone: 'QQ：59253359',
+                        email: '59253359@qq.com',
+                        product: '展会CRM客户管理系统',
                         industry: 'IT互联网',
                         exhibition: DEFAULT_EXHIBITION,
-                        notes: '专注个人数据信息资产安全，轻量化本地防泄露解决方案',
-                        interactions: [{ type: '电话', content: '版权所有，请勿篡改盗用', date: Date.now() - 3600000 }]
+                        notes: '本系统专为展会搭建行业开发，本地存储数据，隐私安全',
+                        interactions: [{ type: '电话', content: '系统初始化默认数据', date: Date.now() - 3600000 }]
                     }
                 ];
                 saveContactStorage();
             }
         } catch (e) {
-            console.error('加载客户数据失败', e);
+            console.error('客户数据加载失败', e);
             contacts = [];
         }
 
         try {
-            const rawInd = localStorage.getItem('crm_industry_list');
+            const rawInd = localStorage.getItem('crm_industry');
             if (rawInd) {
                 industryList = JSON.parse(rawInd);
             } else {
-                industryList = ['IT互联网','建筑工程','教育培训','商贸零售','文化传媒','制造加工','金融财税','医疗医美', DEFAULT_INDUSTRY];
+                industryList = ['IT互联网', '建筑工程', '教育培训', '商贸零售', '文化传媒', '机械制造', '化工能源', '医疗医美', DEFAULT_INDUSTRY];
                 saveIndustryStorage();
             }
         } catch (e) {
-            console.error('加载行业数据失败', e);
+            console.error('行业分类加载失败', e);
             industryList = [DEFAULT_INDUSTRY];
-
-            saveIndustryStorage();
         }
 
         try {
-            const rawExh = localStorage.getItem('crm_exhibition_list');
+            const rawExh = localStorage.getItem('crm_exhibition');
             if (rawExh) {
                 exhibitionList = JSON.parse(rawExh);
             } else {
@@ -938,9 +992,8 @@ window.addEventListener('load',()=>{
                 saveExhibitionStorage();
             }
         } catch (e) {
-            console.error('加载展会数据失败', e);
+            console.error('展会分类加载失败', e);
             exhibitionList = [DEFAULT_EXHIBITION];
-            saveExhibitionStorage();
         }
 
         refreshAllSelectOption();
@@ -950,33 +1003,35 @@ window.addEventListener('load',()=>{
         render();
     }
 
+    // 清空全部客户数据
     function resetAllData() {
         try {
-            if (!confirm('⚠️ Anson提醒您：此操作会永久删除【全部客户数据+所有互动记录】，仅保留行业分类、展会分类，客户数据无法恢复！\n请务必提前备份⚠️')) return;
-            if (!confirm('⚠️再次警告：一旦清空所有客户彻底删除，是否确认？')) return;
+            if (!confirm('⚠️ 警告：此操作会永久删除全部客户与互动记录，仅保留行业/展会分类，删除后无法恢复！\n请提前导出备份再操作！')) return;
+            if (!confirm('⚠️ 二次确认：确定清空所有客户数据？')) return;
             localStorage.removeItem('crm_contacts');
             contacts = [];
             updateStats();
             render();
-            alert('所有客户数据已清空，行业、展会分类已保留');
+            alert('全部客户数据已清空，行业与展会分类保留');
         } catch (e) {
             console.error('清空数据失败', e);
             alert('操作异常，请刷新页面重试');
         }
     }
 
+    // 本地存储保存函数
     function saveIndustryStorage() {
         try {
-            localStorage.setItem('crm_industry_list', JSON.stringify(industryList));
+            localStorage.setItem('crm_industry', JSON.stringify(industryList));
         } catch (e) {
-            console.error('保存行业失败', e);
+            console.error('行业存储失败', e);
         }
     }
     function saveExhibitionStorage() {
         try {
-            localStorage.setItem('crm_exhibition_list', JSON.stringify(exhibitionList));
+            localStorage.setItem('crm_exhibition', JSON.stringify(exhibitionList));
         } catch (e) {
-            console.error('保存展会失败', e);
+            console.error('展会存储失败', e);
         }
     }
     function saveContactStorage() {
@@ -985,13 +1040,15 @@ window.addEventListener('load',()=>{
             refreshAllSelectOption();
             updateStats();
         } catch (e) {
-            console.error('保存客户失败', e);
-            alert('数据保存失败，本地存储空间不足');
+            console.error('客户数据保存失败', e);
+            alert('存储空间不足，无法保存数据，请清理浏览器缓存');
         }
     }
 
+    // 下拉选项全局刷新（筛选弹窗+编辑弹窗）
     function refreshAllSelectOption() {
         try {
+            // 顶部筛选-行业
             industryFilterEl.innerHTML = '<option value="">全部行业</option>';
             industryList.forEach(name => {
                 const opt = document.createElement('option');
@@ -999,6 +1056,16 @@ window.addEventListener('load',()=>{
                 opt.innerText = name;
                 industryFilterEl.appendChild(opt);
             });
+            // 编辑弹窗-行业
+            industrySelectEl.innerHTML = '';
+            industryList.forEach(name => {
+                const opt = document.createElement('option');
+                opt.value = name;
+                opt.innerText = name;
+                industrySelectEl.appendChild(opt);
+            });
+
+            // 顶部筛选-展会
             exhibitionFilterEl.innerHTML = '<option value="">全部展会</option>';
             exhibitionList.forEach(name => {
                 const opt = document.createElement('option');
@@ -1006,143 +1073,112 @@ window.addEventListener('load',()=>{
                 opt.innerText = name;
                 exhibitionFilterEl.appendChild(opt);
             });
-
-            industrySelectEl.innerHTML = '';
-            let industryDefaultIndex = 0;
-            industryList.forEach((name, idx) => {
-                const opt = document.createElement('option');
-                opt.value = name;
-                opt.innerText = name;
-                industrySelectEl.appendChild(opt);
-                if(name === DEFAULT_INDUSTRY) industryDefaultIndex = idx;
-            });
-            industrySelectEl.selectedIndex = industryDefaultIndex;
-
+            // 编辑弹窗-展会
             exhibitionSelectEl.innerHTML = '';
-            let exhibitionDefaultIndex = 0;
-            exhibitionList.forEach((name, idx) => {
+            exhibitionList.forEach(name => {
                 const opt = document.createElement('option');
                 opt.value = name;
                 opt.innerText = name;
                 exhibitionSelectEl.appendChild(opt);
-                if(name === DEFAULT_EXHIBITION) exhibitionDefaultIndex = idx;
             });
-            exhibitionSelectEl.selectedIndex = exhibitionDefaultIndex;
         } catch (e) {
-            console.error('刷新下拉选项失败', e);
+            console.error('下拉刷新失败', e);
         }
     }
 
+    // 行业管理列表渲染
     function renderIndustryManageList() {
-        try {
-            const wrap = document.getElementById('industryListWrap');
-            let html = '';
-            industryList.forEach((item, idx) => {
-                html += `<div class="manage-item-row"><span>${escapeHtml(item)}</span><button class="manage-del-btn" data-index="${idx}"><i class="fas fa-trash"></i></button></div>`;
-            });
-            wrap.innerHTML = html;
-        } catch (e) {
-            console.error('渲染行业列表失败', e);
-        }
+        const wrap = document.getElementById('industryListWrap');
+        let html = '';
+        industryList.forEach((item, idx) => {
+            html += `<div class="manage-item-row">
+                <span>${escapeHtml(item)}</span>
+                <button class="manage-del-btn" data-type="industry" data-index="${idx}"><i class="fas fa-trash"></i></button>
+            </div>`;
+        });
+        wrap.innerHTML = html;
     }
+    // 新增行业
     function addNewIndustry() {
-        try {
-            const input = document.getElementById('newIndustryInput');
-            const val = input.value.trim();
-            if (!val) return alert('请输入行业名称');
-            if (industryList.includes(val)) return alert('该行业已存在');
-            industryList.unshift(val);
-            saveIndustryStorage();
-            refreshAllSelectOption();
-            renderIndustryManageList();
-            input.value = '';
-        } catch (e) {
-            console.error('新增行业失败', e);
-            alert('新增分类异常');
-        }
+        const input = document.getElementById('newIndustryInput');
+        const val = input.value.trim();
+        if (!val) return alert('请输入行业名称');
+        if (industryList.includes(val)) return alert('该行业已存在');
+        industryList.unshift(val);
+        saveIndustryStorage();
+        refreshAllSelectOption();
+        renderIndustryManageList();
+        input.value = '';
     }
+    // 删除行业
     function deleteIndustry(index) {
-        try {
-            const targetName = industryList[index];
-            if(targetName === DEFAULT_INDUSTRY){
-                return alert(`默认兜底分类【${DEFAULT_INDUSTRY}】禁止删除`);
-            }
-            if(!confirm(`确定删除行业【${targetName}】？已绑定该行业的客户将自动归入【${DEFAULT_INDUSTRY}】`)) return;
-            contacts.forEach(c => {
-                if(c.industry === targetName) c.industry = DEFAULT_INDUSTRY;
-            });
-            industryList.splice(index,1);
-            saveIndustryStorage();
-            saveContactStorage();
-            refreshAllSelectOption();
-            renderIndustryManageList();
-            render();
-        } catch (e) {
-            console.error('删除行业失败', e);
-            alert('删除操作异常');
-        }
+        const target = industryList[index];
+        if (target === DEFAULT_INDUSTRY) return alert('默认行业「其他行业」禁止删除');
+        if (!confirm(`确定删除行业【${target}】？已关联客户将自动归类到「${DEFAULT_INDUSTRY}」`)) return;
+        contacts.forEach(item => {
+            if (item.industry === target) item.industry = DEFAULT_INDUSTRY;
+        });
+        industryList.splice(index, 1);
+        saveIndustryStorage();
+        saveContactStorage();
+        refreshAllSelectOption();
+        renderIndustryManageList();
+        render();
     }
 
+    // 展会管理列表渲染
     function renderExhibitionManageList() {
-        try {
-            const wrap = document.getElementById('exhibitionListWrap');
-            let html = '';
-            exhibitionList.forEach((item, idx) => {
-                html += `<div class="manage-item-row"><span>${escapeHtml(item)}</span><button class="manage-del-btn" data-index="${idx}"><i class="fas fa-trash"></i></button></div>`;
-            });
-            wrap.innerHTML = html;
-        } catch (e) {
-            console.error('渲染展会列表失败', e);
-        }
+        const wrap = document.getElementById('exhibitionListWrap');
+        let html = '';
+        exhibitionList.forEach((item, idx) => {
+            html += `<div class="manage-item-row">
+                <span>${escapeHtml(item)}</span>
+                <button class="manage-del-btn" data-type="exhibition" data-index="${idx}"><i class="fas fa-trash"></i></button>
+            </div>`;
+        });
+        wrap.innerHTML = html;
     }
+    // 新增展会
     function addNewExhibition() {
-        try {
-            const input = document.getElementById('newExhibitionInput');
-            const val = input.value.trim();
-            if (!val) return alert('请输入展会名称');
-            if (exhibitionList.includes(val)) return alert('该展会已存在');
-            exhibitionList.unshift(val);
-            saveExhibitionStorage();
-            refreshAllSelectOption();
-            renderExhibitionManageList();
-            input.value = '';
-        } catch (e) {
-            console.error('新增展会失败', e);
-            alert('新增分类异常');
-        }
+        const input = document.getElementById('newExhibitionInput');
+        const val = input.value.trim();
+        if (!val) return alert('请输入展会名称');
+        if (exhibitionList.includes(val)) return alert('该展会已存在');
+        exhibitionList.unshift(val);
+        saveExhibitionStorage();
+        refreshAllSelectOption();
+        renderExhibitionManageList();
+        input.value = '';
     }
+    // 删除展会
     function deleteExhibition(index) {
-        try {
-            const targetName = exhibitionList[index];
-            if(targetName === DEFAULT_EXHIBITION){
-                return alert(`默认兜底分类【${DEFAULT_EXHIBITION}】禁止删除`);
-            }
-            if(!confirm(`确定删除展会【${targetName}】？已绑定该展会的客户将自动归入【${DEFAULT_EXHIBITION}】`)) return;
-            contacts.forEach(c => {
-                if(c.exhibition === targetName) c.exhibition = DEFAULT_EXHIBITION;
-            });
-            exhibitionList.splice(index,1);
-            saveExhibitionStorage();
-            saveContactStorage();
-            refreshAllSelectOption();
-            renderExhibitionManageList();
-            render();
-        } catch (e) {
-            console.error('删除展会失败', e);
-            alert('删除操作异常');
-        }
+        const target = exhibitionList[index];
+        if (target === DEFAULT_EXHIBITION) return alert('默认展会「未归类展会」禁止删除');
+        if (!confirm(`确定删除展会【${target}】？已关联客户将自动归类到「${DEFAULT_EXHIBITION}」`)) return;
+        contacts.forEach(item => {
+            if (item.exhibition === target) item.exhibition = DEFAULT_EXHIBITION;
+        });
+        exhibitionList.splice(index, 1);
+        saveExhibitionStorage();
+        saveContactStorage();
+        refreshAllSelectOption();
+        renderExhibitionManageList();
+        render();
     }
 
+    // 顶部统计更新
     function updateStats() {
         try {
-            document.getElementById('totalCount').textContent = contacts.length;
-            const total = contacts.reduce((acc, c) => acc + (c.interactions?.length || 0), 0);
-            document.getElementById('interactionCount').textContent = total;
+            document.getElementById('totalCount').innerText = contacts.length;
+            let totalInter = 0;
+            contacts.forEach(item => totalInter += item.interactions.length);
+            document.getElementById('interactionCount').innerText = totalInter;
         } catch (e) {
-            console.error('更新统计数据失败', e);
+            console.error('统计更新失败', e);
         }
     }
 
+    // HTML转义防XSS
     function escapeHtml(text) {
         if (!text) return '';
         const div = document.createElement('div');
@@ -1150,475 +1186,468 @@ window.addEventListener('load',()=>{
         return div.innerHTML;
     }
 
+    // 客户列表主渲染函数
     function render() {
         try {
             const keyword = document.getElementById('searchInput').value.toLowerCase().trim();
-            const selectIndustry = industryFilterEl.value;
-            const selectExhibition = exhibitionFilterEl.value;
+            const filterInd = industryFilterEl.value;
+            const filterExh = exhibitionFilterEl.value;
 
-            let filtered = contacts.filter(c => {
-                const matchSearch = keyword === '' || (
-                    c.name.toLowerCase().includes(keyword) ||
-                    (c.company && c.company.toLowerCase().includes(keyword)) ||
-                    c.phone.includes(keyword) ||
-                    (c.email && c.email.toLowerCase().includes(keyword)) ||
-                    (c.product && c.product.toLowerCase().includes(keyword)) ||
-                    (c.industry && c.industry.toLowerCase().includes(keyword)) ||
-                    (c.exhibition && c.exhibition.toLowerCase().includes(keyword))
-                );
-                const matchIndustry = selectIndustry === '' || c.industry === selectIndustry;
-                const matchExhibition = selectExhibition === '' || c.exhibition === selectExhibition;
-                return matchSearch && matchIndustry && matchExhibition;
+            // 筛选逻辑
+            let filtered = contacts.filter(item => {
+                let matchKey = true;
+                if (keyword) {
+                    const str = `${item.name}${item.company}${item.phone}${item.email || ''}${item.product || ''}${item.industry}${item.exhibition}${item.notes || ''}`.toLowerCase();
+                    matchKey = str.includes(keyword);
+                }
+                const matchInd = filterInd ? item.industry === filterInd : true;
+                const matchExh = filterExh ? item.exhibition === filterExh : true;
+                return matchKey && matchInd && matchExh;
             });
 
-            // 刷新分页下拉
             refreshPageOptions(filtered.length);
-            // 获取当前页数据
             const pageData = getPageData(filtered);
-
             const grid = document.getElementById('contactGrid');
+
             if (filtered.length === 0) {
-                grid.innerHTML = `<div class="empty-state"><i class="fas fa-search"></i><h3>没有匹配的客户</h3><p>更换搜索关键词、行业或展会分类试试</p></div>`;
+                grid.innerHTML = `<div class="empty-state">
+                    <i class="fas fa-search"></i>
+                    <h3>暂无匹配客户数据</h3>
+                    <p>更换搜索关键词、行业/展会筛选，或新增客户</p>
+                </div>`;
                 return;
             }
 
-            const groupMap = {};
-            pageData.forEach(item => {
-                if (!groupMap[item.exhibition]) groupMap[item.exhibition] = [];
-                groupMap[item.exhibition].push(item);
-            });
-
             let html = '';
-            Object.keys(groupMap).forEach(exhibitionName => {
-                html += `<div class="group-block"><h3 class="group-title">${escapeHtml(exhibitionName)}（${groupMap[exhibitionName].length}家客户）</h3><div class="group-card-wrap">`;
-                groupMap[exhibitionName].forEach(c => {
-                    const interactions = c.interactions || [];
-                    const recent = interactions.slice(-3).reverse();
-                    html += `
-                    <div class="contact-card" data-cid="${escapeHtml(c.id)}">
-                        <div class="card-header">
-                            <div>
-                                <div class="card-name">${escapeHtml(c.name)}</div>
-                                <div class="card-company">${escapeHtml(c.company) || '未登记公司'}</div>
-                                <div class="tag-row">
-                                    <span class="card-industry-tag">${escapeHtml(c.industry)}</span>
-                                    <span class="card-exhibition-tag">${escapeHtml(c.exhibition)}</span>
-                                </div>
-                            </div>
-                            <div class="card-actions">
-                                <button class="btn btn-icon btn-sm edit-btn" data-id="${c.id}" title="编辑"><i class="fas fa-pen"></i></button>
-                                <button class="btn btn-icon btn-sm delete-btn" data-id="${c.id}" title="删除" style="color:#ef4444;"><i class="fas fa-trash"></i></button>
-                            </div>
+            pageData.forEach(c => {
+                const interList = c.interactions || [];
+                const recent = interList.slice(-3).reverse();
+                let interHtml = '';
+                recent.forEach(inter => {
+                    const dateObj = new Date(inter.date);
+                    const dateStr = `${dateObj.getMonth()+1}月${dateObj.getDate()}日 ${dateObj.getHours()}:${String(dateObj.getMinutes()).padStart(2,'0')}`;
+                    let badgeClass = '';
+                    if (inter.type === '电话') badgeClass = 'phone';
+                    else if (inter.type === '微信') badgeClass = 'wechat';
+                    else if (inter.type === 'QQ') badgeClass = 'qq';
+                    else if (inter.type === '会面') badgeClass = 'meeting';
+                    else if (inter.type === '邮件') badgeClass = 'email';
+
+                    interHtml += `<div class="interaction-item">
+                        <div>
+                            <span class="badge ${badgeClass}">${escapeHtml(inter.type)}</span>
+                            <span>${escapeHtml(inter.content)}</span>
+                            <span style="margin-left:auto;color:#94a3b8;font-size:10px;">${dateStr}</span>
                         </div>
-                        <div class="card-details">
-                            <div><i class="fas fa-phone"></i> ${escapeHtml(c.phone)}</div>
-                            ${c.email ? `<div><i class="fas fa-envelope"></i> <a href="mailto:${escapeHtml(c.email)}">${escapeHtml(c.email)}</a></div>` : ''}
-                            ${c.website ? `<div><i class="fas fa-globe"></i> <span style="color:#2563eb;cursor:pointer;text-decoration:underline;" onclick="openExternalUrl('${escapeHtml(c.website)}')">${escapeHtml(c.website)}</span></div>` : ''}
-                            ${c.product ? `<div><i class="fas fa-tag"></i> ${escapeHtml(c.product)}</div>` : ''}
-                        </div>
-                        ${c.notes ? `<div class="card-notes"><i class="fas fa-pencil-alt" style="margin-right:6px;color:#64748b;"></i>${escapeHtml(c.notes)}</div>` : ''}
-                        <div class="interactions-section">
-                            <div class="interactions-header">
-                                <span><i class="fas fa-clock"></i> 最近互动</span>
-                                <button class="btn btn-primary btn-sm interaction-add-btn" data-id="${c.id}"><i class="fas fa-plus"></i> 记录</button>
-                            </div>
-                            ${interactions.length === 0 ? '<div style="font-size:12px;color:#94a3b8;padding:4px 0;">暂无互动记录</div>' :
-                            `<div class="interaction-list">${recent.map((inter, idx) => {
-                                const realIndex = interactions.length - 1 - idx;
-                                const date = new Date(inter.date).toLocaleString('zh-CN', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
-                                let cls = '';
-                                if(inter.type === '电话') cls = 'phone';
-                                else if(inter.type === '微信') cls = 'wechat';
-                                else if(inter.type === 'QQ') cls = 'qq';
-                                else if(inter.type === '会面') cls = 'meeting';
-                                else if(inter.type === '邮件') cls = 'email';
-                                return `<div class="interaction-item"><div><span class="badge ${cls}">${inter.type}</span> <span>${escapeHtml(inter.content)}</span> <span style="margin-left:auto;color:#94a3b8;font-size:10px;">${date}</span></div><i class="fas fa-times del-inter" data-index="${realIndex}"></i></div>`;
-                            }).join('')}${interactions.length > 3 ? `<div style="font-size:11px;color:#94a3b8;text-align:right;">共 ${interactions.length} 条</div>` : ''}</div>`}
-                        </div>
+                        <i class="fas fa-times del-inter" data-cid="${c.id}" data-date="${inter.date}"></i>
                     </div>`;
                 });
-                html += `</div></div>`;
+                if (interList.length === 0) interHtml = '<div style="font-size:12px;color:#94a3b8;padding:4px 0;">暂无互动记录</div>';
+                if (interList.length > 3) interHtml += `<div style="font-size:11px;color:#94a3b8;text-align:right;">共 ${interList.length} 条互动</div>`;
+
+                html += `<div class="contact-card" data-cid="${c.id}">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-name">${escapeHtml(c.name)}</div>
+                            <div class="card-company">${escapeHtml(c.company) || '未填写公司'}</div>
+                            <div class="tag-row">
+                                <span class="card-industry-tag">${escapeHtml(c.industry)}</span>
+                                <span class="card-exhibition-tag">${escapeHtml(c.exhibition)}</span>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn btn-icon btn-sm edit-btn" data-id="${c.id}" title="编辑客户"><i class="fas fa-pen"></i></button>
+                            <button class="btn btn-icon btn-sm delete-btn" data-id="${c.id}" title="删除客户" style="color:#ef4444;"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <div class="card-details">
+                        <div><i class="fas fa-phone"></i> ${escapeHtml(c.phone)}</div>
+                        ${c.email ? `<div><i class="fas fa-envelope"></i> ${escapeHtml(c.email)}</div>` : ''}
+                        ${c.website ? `<div><i class="fas fa-globe"></i> <span style="color:#2563eb;cursor:pointer;text-decoration:underline;" onclick="openExternalUrl('${escapeHtml(c.website)}')">${escapeHtml(c.website)}</span></div>` : ''}
+                        ${c.product ? `<div><i class="fas fa-tag"></i> ${escapeHtml(c.product)}</div>` : ''}
+                    </div>
+                    ${c.notes ? `<div class="card-notes"><i class="fas fa-sticky-note" style="margin-right:6px;color:#64748b;"></i>${escapeHtml(c.notes)}</div>` : ''}
+                    <div class="interactions-section">
+                        <div class="interactions-header">
+                            <span><i class="fas fa-clock"></i> 最近互动</span>
+                            <button class="btn btn-primary btn-sm inter-add-btn" data-id="${c.id}"><i class="fas fa-plus"></i> 新增互动</button>
+                        </div>
+                        <div class="interaction-list">${interHtml}</div>
+                    </div>
+                </div>`;
             });
             grid.innerHTML = html;
         } catch (e) {
-            console.error('渲染客户列表失败', e);
-            document.getElementById('contactGrid').innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>列表渲染异常</h3><p>请刷新页面恢复</p></div>`;
+            console.error('列表渲染失败', e);
+            document.getElementById('contactGrid').innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>页面渲染异常</h3><p>请刷新页面恢复</p></div>`;
         }
     }
 
+    // 打开编辑/新增客户弹窗
     function openModal(id = null) {
-        try {
-            const modal = document.getElementById('contactModal');
-            if(modal.classList.contains('active')) return;
-            document.body.classList.add('modal-open');
-            const form = document.getElementById('contactForm');
-            form.reset();
-            document.getElementById('editId').value = '';
-            refreshAllSelectOption();
-            if (id) {
-                const c = contacts.find(p => p.id === id);
-                if (!c) return;
-                document.getElementById('modalTitle').innerHTML = '<i class="fas fa-user-edit"></i> 编辑客户';
-                document.getElementById('editId').value = id;
-                document.getElementById('name').value = c.name;
-                document.getElementById('company').value = c.company || '';
-                document.getElementById('phone').value = c.phone;
-                document.getElementById('email').value = c.email || '';
-                document.getElementById('industry').value = c.industry;
-                document.getElementById('exhibition').value = c.exhibition;
-                document.getElementById('website').value = c.website || '';
-                document.getElementById('product').value = c.product || '';
-                document.getElementById('notes').value = c.notes || '';
-            } else {
-                document.getElementById('modalTitle').innerHTML = '<i class="fas fa-user-plus"></i> 添加客户';
-            }
-            modal.classList.add('active');
-        } catch (e) {
-            console.error('打开客户弹窗失败', e);
+        const modal = document.getElementById('contactModal');
+        if (modal.classList.contains('active')) return;
+        document.body.classList.add('modal-open');
+        const form = document.getElementById('contactForm');
+        form.reset();
+        document.getElementById('editId').value = '';
+
+        if (id) {
+            const target = contacts.find(x => x.id === id);
+            if (!target) return;
+            document.getElementById('modalTitle').innerHTML = '<i class="fas fa-user-edit"></i> 编辑客户';
+            document.getElementById('editId').value = target.id;
+            document.getElementById('name').value = target.name;
+            document.getElementById('company').value = target.company;
+            document.getElementById('phone').value = target.phone;
+            document.getElementById('email').value = target.email || '';
+            document.getElementById('website').value = target.website || '';
+            document.getElementById('product').value = target.product || '';
+            document.getElementById('industry').value = target.industry;
+            document.getElementById('exhibition').value = target.exhibition;
+            document.getElementById('notes').value = target.notes || '';
+        } else {
+            document.getElementById('modalTitle').innerHTML = '<i class="fas fa-user-plus"></i> 添加客户';
         }
+        modal.classList.add('active');
     }
+    // 关闭客户弹窗
     function closeModal() {
-        try {
-            document.getElementById('contactModal').classList.remove('active');
-            checkModalOpen();
-        } catch (e) {
-            console.error('关闭客户弹窗失败', e);
-        }
+        const modal = document.getElementById('contactModal');
+        modal.classList.remove('active');
+        checkModalOpen();
     }
 
+    // 保存客户表单
     function saveContact(e) {
-        try {
-            e.preventDefault();
-            const id = document.getElementById('editId').value;
-            const name = document.getElementById('name').value.trim();
-            const company = document.getElementById('company').value.trim();
-            const phone = document.getElementById('phone').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const industry = document.getElementById('industry').value;
-            const exhibition = document.getElementById('exhibition').value;
-            let websiteRaw = document.getElementById('website').value.trim();
-            let websiteFinal = websiteRaw;
+        e.preventDefault();
+        const editId = document.getElementById('editId').value;
+        const name = document.getElementById('name').value.trim();
+        const company = document.getElementById('company').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const websiteRaw = document.getElementById('website').value.trim();
+        const product = document.getElementById('product').value.trim();
+        const industry = document.getElementById('industry').value;
+        const exhibition = document.getElementById('exhibition').value;
+        const notes = document.getElementById('notes').value.trim();
 
-            if (websiteRaw) {
-                if (!websiteRaw.startsWith('http://') && !websiteRaw.startsWith('https://')) {
-                    websiteFinal = 'https://' + websiteRaw;
-                }
-            }
-
-            const product = document.getElementById('product').value.trim();
-            const notes = document.getElementById('notes').value.trim();
-            if (!name || !phone) return alert('姓名和电话为必填项');
-
-            if (id) {
-                const idx = contacts.findIndex(c => c.id === id);
-                if (idx !== -1) {
-                    contacts[idx] = {
-                        ...contacts[idx],
-                        name, company, phone, email, industry, exhibition,
-                        website: websiteFinal,
-                        product, notes
-                    };
-                }
-            } else {
-                contacts.push({
-                    id: Date.now() + '-' + Math.random().toString(36).substr(2, 6),
-                    name, company, phone, email, industry, exhibition,
-                    website: websiteFinal,
-                    product, notes,
-                    interactions: []
-                });
-            }
-            saveContactStorage();
-            render();
-            closeModal();
-        } catch (e) {
-            console.error('保存客户失败', e);
-            alert('保存数据异常，请重试');
+        if (!name || !phone) return alert('姓名与联系电话为必填项');
+        let websiteFinal = websiteRaw;
+        if (websiteRaw && !websiteRaw.startsWith('http://') && !websiteRaw.startsWith('https://')) {
+            websiteFinal = 'https://' + websiteRaw;
         }
+
+        if (editId) {
+            const idx = contacts.findIndex(x => x.id === editId);
+            if (idx === -1) return;
+            contacts[idx] = {
+                ...contacts[idx],
+                name, company, phone, email, website: websiteFinal, product, industry, exhibition, notes
+            };
+        } else {
+            contacts.push({
+                id: Date.now() + '-' + Math.random().toString(36).slice(2,8),
+                name, company, phone, email, website: websiteFinal, product, industry, exhibition, notes,
+                interactions: []
+            });
+        }
+        saveContactStorage();
+        render();
+        closeModal();
     }
 
+    // 删除客户
     function deleteContact(id) {
-        try {
-            if (!confirm('确定删除该客户及所有互动记录？')) return;
-            contacts = contacts.filter(c => c.id !== id);
-            saveContactStorage();
-            render();
-        } catch (e) {
-            console.error('删除客户失败', e);
-            alert('删除异常');
-        }
+        const target = contacts.find(x => x.id === id);
+        if (!target) return;
+        if (!confirm(`确定删除客户【${target.name}】？所有互动记录将一并清除，无法恢复！`)) return;
+        contacts = contacts.filter(x => x.id !== id);
+        saveContactStorage();
+        render();
     }
 
-    function openInteractionModal(contactId) {
-        try {
-            const modal = document.getElementById('interactionModal');
-            if(modal.classList.contains('active')) return;
-            document.body.classList.add('modal-open');
-            document.getElementById('interactionContactId').value = contactId;
-            document.getElementById('interactionForm').reset();
-            modal.classList.add('active');
-        } catch (e) {
-            console.error('打开互动弹窗失败', e);
-        }
+    // 打开新增互动弹窗
+    function openInteractionModal(cid) {
+        const modal = document.getElementById('interactionModal');
+        if (modal.classList.contains('active')) return;
+        document.body.classList.add('modal-open');
+        const form = document.getElementById('interactionForm');
+        form.reset();
+        document.getElementById('interactionContactId').value = cid;
+        modal.classList.add('active');
     }
+    // 关闭互动弹窗
     function closeInteractionModal() {
-        try {
-            document.getElementById('interactionModal').classList.remove('active');
-            checkModalOpen();
-        } catch (e) {
-            console.error('关闭互动弹窗失败', e);
-        }
+        const modal = document.getElementById('interactionModal');
+        modal.classList.remove('active');
+        checkModalOpen();
     }
-    function checkModalOpen() {
-        try {
-            const hasActive = document.querySelector('.modal-overlay.active');
-            if (!hasActive) document.body.classList.remove('modal-open');
-        } catch (e) {
-            console.error('检测弹窗状态失败', e);
-        }
-    }
+    // 保存互动记录
     function saveInteraction(e) {
-        try {
-            e.preventDefault();
-            const contactId = document.getElementById('interactionContactId').value;
-            const type = document.getElementById('interactionType').value;
-            const content = document.getElementById('interactionContent').value.trim();
-            if (!content) return alert('请输入互动内容');
-            const contact = contacts.find(c => c.id === contactId);
-            if (!contact) return alert('客户不存在');
-            contact.interactions.push({ type, content, date: Date.now() });
-            saveContactStorage();
-            render();
-            closeInteractionModal();
-        } catch (e) {
-            console.error('保存互动失败', e);
-            alert('互动记录保存异常');
-        }
+        e.preventDefault();
+        const cid = document.getElementById('interactionContactId').value;
+        const type = document.getElementById('interactionType').value;
+        const content = document.getElementById('interactionContent').value.trim();
+        if (!content) return alert('请填写互动内容');
+        const customer = contacts.find(x => x.id === cid);
+        if (!customer) return;
+        customer.interactions.push({
+            type,
+            content,
+            date: Date.now()
+        });
+        saveContactStorage();
+        render();
+        closeInteractionModal();
     }
-    function deleteSingleInteraction(cid, index) {
-        try {
-            if (!confirm('确定删除这条互动记录？')) return;
-            const customer = contacts.find(c => c.id === cid);
-            if (!customer) return;
-            customer.interactions.splice(index, 1);
-            saveContactStorage();
-            render();
-        } catch (e) {
-            console.error('删除单条互动失败', e);
-            alert('删除互动记录异常');
-        }
+    // 删除单条互动
+    function deleteSingleInteraction(cid, date) {
+        const customer = contacts.find(x => x.id === cid);
+        if (!customer) return;
+        if (!confirm('确定删除这条互动记录？')) return;
+        customer.interactions = customer.interactions.filter(item => String(item.date) !== String(date));
+        saveContactStorage();
+        render();
     }
 
-    function openIndustryManageModal() {
-        try {
-            const modal = document.getElementById('industryManageModal');
-            if (modal.classList.contains('active')) return;
-            document.body.classList.add('modal-open');
-            modal.classList.add('active');
-            renderIndustryManageList();
-        } catch (e) {
-            console.error('打开行业管理弹窗失败', e);
-        }
+    // 判断是否还有弹窗打开，控制body滚动
+    function checkModalOpen() {
+        const activeModal = document.querySelector('.modal-overlay.active');
+        if (!activeModal) document.body.classList.remove('modal-open');
     }
-    function closeIndustryManageModal() {
-        try {
+
+    // 弹窗开关绑定
+    function bindModalEvent() {
+        // 客户弹窗
+        document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+        document.getElementById('contactForm').addEventListener('submit', saveContact);
+        // 互动弹窗
+        document.getElementById('closeInteractionBtn').addEventListener('click', closeInteractionModal);
+        document.getElementById('interactionForm').addEventListener('submit', saveInteraction);
+        // 行业管理弹窗
+        document.getElementById('closeIndustryManageBtn').addEventListener('click', ()=>{
             document.getElementById('industryManageModal').classList.remove('active');
             checkModalOpen();
-        } catch (e) {
-            console.error('关闭行业弹窗失败', e);
-        }
-    }
-    function openExhibitionManageModal() {
-        try {
-            const modal = document.getElementById('exhibitionManageModal');
-            if (modal.classList.contains('active')) return;
-            document.body.classList.add('modal-open');
-            modal.classList.add('active');
-            renderExhibitionManageList();
-        } catch (e) {
-            console.error('打开展会管理弹窗失败', e);
-        }
-    }
-    function closeExhibitionManageModal() {
-        try {
+        });
+        document.getElementById('addNewIndustryBtn').addEventListener('click', addNewIndustry);
+        // 展会管理弹窗
+        document.getElementById('closeExhibitionManageBtn').addEventListener('click', ()=>{
             document.getElementById('exhibitionManageModal').classList.remove('active');
             checkModalOpen();
-        } catch (e) {
-            console.error('关闭展会弹窗失败', e);
-        }
-    }
-
-    function openCopyrightModal() {
-        try {
-            const modal = document.getElementById('copyrightModal');
-            if (modal.classList.contains('active')) return;
-            document.body.classList.add('modal-open');
-            modal.classList.add('active');
-        } catch (e) {
-            console.error('打开版权弹窗失败', e);
-        }
-    }
-    function closeCopyrightModal() {
-        try {
+        });
+        document.getElementById('addNewExhibitionBtn').addEventListener('click', addNewExhibition);
+        // 版权弹窗
+        document.getElementById('closeCopyrightBtn').addEventListener('click', ()=>{
             document.getElementById('copyrightModal').classList.remove('active');
             checkModalOpen();
-        } catch (e) {
-            console.error('关闭版权弹窗失败', e);
-        }
-    }
-
-    function exportData() {
-        try {
-            const exportObj = {
-                customerList: contacts,
-                industryList: industryList,
-                exhibitionList: exhibitionList
-            };
-            const dataStr = JSON.stringify(exportObj, null, 2);
-            const blob = new Blob([dataStr], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `AnsonCRM_backup_${new Date().toISOString().slice(0,10)}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
-        } catch (e) {
-            console.error('导出备份失败', e);
-            alert('导出备份失败');
-        }
-    }
-    function importData(file) {
-        try {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    if (!data.customerList || !data.industryList || !data.exhibitionList) throw new Error('备份格式不正确');
-                    const isCover = confirm(`检测到完整备份数据，确定【覆盖】当前所有客户、行业、展会？取消则选择【追加导入】`);
-                    const newIndList = data.industryList.filter(item => !industryList.includes(item));
-                    industryList = isCover ? data.industryList : [...newIndList, ...industryList];
-                    industryList = [...new Set(industryList)];
-                    saveIndustryStorage();
-                    const newExhList = data.exhibitionList.filter(item => !exhibitionList.includes(item));
-                    exhibitionList = isCover ? data.exhibitionList : [...newExhList, ...exhibitionList];
-                    exhibitionList = [...new Set(exhibitionList)];
-                    saveExhibitionStorage();
-                    const formatList = data.customerList.map(c => ({
-                        industry: c.industry || DEFAULT_INDUSTRY,
-                        exhibition: c.exhibition || DEFAULT_EXHIBITION,
-                        ...c,
-                        interactions: c.interactions || [],
-                        website: c.website || '',
-                        product: c.product || ''
-                    }));
-                    if(isCover){
-                        contacts = formatList;
-                    }else{
-                        const existIds = contacts.map(item=>item.id);
-                        const newList = formatList.filter(item=>!existIds.includes(item.id));
-                        contacts = [...contacts, ...newList];
-                    }
-                    saveContactStorage();
-                    refreshAllSelectOption();
-                    render();
-                    alert('导入成功！');
-                } catch (err) {
-                    alert('导入失败：' + err.message);
-                }
-            };
-            reader.readAsText(file);
-            document.getElementById('importInput').value = '';
-        } catch (e) {
-            console.error('导入文件失败', e);
-            alert('读取导入文件异常');
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        loadData();
-        document.getElementById('addBtn').addEventListener('click', () => openModal());
-        document.getElementById('manageIndustryBtn').addEventListener('click', openIndustryManageModal);
-        document.getElementById('manageExhibitionBtn').addEventListener('click', openExhibitionManageModal);
-        document.getElementById('resetAllDataBtn').addEventListener('click', resetAllData);
-        document.getElementById('copyrightBtn').addEventListener('click', openCopyrightModal);
-        document.getElementById('closeCopyrightBtn').addEventListener('click', closeCopyrightModal);
-        document.getElementById('closeModalBtn').addEventListener('click', closeModal);
-        document.getElementById('closeInteractionBtn').addEventListener('click', closeInteractionModal);
-        document.getElementById('closeIndustryManageBtn').addEventListener('click', closeIndustryManageModal);
-        document.getElementById('closeExhibitionManageBtn').addEventListener('click', closeExhibitionManageModal);
-        document.getElementById('contactForm').addEventListener('submit', saveContact);
-        document.getElementById('interactionForm').addEventListener('submit', saveInteraction);
-        document.getElementById('addNewIndustryBtn').addEventListener('click', addNewIndustry);
-        document.getElementById('addNewExhibitionBtn').addEventListener('click', addNewExhibition);
-        document.getElementById('exportBtn').addEventListener('click', exportData);
-        document.getElementById('importBtn').addEventListener('click', () => document.getElementById('importInput').click());
-        document.getElementById('importInput').addEventListener('change', function(e) {
-            if (this.files.length) importData(this.files[0]);
-        });
-        // 搜索、行业、展会筛选切换，重置到第一页
-        document.getElementById('searchInput').addEventListener('input', function(){
-            currentPage = 1;
-            render();
-        });
-        industryFilterEl.addEventListener('change', function(){
-            currentPage = 1;
-            render();
-        });
-        exhibitionFilterEl.addEventListener('change', function(){
-            currentPage = 1;
-            render();
-        });
-        // 分页切换事件
-        pageFilterEl.addEventListener('change', function(){
-            currentPage = Number(this.value);
-            render();
         });
 
-        document.getElementById('industryListWrap').addEventListener('click', function(e) {
-            const delBtn = e.target.closest('.manage-del-btn');
-            if(delBtn) deleteIndustry(Number(delBtn.dataset.index));
-        });
-        document.getElementById('exhibitionListWrap').addEventListener('click', function(e) {
-            const delBtn = e.target.closest('.manage-del-btn');
-            if(delBtn) deleteExhibition(Number(delBtn.dataset.index));
-        });
-
-        document.getElementById('contactGrid').addEventListener('click', function(e) {
-            const editBtn = e.target.closest('.edit-btn');
-            if (editBtn) { openModal(editBtn.dataset.id); return; }
-            const delBtn = e.target.closest('.delete-btn');
-            if (delBtn) { deleteContact(delBtn.dataset.id); return; }
-            const interBtn = e.target.closest('.interaction-add-btn');
-            if (interBtn) { openInteractionModal(interBtn.dataset.id); return; }
-            const delInterBtn = e.target.closest('.del-inter');
-            if(delInterBtn){
-                const card = delInterBtn.closest('.contact-card');
-                const cid = card.dataset.cid;
-                const index = Number(delInterBtn.dataset.index);
-                deleteSingleInteraction(cid, index);
-            }
-        });
-
-        document.querySelectorAll('.modal-overlay').forEach(el => {
-            el.addEventListener('click', function(e) {
-                if (e.target === this) {
+        // 弹窗外部点击关闭
+        document.querySelectorAll('.modal-overlay').forEach(overlay=>{
+            overlay.addEventListener('click', function(e){
+                if(e.target === this) {
                     this.classList.remove('active');
                     checkModalOpen();
                 }
             });
         });
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                document.querySelectorAll('.modal-overlay.active').forEach(el => el.classList.remove('active'));
+        // ESC关闭弹窗
+        document.addEventListener('keydown', (e)=>{
+            if(e.key === 'Escape') {
+                document.querySelectorAll('.modal-overlay.active').forEach(m=>m.classList.remove('active'));
                 checkModalOpen();
             }
         });
+    }
+
+    // 页面点击事件委托（卡片编辑/删除/互动删除/新增互动、分类删除）
+    function bindClickDelegate() {
+        document.addEventListener('click', function(e){
+            // 新增客户按钮
+            if(e.target.closest('#addBtn')) openModal();
+            // 行业管理
+            if(e.target.closest('#manageIndustryBtn')) {
+                document.body.classList.add('modal-open');
+                document.getElementById('industryManageModal').classList.add('active');
+            }
+            // 展会管理
+            if(e.target.closest('#manageExhibitionBtn')) {
+                document.body.classList.add('modal-open');
+                document.getElementById('exhibitionManageModal').classList.add('active');
+            }
+            // 清空全部数据
+            if(e.target.closest('#resetAllDataBtn')) resetAllData();
+            // 版权弹窗
+            if(e.target.closest('#copyrightBtn')) {
+                document.body.classList.add('modal-open');
+                document.getElementById('copyrightModal').classList.add('active');
+            }
+            // 导出备份
+            if(e.target.closest('#exportBtn')) exportData();
+            // 导入弹窗触发
+            if(e.target.closest('#importBtn')) document.getElementById('importInput').click();
+
+            // 客户卡片-编辑
+            const editBtn = e.target.closest('.edit-btn');
+            if(editBtn) {
+                const id = editBtn.dataset.id;
+                openModal(id);
+                return;
+            }
+            // 客户卡片-删除
+            const delBtn = e.target.closest('.delete-btn');
+            if(delBtn) {
+                const id = delBtn.dataset.id;
+                deleteContact(id);
+                return;
+            }
+            // 新增互动按钮
+            const interAdd = e.target.closest('.inter-add-btn');
+            if(interAdd) {
+                const cid = interAdd.dataset.id;
+                openInteractionModal(cid);
+                return;
+            }
+            // 删除单条互动
+            const interDel = e.target.closest('.del-inter');
+            if(interDel) {
+                const cid = interDel.dataset.cid;
+                const date = interDel.dataset.date;
+                deleteSingleInteraction(cid, date);
+                return;
+            }
+            // 分类删除按钮
+            const tagDel = e.target.closest('.manage-del-btn');
+            if(tagDel) {
+                const type = tagDel.dataset.type;
+                const idx = Number(tagDel.dataset.index);
+                if(type === 'industry') deleteIndustry(idx);
+                if(type === 'exhibition') deleteExhibition(idx);
+                return;
+            }
+        });
+    }
+
+    // 筛选与分页切换事件
+    function bindFilterEvent() {
+        // 顶部搜索框（PC+手机悬浮搜索同步）
+        const mainSearch = document.getElementById('searchInput');
+        const floatSearch = document.getElementById('floatingSearchInput');
+        mainSearch.addEventListener('input', function(){
+            floatSearch.value = this.value;
+            currentPage = 1;
+            render();
+        });
+        floatSearch.addEventListener('input', function(){
+            mainSearch.value = this.value;
+            currentPage = 1;
+            render();
+        });
+        // 行业筛选
+        industryFilterEl.addEventListener('change', ()=>{
+            currentPage = 1;
+            render();
+        });
+        // 展会筛选
+        exhibitionFilterEl.addEventListener('change', ()=>{
+            currentPage = 1;
+            render();
+        });
+        // 分页切换
+        pageFilterEl.addEventListener('change', function(){
+            currentPage = Number(this.value);
+            render();
+        });
+    }
+
+    // 导出全部数据JSON备份
+    function exportData() {
+        try {
+            const exportObj = {
+                customerList: contacts,
+                industryList: industryList,
+                exhibitionList: exhibitionList,
+                exportTime: new Date().toLocaleString()
+            };
+            const jsonStr = JSON.stringify(exportObj, null, 2);
+            const blob = new Blob([jsonStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            const date = new Date();
+            const dateStr = `${date.getFullYear()}${String(date.getMonth()+1).padStart(2,'0')}${String(date.getDate()).padStart(2,'0')}`;
+            a.download = `AnsonCRM_备份_${dateStr}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        } catch (e) {
+            console.error('导出失败', e);
+            alert('导出备份失败，请更换浏览器重试');
+        }
+    }
+
+    // 导入JSON备份文件
+    function importData(file) {
+        try {
+            const reader = new FileReader();
+            reader.onload = function(ev){
+                try {
+                    const data = JSON.parse(ev.target.result);
+                    if(!data.customerList || !data.industryList || !data.exhibitionList) throw new Error('备份文件格式错误');
+                    const cover = confirm('检测到完整备份，选择【确定】覆盖当前所有数据，【取消】仅追加导入客户');
+                    if(cover) {
+                        contacts = data.customerList;
+                        industryList = data.industryList;
+                        exhibitionList = data.exhibitionList;
+                    } else {
+                        // 追加客户，合并分类去重
+                        const newInd = [...new Set([...industryList, ...data.industryList])];
+                        const newExh = [...new Set([...exhibitionList, ...data.exhibitionList])];
+                        industryList = newInd;
+                        exhibitionList = newExh;
+                        data.customerList.forEach(item=>{
+                            const exist = contacts.find(x=>x.phone === item.phone && x.company === item.company);
+                            if(!exist) contacts.push(item);
+                        });
+                    }
+                    saveIndustryStorage();
+                    saveExhibitionStorage();
+                    saveContactStorage();
+                    renderIndustryManageList();
+                    renderExhibitionManageList();
+                    render();
+                    alert('数据导入完成！');
+                } catch(err) {
+                    alert('文件解析失败：' + err.message);
+                }
+            };
+            reader.readAsText(file);
+        } catch (e) {
+            console.error('导入读取失败', e);
+            alert('文件读取异常，请选择正确的crm备份json文件');
+        }
+    }
+
+    // 文件导入监听
+    document.getElementById('importInput').addEventListener('change', function(e){
+        const file = e.target.files[0];
+        if(!file) return;
+        importData(file);
+        this.value = '';
+    });
+
+    // 页面初始化入口
+    document.addEventListener('DOMContentLoaded', function(){
+        loadData();
+        bindModalEvent();
+        bindClickDelegate();
+        bindFilterEvent();
     });
 </script>
 
-<!-- 登录逻辑完整JS -->
+<!-- 登录验证、密码显示切换、手机悬浮搜索滚动逻辑 -->
 <script>
-// 绑定全部DOM元素
+// DOM缓存
 const loginMask = document.getElementById('loginMask');
 const resetMask = document.getElementById('resetMask');
 const initPwdBox = document.getElementById('initPwdBox');
@@ -1634,14 +1663,14 @@ const loginBtn = document.getElementById('loginBtn');
 const switchActionBtn = document.getElementById('switchActionBtn');
 const eyeLogin = document.getElementById('eyeLogin');
 
-// 初始化密码弹窗内面板
+// 初始化密码面板
 const panelInit = document.getElementById('panelInit');
 const initPwdInput = document.getElementById('initPwdInput');
 const confirmInitBtn = document.getElementById('confirmInitBtn');
 const backFromInitBtn = document.getElementById('backFromInitBtn');
 const eyeInit = document.getElementById('eyeInit');
 
-// 独立重置密码面板元素
+// 重置密码面板
 const oldPwdInput = document.getElementById('oldPwdInput');
 const newPwdInput = document.getElementById('newPwdInput');
 const confirmResetBtn = document.getElementById('confirmResetBtn');
@@ -1649,210 +1678,246 @@ const backFromResetBtn = document.getElementById('backFromResetBtn');
 const eyeOld = document.getElementById('eyeOld');
 const eyeNew = document.getElementById('eyeNew');
 
-// 无遮罩初始化卡片元素
+// 独立初始化密码卡片
 const initSinglePwd = document.getElementById('initSinglePwd');
 const setInitSingleBtn = document.getElementById('setInitSingleBtn');
 const eyeSingleInit = document.getElementById('eyeSingleInit');
 
-// 阻止手机下拉回弹、滚动溢出
-function stopMobileOverscroll(e) {
+// 禁止页面下拉回弹
+function stopScrollBounce(e) {
     e.preventDefault();
 }
 
-// 页面初始化登录系统
+// 登录系统初始化
 function initLoginSystem(){
     document.body.classList.add('lock-scroll');
-    document.addEventListener('touchmove', stopMobileOverscroll, { passive:false });
+    document.addEventListener('touchmove', stopScrollBounce, { passive:false });
     mainPage.style.display = 'none';
     loginMask.classList.add('show');
     resetMask.classList.remove('show');
     initPwdBox.classList.remove('show');
-    showPanel('login');
+    showLoginPanel('login');
 
-    const savedPwd = localStorage.getItem('crmLoginPwd');
-    if(!savedPwd || savedPwd === ''){
+    const savedPwd = localStorage.getItem('crm_login_pwd');
+    if(!savedPwd || savedPwd === '') {
         switchActionBtn.innerText = '设置初始密码';
-    }else{
+    } else {
         switchActionBtn.innerText = '重置密码';
     }
 
-    // 会话缓存免登录
-    if(sessionStorage.getItem('crmIsLogin') === '1'){
+    // 免登录缓存校验
+    if(sessionStorage.getItem('crm_login_ok') === '1') {
         loginMask.classList.remove('show');
         mainPage.style.display = 'block';
         document.body.classList.remove('lock-scroll');
-        document.removeEventListener('touchmove', stopMobileOverscroll);
+        document.removeEventListener('touchmove', stopScrollBounce);
     }
 }
 
-// 切换登录弹窗内子面板（登录/初次设置密码）
-function showPanel(type){
+// 切换登录子面板
+function showLoginPanel(type){
     panelLogin.style.display = 'none';
     panelInit.style.display = 'none';
     tipText.style.display = 'none';
-
-    switch(type){
-        case 'login':
-            boxTitle.innerText = '';
-            panelLogin.style.display = 'block';
-            pwdInput.value = '';
-            pwdInput.type = 'password';
-            eyeLogin.innerText = '◡';
-            break;
-        case 'init':
-            boxTitle.innerText = '';
-            panelInit.style.display = 'block';
-            initPwdInput.value = '';
-            initPwdInput.type = 'password';
-            eyeInit.innerText = '◡';
-            break;
+    boxTitle.innerText = '';
+    if(type === 'login') {
+        panelLogin.style.display = 'block';
+        pwdInput.value = '';
+        pwdInput.type = 'password';
+        eyeLogin.innerText = '◡';
+    } else if(type === 'init') {
+        panelInit.style.display = 'block';
+        initPwdInput.value = '';
+        initPwdInput.type = 'password';
+        eyeInit.innerText = '◡';
     }
 }
 
-// DOM加载完成执行登录初始化
-document.addEventListener('DOMContentLoaded', initLoginSystem);
-
 // 登录按钮逻辑
 loginBtn.addEventListener('click', ()=>{
-    const input = pwdInput.value.trim();
-    const realPwd = localStorage.getItem('crmLoginPwd');
-    if(input === realPwd){
+    const inputVal = pwdInput.value.trim();
+    const realPwd = localStorage.getItem('crm_login_pwd');
+    if(inputVal === realPwd) {
         loginMask.classList.remove('show');
         mainPage.style.display = 'block';
         tipText.style.display = 'none';
         document.body.classList.remove('lock-scroll');
-        document.removeEventListener('touchmove', stopMobileOverscroll);
-        sessionStorage.setItem('crmIsLogin','1');
-    }else{
+        document.removeEventListener('touchmove', stopScrollBounce);
+        sessionStorage.setItem('crm_login_ok','1');
+    } else {
         tipText.innerText = '密码错误，请重新输入';
         tipText.style.display = 'block';
         pwdInput.value = '';
         pwdInput.focus();
     }
-})
+});
 
-// 输入框回车快捷登录
+// 密码框回车快捷登录
 pwdInput.addEventListener('keydown', (e)=>{
     if(e.key === 'Enter') loginBtn.click();
-})
+});
 
-// 切换按钮：初始密码/重置密码
+// 切换 初始设置 / 重置密码弹窗
 switchActionBtn.addEventListener('click', ()=>{
-    const savedPwd = localStorage.getItem('crmLoginPwd');
-    if(!savedPwd || savedPwd === ''){
-        showPanel('init');
-    }else{
+    const savedPwd = localStorage.getItem('crm_login_pwd');
+    if(!savedPwd || savedPwd === '') {
+        showLoginPanel('init');
+    } else {
         loginMask.classList.remove('show');
         resetMask.classList.add('show');
         oldPwdInput.value = '';
         newPwdInput.value = '';
         resetTipText.style.display = 'none';
     }
-})
+});
 
-// 【登录弹窗内-初次设置密码】确认按钮
+// 首次设置密码确认
 confirmInitBtn.addEventListener('click', ()=>{
-    const newPwd = initPwdInput.value.trim();
-    if(newPwd === ''){
+    const newVal = initPwdInput.value.trim();
+    if(!newVal) {
         tipText.innerText = '密码不能为空';
         tipText.style.display = 'block';
         initPwdInput.focus();
         return;
     }
-    localStorage.setItem('crmLoginPwd', newPwd.trim());
+    localStorage.setItem('crm_login_pwd', newVal);
     tipText.innerText = '密码创建成功，请登录';
     tipText.style.display = 'block';
     switchActionBtn.innerText = '重置密码';
-    setTimeout(()=>showPanel('login'), 1200);
-})
-backFromInitBtn.addEventListener('click', ()=>showPanel('login'));
+    setTimeout(()=>showLoginPanel('login'), 1200);
+});
 
-// 【独立重置密码弹窗】保存新密码
+// 初始化面板返回登录
+backFromInitBtn.addEventListener('click', ()=>showLoginPanel('login'));
+
+// 重置密码确认
 confirmResetBtn.addEventListener('click', ()=>{
-    const realPwd = localStorage.getItem('crmLoginPwd');
+    const realPwd = localStorage.getItem('crm_login_pwd');
     const oldVal = oldPwdInput.value.trim();
     const newVal = newPwdInput.value.trim();
     resetTipText.style.display = 'none';
-
-    if(oldVal !== realPwd){
-        resetTipText.innerText = '旧密码输入错误，无权修改密码！';
+    if(oldVal !== realPwd) {
+        resetTipText.innerText = '旧密码输入错误';
         resetTipText.style.display = 'block';
         oldPwdInput.value = '';
         oldPwdInput.focus();
         return;
     }
-    if(newVal === ''){
-        resetTipText.innerText = '新密码不能为空，修改取消';
+    if(!newVal) {
+        resetTipText.innerText = '新密码不能为空';
         resetTipText.style.display = 'block';
         newPwdInput.focus();
         return;
     }
-    localStorage.setItem('crmLoginPwd', newVal.trim());
-    resetTipText.innerText = '密码修改成功，页面即将刷新';
+    localStorage.setItem('crm_login_pwd', newVal);
+    resetTipText.innerText = '密码修改成功，即将返回登录';
     resetTipText.style.display = 'block';
-    setTimeout(()=>location.reload(), 1200);
-})
+    setTimeout(()=>{
+        resetMask.classList.remove('show');
+        loginMask.classList.add('show');
+        showLoginPanel('login');
+    },1200);
+});
+
+// 重置弹窗返回登录
 backFromResetBtn.addEventListener('click', ()=>{
     resetMask.classList.remove('show');
     loginMask.classList.add('show');
-})
+});
 
-// 密码显示/隐藏切换图标
+// 密码显示/隐藏切换
 eyeLogin.onclick = function(){
-    if(pwdInput.type === 'password'){
+    if(pwdInput.type === 'password') {
         pwdInput.type = 'text';
         this.innerText = '👁';
-    }else{
+    } else {
         pwdInput.type = 'password';
         this.innerText = '◡';
     }
-}
+};
 eyeInit.onclick = function(){
-    if(initPwdInput.type === 'password'){
+    if(initPwdInput.type === 'password') {
         initPwdInput.type = 'text';
         this.innerText = '👁';
-    }else{
+    } else {
         initPwdInput.type = 'password';
         this.innerText = '◡';
     }
-}
+};
 eyeOld.onclick = function(){
-    if(oldPwdInput.type === 'password'){
+    if(oldPwdInput.type === 'password') {
         oldPwdInput.type = 'text';
         this.innerText = '👁';
-    }else{
+    } else {
         oldPwdInput.type = 'password';
         this.innerText = '◡';
     }
-}
+};
 eyeNew.onclick = function(){
-    if(newPwdInput.type === 'password'){
+    if(newPwdInput.type === 'password') {
         newPwdInput.type = 'text';
         this.innerText = '👁';
-    }else{
+    } else {
         newPwdInput.type = 'password';
         this.innerText = '◡';
     }
-}
+};
 eyeSingleInit.onclick = function(){
-    if(initSinglePwd.type === 'password'){
+    if(initSinglePwd.type === 'password') {
         initSinglePwd.type = 'text';
         this.innerText = '👁';
-    }else{
+    } else {
         initSinglePwd.type = 'password';
         this.innerText = '◡';
     }
-}
-setInitSingleBtn.addEventListener('click',()=>{
+};
+
+// 独立卡片设置密码
+setInitSingleBtn.addEventListener('click', ()=>{
     const val = initSinglePwd.value.trim();
-    if(!val){
+    if(!val) {
         alert('密码不能为空');
         return;
     }
-    localStorage.setItem('crmLoginPwd',val);
+    localStorage.setItem('crm_login_pwd', val);
     alert('初始密码设置完成，请刷新页面登录');
     location.reload();
-})
+});
+
+// 页面加载完成初始化登录
+document.addEventListener('DOMContentLoaded', initLoginSystem);
+
+// 手机端滚动悬浮搜索逻辑
+(function() {
+    if (window.innerWidth > 640) return;
+    const floatingSearch = document.getElementById('floatingSearch');
+    const originalWrapper = document.querySelector('.toolbar .search-wrapper');
+    const mainSearchInput = document.getElementById('searchInput');
+    const floatInput = document.getElementById('floatingSearchInput');
+    if (!floatingSearch || !originalWrapper || !mainSearchInput || !floatInput) return;
+
+    let scrollTick = false;
+    window.addEventListener('scroll', function() {
+        if (!scrollTick) {
+            window.requestAnimationFrame(function() {
+                const rect = originalWrapper.getBoundingClientRect();
+                if (rect.top < 0) {
+                    floatingSearch.style.display = 'block';
+                    floatingSearch.style.opacity = '1';
+                    floatInput.value = mainSearchInput.value;
+                } else {
+                    floatingSearch.style.opacity = '0';
+                    setTimeout(()=>{
+                        floatingSearch.style.display = 'none';
+                    },200);
+                }
+                scrollTick = false;
+            });
+            scrollTick = true;
+        }
+    });
+    floatingSearch.style.display = 'none';
+})();
 </script>
 </body>
 </html>
