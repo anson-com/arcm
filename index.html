@@ -2178,22 +2178,35 @@ function refreshAllTitleOverflow() {
     });
 }
 
+// ========== 手机端强制锁定竖屏（PC端自动忽略） ==========
+(function lockPortraitOnMobile() {
+    // 检测是否支持屏幕方向锁定API
+    if (typeof screen === 'undefined' || !screen.orientation || typeof screen.orientation.lock !== 'function') {
+        return; // PC或不支持该API的浏览器自动跳过
+    }
 
-// 强制锁定竖屏，仅移动端生效，PC完全兼容无报错
-(function lockPortrait() {
-    // 双层判断：必须同时存在orientation和lock、addEventListener才执行
-    const supportOrientApi = screen?.orientation && typeof screen.orientation.lock === 'function' && typeof screen.orientation.addEventListener === 'function';
-    if (!supportOrientApi) return;
+    // 1. 页面加载时尝试锁定（部分浏览器支持）
+    try {
+        screen.orientation.lock('portrait').catch(() => {});
+    } catch (_) {}
 
-    const lock = () => {
-        screen.orientation.lock('portrait').catch(()=>{});
+    // 2. 用户首次点击时再次锁定（有用户手势，兼容性更好）
+    const orientLock = () => {
+        try {
+            screen.orientation.lock('portrait').catch(() => {});
+        } catch (_) {}
+        document.removeEventListener('click', orientLock);
     };
-    // 用户点击触发锁定（仅一次）
-    document.addEventListener('click', lock, { once:true });
-    // 监听屏幕方向切换回竖屏
-    screen.orientation.addEventListener('change', () => {
-        if(screen.orientation.type.includes('landscape')) lock();
-    });
+    document.addEventListener('click', orientLock, { once: true });
+
+    // 3. 监听屏幕方向变化，若被切到横屏则强制锁回竖屏
+    try {
+        screen.orientation.addEventListener('change', () => {
+            if (screen.orientation.type.startsWith('landscape')) {
+                screen.orientation.lock('portrait').catch(() => {});
+            }
+        });
+    } catch (_) {}
 })();
 </script>
 </body>
