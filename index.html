@@ -40,9 +40,19 @@ if ('serviceWorker' in navigator) {
     --floatBtn-size: 30px;/* 右侧加号圆形按钮尺寸 */
     --floatBtn-bg: #2563eb; /* 按钮蓝色 */
     --floatBtn-color: #fff;
-
     --floatBtn-radius: 50%;
     --safe-top: env(safe-area-inset-top, 0px);
+ /* 展会分组标题 统一可调参数（后期只改这里数字） */
+    --title-padding-x:2px;        /* 标题左右内边距 */
+    --title-padding-bottom: 10px;  /* 标题底部内边距 */
+    --title-margin-bottom: 15px;   /* 标题下方外边距 */
+    --scrollbar-height: 2px;       /* 横向滚动条高度 */
+    --scrollbar-color: #cbd5e1;    /* 滚动条颜色 */
+    --fade-width: 50px;            /* 右侧渐变遮罩宽度（可自由调大小） */
+    --fade-bg: #f6f9fc;            /* 渐变遮罩底色，和页面背景统一 */
+    
+
+    
 }
 body::before {
     content: "";
@@ -99,41 +109,49 @@ background:#f6f9fc; }/* 下拉框背景色 */
 
 
 
-        .group-title {
+       .group-title {
     font-size: 16px;
     font-weight: 600;
     color: #334155;
-    padding-bottom: 10px;
+    /* 统一变量控制上下左右内边距 */
+    padding: 0 var(--title-padding-x) var(--title-padding-bottom);
     border-bottom: 1px solid #e2e8f0;
-    margin-bottom: 15px;
+    margin-bottom: var(--title-margin-bottom);
 
     white-space: nowrap;
     overflow-x: auto;
     overflow-y: hidden;
-    padding-right: 30px;
     position: relative;
 }
+
+/* 右侧渐变遮罩：文字溢出时显示，提示可左右滑动，宽度由--fade-width控制 */
 .group-title::after {
-    content: "···";
+    content: "";
     position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 16px;
-    color: #94a3b8;
+    top: 0;
+    right: 0;
+    width: var(--fade-width);
+    height: 100%;
+    background: linear-gradient(90deg, transparent, var(--fade-bg));
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.2s ease;
 }
+/* 文字溢出时显示渐变遮罩 */
 .group-title[data-overflow="true"]::after {
     opacity: 1;
 }
+
+/* 横向滚动条样式，手机自动松手隐藏，PC滑动显示 */
 .group-title::-webkit-scrollbar {
-    height: 3px;
+    height: var(--scrollbar-height);
 }
 .group-title::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
+    background: var(--scrollbar-color);
     border-radius: 3px;
+}
+.group-title::-webkit-scrollbar-track {
+    background: transparent;
 }
 
 /* ===================== 数据统计滑动特效===================== */
