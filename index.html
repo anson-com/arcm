@@ -197,7 +197,7 @@ background:#f6f9fc; }/* 下拉框背景色 */
         .add-tag-row {
             display:flex;
             gap:6px;
-            margin-top:4px;
+            margin-top:0px;/* 【核心参数：列表与输入框上下距离】改这个数字 */
             align-items:center;
             flex-wrap:wrap;
         }
@@ -387,8 +387,8 @@ background:#f6f9fc; }/* 下拉框背景色 */
         bottom: 0px;
         display: flex !important;
         gap: 8px;
-        padding-top:8px;
-        padding-bottom:8px;
+        padding-top:8px;/* 上边距 */
+        padding-bottom:20px;/* 下边距 */
         padding-left:16px;  /* 左边距 */
         padding-right:16px; /* 右边距 */
         background: #f6f9fc;
@@ -650,7 +650,7 @@ html {
     max-height: 320px;
     overflow-y: auto;
     overflow-x: hidden;
-    margin: 8px 0;
+    margin: 0px 0;
     padding-right: 4px;
 }
 #industryListWrap::-webkit-scrollbar,
@@ -932,7 +932,7 @@ html {
             <input type="text" id="newExhibitionInput" placeholder="输入新展会名称">
             <button type="button" class="btn btn-primary" id="addNewExhibitionBtn"><i class="fas fa-plus"></i> 新增</button>
         </div>
-        <div class="modal-actions" style="margin-top:14px;">
+        <div class="modal-actions" style="margin-top:4px;">
             <button type="button" class="btn btn-outline" id="closeExhibitionManageBtn">关闭</button>
         </div>
     </div>
@@ -965,7 +965,7 @@ window.addEventListener('load',()=>{
 
 <script>
     // 分页全局配置
-    const PAGE_SIZE = 30;
+    const PAGE_SIZE = 25;
     let currentPage = 1;
 
     let contacts = [];
@@ -1081,14 +1081,14 @@ window.addEventListener('scroll', handleScroll, { passive: true });
     const totalPage = Math.ceil(totalFilterCount / PAGE_SIZE);
     pageFilterEl.innerHTML = '';
     if(totalPage <= 0) {
-        pageFilterEl.innerHTML = `<option value="1">第 1 页｜共 0 页</option>`;
+        pageFilterEl.innerHTML = `<option value="1">  1  ｜共 0 页</option>`;
         currentPage = 1;
         return;
     }
     for(let i = 1; i <= totalPage; i++) {
         const opt = document.createElement('option');
         opt.value = i;
-        opt.innerText =` 第 ${i} 页｜共 ${totalPage} 页`;
+        opt.innerText =`  ${i}  ｜共 ${totalPage} 页`;
         if(Number(opt.value) === currentPage) opt.selected = true;
         pageFilterEl.appendChild(opt);
     }
@@ -1405,7 +1405,14 @@ window.addEventListener('scroll', handleScroll, { passive: true });
                 return;
             }
 
-            const groupMap = {};
+                       const groupMap = {};
+            // 新增：预计算每个展会筛选后的全部总条数
+            const exhibitionTotalMap = {};
+            filtered.forEach(item => {
+                if (!exhibitionTotalMap[item.exhibition]) exhibitionTotalMap[item.exhibition] = 0;
+                exhibitionTotalMap[item.exhibition] += 1;
+            });
+            // 原分页分组逻辑不变
             pageData.forEach(item => {
                 if (!groupMap[item.exhibition]) groupMap[item.exhibition] = [];
                 groupMap[item.exhibition].push(item);
@@ -1413,7 +1420,8 @@ window.addEventListener('scroll', handleScroll, { passive: true });
 
             let html = '';
             Object.keys(groupMap).forEach(exhibitionName => {
-                html += `<div class="group-block"><h3 class="group-title"> <i class="   fas fa-id-card"></i> ${escapeHtml(exhibitionName)}（${groupMap[exhibitionName].length}家客户）</h3><div class="group-card-wrap">`;
+                // exhibitionTotalMap[exhibitionName] = 该展会筛选后全部总客户数
+                html += `<div class="group-block"><h3 class="group-title"> </i>  ${escapeHtml(exhibitionName)} <i class="fas fa-id-card"></i> 共 ${exhibitionTotalMap[exhibitionName]} 家</h3><div class="group-card-wrap">`;
                 groupMap[exhibitionName].forEach(c => {
                     const interactions = c.interactions || [];
                     const recent = interactions.slice(-3).reverse();
