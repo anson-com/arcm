@@ -2,9 +2,10 @@
 <html lang="zh-CN">
 <head> 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AnsonCRM</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="screen-orientation" content="portrait">
+    <meta name="x5-orientation" content="portrait">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="ACRM">
@@ -687,6 +688,21 @@ html, body {
     max-width: 100%;
   }
 }
+/* 移动端适配，禁止横屏 */
+/* 仅手机设备横屏才旋转，PC/平板完全不执行 */
+@media (orientation:landscape) and (max-width: 640px) {
+    html {
+        width: 100vh;
+        height: 100vw;
+        transform: rotate(-90deg);
+        transform-origin: top left;
+        overflow: hidden;
+    }
+    body {
+        width: 100vh;
+        height: 100vw;
+    }
+}
 
 /* PC端保持原有横向布局，不产生任何变化 */
 .select-group {
@@ -857,7 +873,7 @@ html {
   <h1>Anson <span>CRM</span></h1>
 </div>
         <div class="stats header-stats">
-        <div class="stat-item"><i class="fas fas fa-user"></i><strong id="totalCount">0</strong></div>
+        <div class="stat-item"><i class="fas fa-user"></i><strong id="totalCount">0</strong></div>
         <div class="stat-item"><i class="fab fa-weixin"></i><strong id="interactionCount">0</strong></div>
     </div>
         <div class="header-actions">
@@ -2179,34 +2195,21 @@ function refreshAllTitleOverflow() {
 }
 
 // ========== 手机端强制锁定竖屏（PC端自动忽略） ==========
-(function lockPortraitOnMobile() {
-    // 检测是否支持屏幕方向锁定API
-    if (typeof screen === 'undefined' || !screen.orientation || typeof screen.orientation.lock !== 'function') {
-        return; // PC或不支持该API的浏览器自动跳过
-    }
+// 强制锁定竖屏，仅移动端生效，PC完全兼容无报错
+(function lockPortrait() {
+    // 双层判断：必须同时存在orientation和lock、addEventListener才执行
+    const supportOrientApi = screen?.orientation && typeof screen.orientation.lock === 'function' && typeof screen.orientation.addEventListener === 'function';
+    if (!supportOrientApi) return;
 
-    // 1. 页面加载时尝试锁定（部分浏览器支持）
-    try {
-        screen.orientation.lock('portrait').catch(() => {});
-    } catch (_) {}
-
-    // 2. 用户首次点击时再次锁定（有用户手势，兼容性更好）
-    const orientLock = () => {
-        try {
-            screen.orientation.lock('portrait').catch(() => {});
-        } catch (_) {}
-        document.removeEventListener('click', orientLock);
+    const lock = () => {
+        screen.orientation.lock('portrait').catch(()=>{});
     };
-    document.addEventListener('click', orientLock, { once: true });
-
-    // 3. 监听屏幕方向变化，若被切到横屏则强制锁回竖屏
-    try {
-        screen.orientation.addEventListener('change', () => {
-            if (screen.orientation.type.startsWith('landscape')) {
-                screen.orientation.lock('portrait').catch(() => {});
-            }
-        });
-    } catch (_) {}
+    // 用户点击触发锁定（仅一次）
+    document.addEventListener('click', lock, { once:true });
+    // 监听屏幕方向切换回竖屏
+    screen.orientation.addEventListener('change', () => {
+        if(screen.orientation.type.includes('landscape')) lock();
+    });
 })();
 </script>
 </body>
