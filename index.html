@@ -84,7 +84,13 @@ body::before {
         .search-wrapper input { width:100%; padding:10px 18px 10px 42px; border-radius:40px; border:1px solid #e2e8f0; font-size:14px; background:#f8fafc; transition:all .2s; }
         .search-wrapper input:focus { outline:none; border-color:#2563eb; background:#fff; box-shadow:0 0 0 3px rgba(37,99,235,0.1); }
         .select-wrapper { min-width:160px; }
-        .select-wrapper select { width:100%; padding:9px 12px; border-radius:14px; border:1px solid #e2e8f0; font-size:14px; background:#fafcff; }
+        .select-wrapper select { width:100%; 
+padding:9px 12px; /* 上下9px，左右12px → 控制下拉框内部文字间距、整体高度 */
+border-radius:39px;/* 圆角大小 */
+ border:1px 
+solid #e2e8f0; 
+font-size:14px;  /* 文字大小 */
+background:#f6f9fc; }/* 下拉框背景色 */
         .stats { display:flex; gap:20px; margin-bottom:24px; flex-wrap:wrap; }
         .stat-item { background:#fff; padding:8px 24px 8px 20px; border-radius:40px; border:1px solid #eef2f6; display:flex; align-items:center; gap:10px; font-size:14px; font-weight:500; }
         .stat-item i { color:#2563eb; font-size:16px; }
@@ -128,14 +134,18 @@ body::before {
         .empty-state h3 { color:#475569; margin-bottom:4px; }
         .modal-overlay { display:none; position:fixed; inset:0; background:rgba(15,23,42,0.3); backdrop-filter:blur(4px); justify-content:center; align-items:center; z-index:999; padding:20px; }
         .modal-overlay.active { display:flex; }
-        .modal {
+
+/* 弹窗整体高度兜底，防止超大屏幕溢出 */
+        .modal {  
     background: #fff;
-    max-width: 560px;
+    max-width: 360px;/* 控制弹窗最大宽度，改这里！ */
+    max-height: 90vh; /* 新增：弹窗最高不超过屏幕90% */
     width: 100%;
     border-radius: 28px;
-    padding: 24px 20px;
+    padding: 12px 12px; /* 弹窗内部四周留白（上下左右内边距） */
     box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
     animation: fadeUp .2s ease;
+    overflow-y: auto; /* 兜底滚动 */
 }
         @keyframes fadeUp { from { opacity:0; transform:scale(0.96) translateY(10px); } to { opacity:1; transform:scale(1) translateY(0); } }
         .modal h2 { font-size:22px; font-weight:700; margin-bottom:20px; display:flex; align-items:center; gap:10px; }
@@ -153,10 +163,10 @@ body::before {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1px 18px;
+    padding: 0px 12px;/* 单行上下内边距，加大行高弹窗变高 */
     border: 1px solid #e2e8f0;
     border-radius: 14px;
-    margin-bottom: 4px;
+    margin-bottom: 3px;/* 条目之间垂直间距 */
     background: #ffffff;
     transition: 0.2s ease all;
     min-height: 14px;
@@ -414,6 +424,7 @@ body::before {
         appearance: auto;
         min-width: 0;
     }
+
     /* 分页下拉单独微调（可选） */
     .toolbar .select-group .select-wrapper:nth-child(3) select {
         font-size: 14px;
@@ -630,6 +641,31 @@ html {
 #mainPage {
   width: 100%;
   min-width: 100%;
+}
+
+/* ========== 下面粘贴新增的弹窗滚动代码 ========== */
+/* 行业、展会弹窗列表超长滚动，底部关闭按钮永久可见 PC+手机通用 */
+#industryListWrap,
+#exhibitionListWrap {
+    max-height: 320px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin: 8px 0;
+    padding-right: 4px;
+}
+#industryListWrap::-webkit-scrollbar,
+#exhibitionListWrap::-webkit-scrollbar {
+    width: 4px;
+}
+#industryListWrap::-webkit-scrollbar-thumb,
+#exhibitionListWrap::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+#industryListWrap::-webkit-scrollbar-track,
+#exhibitionListWrap::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
 }
     </style>
 </head>
@@ -958,27 +994,58 @@ window.addEventListener('load',()=>{
     // 悬浮添加客户按钮
     floatAddBtn.addEventListener('click', ()=> openModal());
 
-    // 滚动监听控制悬浮栏显示与滚动锁定
-    let toolbarTop = 0;
-    function calcToolbarTop(){
-        const toolbar = document.querySelector('.toolbar');
-        if(!toolbar) return;
-        const rect = toolbar.getBoundingClientRect();
-        toolbarTop = rect.top;
-    }
-    window.addEventListener('resize', calcToolbarTop);
-    window.addEventListener('load', calcToolbarTop);
-
- function handleScrollShowFloatBar(){
-    const top = window.scrollY;
-    const threshold = toolbarTop - 20;
-    if(top > threshold){
-        floatSearchBar.classList.add('show');
-    }else{
-        floatSearchBar.classList.remove('show');
+// 滚动节流工具函数，降低执行频率防抖动、防误触
+function throttle(fn, delay = 30) {
+    let lastTime = 0;
+    return function () {
+        const now = Date.now();
+        if (now - lastTime >= delay) {
+            lastTime = now;
+            fn.apply(this, arguments);
+        }
     }
 }
-    window.addEventListener('scroll', handleScrollShowFloatBar);
+
+// 悬浮栏滚动判定核心变量
+let toolbarBottom = 0;
+const toolbar = document.querySelector('.toolbar');
+const MIN_SCROLL_THRESHOLD = 15; // 最小有效滑动距离，过滤手指微抖
+let lastScrollY = 0;
+
+// 实时计算工具栏上下边界
+function calcToolbarRect() {
+    if (!toolbar) return;
+    const rect = toolbar.getBoundingClientRect();
+    toolbarBottom = rect.bottom;
+}
+
+// 滚动处理主逻辑
+const handleScroll = throttle(function () {
+    calcToolbarRect();
+    const currentScrollY = window.pageYOffset || document.documentElement.scrollTop;
+    const scrollDiff = Math.abs(currentScrollY - lastScrollY);
+
+    // 滑动距离过小直接跳过，不切换悬浮栏状态
+    if (scrollDiff < MIN_SCROLL_THRESHOLD) return;
+    lastScrollY = currentScrollY;
+
+    // 判定1：工具栏底部 < 0 → 整个工具栏完全滚出屏幕，显示悬浮搜索
+    if (toolbarBottom < 0) {
+        floatSearchBar.classList.add('show');
+    } else {
+        // 判定2：工具栏任意一截出现在屏幕，立刻隐藏悬浮框
+        floatSearchBar.classList.remove('show');
+    }
+});
+
+// 页面加载、窗口缩放重新计算工具栏边界
+function recalcLayout() {
+    calcToolbarRect();
+}
+window.addEventListener('resize', recalcLayout);
+window.addEventListener('load', recalcLayout);
+// 绑定滚动事件
+window.addEventListener('scroll', handleScroll, { passive: true });
 
     function openExternalUrl(url) {
         try {
