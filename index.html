@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AnsonCRM</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="orientation" content="portrait">
+    <meta name="screen-orientation" content="portrait">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="ACRM">
@@ -725,6 +727,29 @@ html {
 #exhibitionListWrap::-webkit-scrollbar-track {
     background: #f1f5f9;
     border-radius: 4px;
+}
+
+/* 手机横屏强制旋转矫正，页面永远竖屏展示 */
+@media (max-width: 640px) and (orientation: landscape) {
+    html {
+        transform: rotate(-90deg);
+        transform-origin: center center;
+        width: 100vh;
+        height: 100vw;
+        overflow-x: hidden;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+    body {
+        width: 100vh;
+        height: 100vw;
+        overflow-x: hidden;
+    }
+    /* 底部筛选下拉适配旋转后的布局，防止文字挤压 */
+    .toolbar .select-group .select-wrapper select {
+        font-size: 13px !important;
+    }
 }
     </style>
 </head>
