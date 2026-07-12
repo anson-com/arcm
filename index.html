@@ -42,17 +42,19 @@ if ('serviceWorker' in navigator) {
     --floatBtn-color: #fff;
     --floatBtn-radius: 50%;
     --safe-top: env(safe-area-inset-top, 0px);
+
  /* 展会分组标题 统一可调参数（后期只改这里数字） */
-    --title-padding-x:2px;        /* 标题左右内边距 */
-    --title-padding-bottom: 10px;  /* 标题底部内边距 */
+--title-padding-left: 2px;
+--title-padding-right: 44px;
+    /* =====--title-padding-x:2px;    标题左右内边距 ====== */
+    --title-padding-bottom: 14px;  /* 标题底部内边距 */
     --title-margin-bottom: 15px;   /* 标题下方外边距 */
     --scrollbar-height: 2px;       /* 横向滚动条高度 */
     --scrollbar-color: #cbd5e1;    /* 滚动条颜色 */
-    --fade-width: 50px;            /* 右侧渐变遮罩宽度（可自由调大小） */
+    --fade-width: 36px;            /* 右侧渐变遮罩宽度（可自由调大小） */
+    --fade-opacity: 0.7; /* 0完全透明，1完全不透明，按需修改 */
     --fade-bg: #f6f9fc;            /* 渐变遮罩底色，和页面背景统一 */
-    
-
-    
+   
 }
 body::before {
     content: "";
@@ -76,7 +78,16 @@ body::before {
         .logo-area i { font-size:28px; color:#2563eb; background:#dbeafe; padding:10px; border-radius:14px; }
         .logo-area h1 { font-size:24px; font-weight:700; letter-spacing:-0.5px; }
         .logo-area span { color:#64748b; font-weight:400; }
-        .header-actions { display:flex; gap:10px; flex-wrap:wrap; }
+        .header-actions {
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    flex-shrink: 1;
+    min-width: 320px;
+}
+.header-actions .btn {
+    white-space: nowrap; /* 按钮文字不折行 */
+}
         .btn { display:inline-flex; align-items:center; gap:8px; padding:8px 18px; border-radius:40px; border:none; font-weight:600; font-size:14px; cursor:pointer; transition:all .2s ease; background:#fff; color:#1e293b; box-shadow:0 1px 3px rgba(0,0,0,0.04); border:1px solid #e2e8f0; }
         .btn-primary { background:#2563eb; color:#fff; border-color:#2563eb; }
         .btn-primary:hover { background:#1d4ed8; transform:translateY(-1px); box-shadow:0 4px 12px rgba(37,99,235,0.3); }
@@ -109,12 +120,12 @@ background:#f6f9fc; }/* 下拉框背景色 */
 
 
 
-       .group-title {
+      .group-title {
     font-size: 16px;
     font-weight: 600;
     color: #334155;
-    /* 统一变量控制上下左右内边距 */
-    padding: 0 var(--title-padding-x) var(--title-padding-bottom);
+    /* 上 右 下 左，分别绑定独立变量 */
+    padding: 0 var(--title-padding-right) var(--title-padding-bottom) var(--title-padding-left);
     border-bottom: 1px solid #e2e8f0;
     margin-bottom: var(--title-margin-bottom);
 
@@ -132,7 +143,8 @@ background:#f6f9fc; }/* 下拉框背景色 */
     right: 0;
     width: var(--fade-width);
     height: 100%;
-    background: linear-gradient(90deg, transparent, var(--fade-bg));
+    /* 在渐变末尾加上透明度变量控制整体深浅 */
+    background: linear-gradient(90deg, transparent, rgba(246, 249, 252, var(--fade-opacity)));
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.2s ease;
@@ -569,7 +581,8 @@ background:#f6f9fc; }/* 下拉框背景色 */
     }
 }
 
-@media (min-width:641px){
+/* PC大屏 ≥1025px 专属样式 */
+@media (min-width:1025px){
     #pwaSplash{display:none !important;}
     /* PC端隐藏悬浮搜索DOM */
     .float-search-bar {
@@ -725,6 +738,71 @@ html {
 #exhibitionListWrap::-webkit-scrollbar-track {
     background: #f1f5f9;
     border-radius: 4px;
+}
+/* ========== 手机横屏/小平板 641px ~ 1024px：保持PC横向布局，禁止自动换行 ========== */
+@media (min-width: 641px) and (max-width: 1024px) {
+    /* 隐藏手机竖屏悬浮搜索栏，恢复顶部原生搜索 */
+    .float-search-bar {
+        display: none !important;
+    }
+    /* 页面边距恢复PC标准，移除竖屏底部留白 */
+    body {
+        padding: 24px;
+    }
+    /* 头部强制一行，禁止换行堆叠 */
+    .header {
+        flex-direction: row;
+        flex-wrap: nowrap !important;
+        margin: 0 0 32px 0;
+        gap: 16px;
+    }
+    /* 头部按钮组不换行，靠右排列 */
+    .header-actions {
+        width: auto;
+        margin-top: 0;
+        padding: 0;
+        justify-content: flex-end;
+        flex-shrink: 1;
+    }
+    /* 缩小横屏按钮防止挤压换行 */
+    .header-actions .btn {
+        padding: 6px 12px;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+    /* 工具栏横向一行，不拆成上下多行 */
+    .toolbar {
+        flex-direction: row;
+        flex-wrap: nowrap !important;
+        align-items: center;
+        gap: 12px;
+        padding: 16px 20px;
+        margin-bottom: 28px;
+    }
+    /* 搜索框自适应占剩余宽度 */
+    .search-wrapper {
+        flex: 1;
+        min-width: 160px;
+    }
+    /* 筛选下拉放回工具栏，不固定底部 */
+    .toolbar .select-group {
+        position: static !important;
+        display: flex !important;
+        gap: 8px;
+        padding: 0;
+        background: transparent;
+        box-shadow: none;
+        border-radius: 0;
+    }
+    /* 添加客户按钮不占满整行 */
+    .toolbar #addBtn {
+        width: auto;
+        flex-shrink: 0;
+    }
+    /* 卡片多列自适应，不强制单列 */
+    .group-card-wrap {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
 }
     </style>
 </head>
