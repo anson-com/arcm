@@ -1413,7 +1413,7 @@ window.addEventListener('scroll', handleScroll, { passive: true });
 
             let html = '';
             Object.keys(groupMap).forEach(exhibitionName => {
-                html += `<div class="group-block"><h3 class="group-title">${escapeHtml(exhibitionName)}（${groupMap[exhibitionName].length}家客户）</h3><div class="group-card-wrap">`;
+                html += `<div class="group-block"><h3 class="group-title"> <i class="   fas fa-id-card"></i> ${escapeHtml(exhibitionName)}（${groupMap[exhibitionName].length}家客户）</h3><div class="group-card-wrap">`;
                 groupMap[exhibitionName].forEach(c => {
                     const interactions = c.interactions || [];
                     const recent = interactions.slice(-3).reverse();
