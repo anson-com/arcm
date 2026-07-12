@@ -727,42 +727,33 @@ html {
     border-radius: 4px;
 }
 
-/* ========== 手机横屏专属：顶部以toolbar底部为可视上边界，上方全部隐藏 ========== */
-@media (max-width: 640px) and (orientation: landscape) {
-    /* 隐藏顶部安全区填充条 */
-    body::before {
-        display: none !important;
-    }
-    /* 重置页面顶部内边距，取消顶部留白 */
-    body {
-        padding-top: 0 !important;
-        overflow-x: hidden;
-    }
-    /* 完全隐藏顶部header（logo、统计、功能按钮整栏） */
+/* ===== 手机横屏时隐藏顶部所有元素，让内容贴顶 ===== */
+@media (max-width: 768px) and (orientation: landscape) {
+    /* 隐藏头部区域 */
     .header {
         display: none !important;
     }
-    /* 主容器裁剪：可视区域从toolbar底部开始，上方全部切掉 */
-    .app-container {
-        /* 裁剪高度：匹配toolbar整体高度，可微调110~140px */
-        --toolbar-crop-height: 125px;
-        clip-path: inset(var(--toolbar-crop-height) 0 0 0);
-        margin-top: calc(-1 * var(--toolbar-crop-height));
-    }
-    /* 横屏原生toolbar贴紧屏幕顶部，压缩上下内边距 */
+    /* 隐藏工具栏（搜索、筛选、添加） */
     .toolbar {
-        margin-top: 0 !important;
-        margin-bottom: 12px !important;
-        padding: 8px 12px !important;
+        display: none !important;
     }
-    /* 横屏隐藏悬浮搜索栏，只用原生toolbar搜索 */
+    /* 隐藏悬浮搜索栏（固定顶部的） */
     .float-search-bar {
         display: none !important;
     }
-    /* 底部固定筛选栏保持不变 */
-    .toolbar .select-group {
-        bottom: 0;
+
+    /* 移除手机竖屏时给 body 预留的顶部内边距（原本是为悬浮栏留的空间） */
+    body {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important; /* 底部固定下拉菜单也会隐藏，一并去除 */
     }
+
+    /* 如果 .app-container 有顶部间距，也清掉，确保内容完全贴顶 */
+    .app-container {
+        padding-top: 0 !important;
+    }
+
+    /* 如果有其他可能产生顶部间距的元素，可以重置，但已有的 .header 和 .toolbar 隐藏后，内容自然顶到最上方 */
 }
     </style>
 </head>
