@@ -30,15 +30,17 @@ if ('serviceWorker' in navigator) {
     <style>
 /* ===================== 全局移动端悬浮搜索CSS变量（可统一调整） ===================== */
 :root {
-    --floatSearch-height: 52px; /* 悬浮栏整体高度 */
+    --floatSearch-height: 60px; /* 悬浮栏整体高度 */
     --floatSearch-radius: 0px;  /* 悬浮栏圆角 */
-    --floatSearch-bg: #ffffff;/* 背景色 */
+    --floatSearch-bg: #ffffff;
+
     --floatSearch-shadow: 0 4px 16px rgba(0,0,0,0.12);/* 阴影 */
     --floatSearch-zindex: 998;/* 层级 */
     --floatSearch-input-h: 40px;/* 内部输入框高度 */
     --floatBtn-size: 30px;/* 右侧加号圆形按钮尺寸 */
     --floatBtn-bg: #2563eb; /* 按钮蓝色 */
-    --floatBtn-color: #ffffff;
+    --floatBtn-color: #fff;
+
     --floatBtn-radius: 50%;
     --safe-top: env(safe-area-inset-top, 0px);
 }
@@ -245,15 +247,20 @@ body::before {
         align-items: center;
         gap: 10px;
         padding: 0 14px;
-        opacity: 0;
+        opacity: 0; /* 永久固定完全不透明，不再变化 */
         visibility: hidden;
+        background: #ffffff; /* ===== 解除磨砂用这个 ===== */     
         transform: translateY(-10px);
-        transition: 0.24s ease all;
+    /* 透明度瞬间切换，无渐变；位移正常顺滑动画 */
+    transition: transform 0.24s ease, visibility 0.24s ease, opacity 0s linear;
+    /* 磨砂玻璃核心代码 */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     }
-    .float-search-bar.show {
-        opacity: 1;
-        visibility: visible;
-        transform: translateY(0);
+   .float-search-bar.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
     }
     .float-search-input-wrap {
         flex: 1;
@@ -275,7 +282,7 @@ body::before {
         border-radius: 40px;
         border: 1px solid #e2e8f0;
         font-size: 14px;
-        background: #f8fafc;
+        background: #f1f5f9;
     }
     .float-search-input:focus {
         outline: none;
@@ -353,7 +360,7 @@ body::before {
         align-items: stretch;
         gap: 10px;
         padding: 12px 12px 12px 12px;
-        margin-bottom: 1px;
+        margin-bottom: 16px;
     }
     .toolbar .search-wrapper {
         width: 100%;
@@ -370,7 +377,10 @@ body::before {
         bottom: 0px;
         display: flex !important;
         gap: 8px;
-        padding: 8px 8px;
+        padding-top:8px;
+        padding-bottom:8px;
+        padding-left:16px;  /* 左边距 */
+        padding-right:16px; /* 右边距 */
         background: #ffffff;
         border-radius: 0px;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
@@ -392,8 +402,8 @@ body::before {
         box-sizing: border-box;
         height: 41px;
         line-height: 41px;
-        padding: 0 10px;
-        font-size: 12px;
+        padding: 0 16px;/* 文字左右留白 */
+        font-size: 14px;
         border-radius: 50px;
         border: 1px solid #e2e8f0;
         background: #f1f5f9;
@@ -406,8 +416,9 @@ body::before {
     }
     /* 分页下拉单独微调（可选） */
     .toolbar .select-group .select-wrapper:nth-child(3) select {
-        font-size: 12px;
-        padding: 0 6px;
+        font-size: 14px;
+        padding: 0 16px;
+        border-radius: 50px;
     }
 
     /* ===== 客户卡片单列 ===== */
