@@ -2,10 +2,9 @@
 <html lang="zh-CN">
 <head> 
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AnsonCRM</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="screen-orientation" content="portrait">
-    <meta name="x5-orientation" content="portrait">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="ACRM">
@@ -466,7 +465,6 @@ background:#f6f9fc; }/* 下拉框背景色 */
         max-width: 100%;
         box-sizing: border-box;
     }
-   /* ===== 筛选栏字体调整===== */
     .toolbar .select-group .select-wrapper select {
         width: 100%;
         max-width: 100%;
@@ -474,7 +472,7 @@ background:#f6f9fc; }/* 下拉框背景色 */
         height: 41px;
         line-height: 41px;
         padding: 0 16px;/* 文字左右留白 */
-        font-size: 16px;
+        font-size: 14px;
         border-radius: 50px;
         border: 1px solid #e2e8f0;
         background: #f1f5f9;
@@ -488,7 +486,7 @@ background:#f6f9fc; }/* 下拉框背景色 */
 
     /* 分页下拉单独微调（可选） */
     .toolbar .select-group .select-wrapper:nth-child(3) select {
-        font-size: 16px;
+        font-size: 14px;
         padding: 0 16px;
         border-radius: 50px;
     }
@@ -689,21 +687,6 @@ html, body {
     max-width: 100%;
   }
 }
-/* 移动端适配，禁止横屏 */
-/* 仅手机设备横屏才旋转，PC/平板完全不执行 */
-@media (orientation:landscape) and (max-width: 640px) {
-    html {
-        width: 100vh;
-        height: 100vw;
-        transform: rotate(-90deg);
-        transform-origin: top left;
-        overflow: hidden;
-    }
-    body {
-        width: 100vh;
-        height: 100vw;
-    }
-}
 
 /* PC端保持原有横向布局，不产生任何变化 */
 .select-group {
@@ -742,6 +725,44 @@ html {
 #exhibitionListWrap::-webkit-scrollbar-track {
     background: #f1f5f9;
     border-radius: 4px;
+}
+
+/* ========== 手机横屏专属：顶部以toolbar底部为可视上边界，上方全部隐藏 ========== */
+@media (max-width: 640px) and (orientation: landscape) {
+    /* 隐藏顶部安全区填充条 */
+    body::before {
+        display: none !important;
+    }
+    /* 重置页面顶部内边距，取消顶部留白 */
+    body {
+        padding-top: 0 !important;
+        overflow-x: hidden;
+    }
+    /* 完全隐藏顶部header（logo、统计、功能按钮整栏） */
+    .header {
+        display: none !important;
+    }
+    /* 主容器裁剪：可视区域从toolbar底部开始，上方全部切掉 */
+    .app-container {
+        /* 裁剪高度：匹配toolbar整体高度，可微调110~140px */
+        --toolbar-crop-height: 125px;
+        clip-path: inset(var(--toolbar-crop-height) 0 0 0);
+        margin-top: calc(-1 * var(--toolbar-crop-height));
+    }
+    /* 横屏原生toolbar贴紧屏幕顶部，压缩上下内边距 */
+    .toolbar {
+        margin-top: 0 !important;
+        margin-bottom: 12px !important;
+        padding: 8px 12px !important;
+    }
+    /* 横屏隐藏悬浮搜索栏，只用原生toolbar搜索 */
+    .float-search-bar {
+        display: none !important;
+    }
+    /* 底部固定筛选栏保持不变 */
+    .toolbar .select-group {
+        bottom: 0;
+    }
 }
     </style>
 </head>
@@ -874,7 +895,7 @@ html {
   <h1>Anson <span>CRM</span></h1>
 </div>
         <div class="stats header-stats">
-        <div class="stat-item"><i class="fas fa-user"></i><strong id="totalCount">0</strong></div>
+        <div class="stat-item"><i class="fas fas fa-user"></i><strong id="totalCount">0</strong></div>
         <div class="stat-item"><i class="fab fa-weixin"></i><strong id="interactionCount">0</strong></div>
     </div>
         <div class="header-actions">
@@ -2194,24 +2215,6 @@ function refreshAllTitleOverflow() {
         setTimeout(() => checkTitleOverflow(titleEl), 20);
     });
 }
-
-// ========== 手机端强制锁定竖屏（PC端自动忽略） ==========
-// 强制锁定竖屏，仅移动端生效，PC完全兼容无报错
-(function lockPortrait() {
-    // 双层判断：必须同时存在orientation和lock、addEventListener才执行
-    const supportOrientApi = screen?.orientation && typeof screen.orientation.lock === 'function' && typeof screen.orientation.addEventListener === 'function';
-    if (!supportOrientApi) return;
-
-    const lock = () => {
-        screen.orientation.lock('portrait').catch(()=>{});
-    };
-    // 用户点击触发锁定（仅一次）
-    document.addEventListener('click', lock, { once:true });
-    // 监听屏幕方向切换回竖屏
-    screen.orientation.addEventListener('change', () => {
-        if(screen.orientation.type.includes('landscape')) lock();
-    });
-})();
 </script>
 </body>
 </html>
