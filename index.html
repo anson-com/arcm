@@ -76,7 +76,7 @@ body::before {
         .grid { display:flex; flex-direction:column; gap:30px; }
         .group-title { font-size:16px; font-weight:600; color:#334155; padding-bottom:10px; border-bottom:1px solid #e2e8f0; margin-bottom:15px; }
         .group-card-wrap { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:20px; }
-        .contact-card { background:#fff; border-radius:20px; padding:20px 22px 18px; border:1px solid #eef2f6; transition:all .2s; box-shadow:0 2px 6px rgba(0,0,0,0.02); display:flex; flex-direction:column; }
+        .contact-card { background:#fff; border-radius:20px; padding:12px 16px 12px; border:1px solid #eef2f6; transition:all .2s; box-shadow:0 2px 6px rgba(0,0,0,0.02); display:flex; flex-direction:column; }/*客户卡片 上 左右 下 */
         .contact-card:hover { border-color:#cbd5e1; box-shadow:0 8px 20px rgba(0,0,0,0.04); transform:translateY(-2px); }
         .card-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; }
         .card-name { font-weight:700; font-size:18px; letter-spacing:-0.3px; }
@@ -264,8 +264,8 @@ body::before {
         flex-direction: column;
         align-items: stretch;
         gap: 10px;
-        padding: 12px 16px 16px 16px;
-        margin-bottom: 0;
+        padding: 12px 8px 12px 8px; /* ===== 搜索框容器四个边距 ===== */
+        margin-bottom: 18;  /* ===== 第一个卡片跟上方的距离 ===== */
     }
     .toolbar .search-wrapper {
         width: 100%;
@@ -277,14 +277,14 @@ body::before {
     /* ===== 4. ⭐ 三个下拉菜单固定悬浮在屏幕底部 ===== */
     .toolbar .select-group {
         position: fixed !important;
-        left: 10px;          /* 【可调】容器左右边距 */
-        right: 10px;
-        bottom: 12px;        /* 【可调】距离屏幕底部距离 */
+        left: 0px;          /* 【可调】容器左右边距 */
+        right: 0px;
+        bottom: 0px;        /* 【可调】距离屏幕底部距离 */
         display: flex !important;
         gap: 8px;            /* 【可调】三个下拉框之间的横向间距 */
-        padding: 12px 14px;  /* 【可调】容器内边距（上下 左右）→ 控制整体高度 */
+        padding: 8px 8px;  /* 【可调】容器内边距（上下 左右）→ 控制整体高度 */
         background: #ffffff;
-        border-radius: 50px; /* 【可调】容器外圆角 */
+        border-radius: 0px; /* 【可调】容器外圆角 */
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
         z-index: 999;
         box-sizing: border-box;
@@ -302,18 +302,18 @@ body::before {
         width: 100%;
         max-width: 100%;
         box-sizing: border-box;
-        height: 38px;            /* 【可调】下拉框高度 */
-        line-height: 38px;       /* 与 height 一致，垂直居中 */
+        height: 41px;            /* 【可调】下拉框高度 */
+        line-height: 41px;       /* 与 height 一致，垂直居中 */
         padding: 0 10px;         /* 【可调】左右内边距 */
-        font-size: 13px;         /* 【可调】文字大小 */
-        border-radius: 20px;     /* 【可调】下拉框自身圆角 */
+        font-size: 12px;         /* 【可调】文字大小 */
+        border-radius: 50px;     /* 【可调】下拉框自身圆角 */
         border: 1px solid #e2e8f0;
         background: #f1f5f9;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
         -webkit-appearance: none;
-        appearance: none;
+        appearance: auto;
         min-width: 0;
     }
     /* 分页下拉单独微调（可选） */
@@ -648,8 +648,8 @@ html {
   <h1>Anson <span>CRM</span></h1>
 </div>
         <div class="stats header-stats">
-        <div class="stat-item"><i class="fas fa-users"></i> 客户 <strong id="totalCount">0</strong></div>
-        <div class="stat-item"><i class="fas fa-phone"></i> 记录 <strong id="interactionCount">0</strong></div>
+        <div class="stat-item"><i class="fas fa-address-book"></i><strong id="totalCount">0</strong></div>
+        <div class="stat-item"><i class="fas fa-comment-dots"></i><strong id="interactionCount">0</strong></div>
     </div>
         <div class="header-actions">
             <button class="btn btn-outline btn-sm" id="manageIndustryBtn"><i class="fas fa-tags"></i> 行业分类管理</button>
@@ -679,7 +679,7 @@ html {
         </div>
         <div class="select-wrapper">
             <select id="pageFilter">
-                <option value="1">    第 1 页</option>
+                <option value="1">第 1 页｜ 共 0 页</option>
             </select>
         </div>
     </div>
@@ -858,14 +858,14 @@ window.addEventListener('load',()=>{
     const totalPage = Math.ceil(totalFilterCount / PAGE_SIZE);
     pageFilterEl.innerHTML = '';
     if(totalPage <= 0) {
-        pageFilterEl.innerHTML = `<option value="1">1｜ 共 0 页</option>`;
+        pageFilterEl.innerHTML = `<option value="1">第 1 页｜共 0 页</option>`;
         currentPage = 1;
         return;
     }
     for(let i = 1; i <= totalPage; i++) {
         const opt = document.createElement('option');
         opt.value = i;
-        opt.innerText = `${i}｜共 ${totalPage} 页`;
+        opt.innerText =` 第 ${i} 页｜共 ${totalPage} 页`;
         if(Number(opt.value) === currentPage) opt.selected = true;
         pageFilterEl.appendChild(opt);
     }
