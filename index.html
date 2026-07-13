@@ -605,14 +605,14 @@ background:#f6f9fc; /* 改为和登录框一致纯白底色 */
     display:flex;
 }
 #loginBox, #resetBox {
-    background:#fff;
+    background:#f6f9fc;/* 这里是底色，改成#f6f9fc和页面背景一致 */
     border-radius:39px;
     width:100%;
     max-width:300px;
     box-shadow:0 10px 40px rgba(0,0,0,0.18);
 }
 #initPwdBox {
-    background:#ffffff;
+    background:#f6f9fc; /* 全屏遮罩底色，当前和页面背景同色 */
     padding:32px 24px 34px 24px;
     border-radius:39px;
     width:100%;
@@ -770,7 +770,7 @@ html {
     <p id="tipText" style="color:#ef4444;display:none;text-align:center;margin:8px 0 16px 0;min-height:24px;"></p>
         <div id="panelLogin">
             <div style="margin-bottom:24px;position:relative;">
-              <input id="pwdInput" type="password" placeholder="请输入登录密码" style="width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #e2e8f0;border-radius:14px;font-size:15px;outline:none;transition:0.2s all;"
+              <input id="pwdInput" type="password" placeholder="请输入登录密码" style="width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #e2e8f0;border-radius:39px;font-size:15px;outline:none;transition:0.2s all;"
                 onfocus="this.style.borderColor='#2563eb';this.style.boxShadow='0 0 0 3px rgba(37,99,235,0.1)';"
                 onblur="this.style.borderColor='#e2e8f0';this.style.boxShadow='none';">
               <span id="eyeLogin" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:#64748b;">◡</span>
@@ -782,7 +782,7 @@ html {
         </div>
         <div id="panelInit" style="display:none;">
             <div style="margin-bottom:24px;position:relative;">
-              <input id="initPwdInput" type="password" placeholder="首次使用请设置登录密码" style="width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #e2e8f0;border-radius:14px;font-size:15px;outline:none;transition:0.2s all;"
+              <input id="initPwdInput" type="password" placeholder="首次使用请设置登录密码" style="width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #e2e8f0;border-radius:39px;font-size:15px;outline:none;transition:0.2s all;"
                 onfocus="this.style.borderColor='#2563eb';this.style.boxShadow='0 0 0 3px rgba(37,99,235,0.1)';"
                 onblur="this.style.borderColor='#e2e8f0';this.style.boxShadow='none';">
               <span id="eyeInit" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:#64748b;">◡</span>
@@ -810,13 +810,13 @@ html {
 </h2>
         <p id="resetTipText" style="color:#ef4444;display:none;text-align:center;margin:8px 0 16px 0;min-height:24px;"></p>
         <div style="margin-bottom:16px;position:relative;">
-          <input id="oldPwdInput" type="password" placeholder="请输入旧密码" style="width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #e2e8f0;border-radius:14px;font-size:15px;outline:none;transition:0.2s all;"
+          <input id="oldPwdInput" type="password" placeholder="请输入旧密码" style="width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #e2e8f0;border-radius:39px;font-size:15px;outline:none;transition:0.2s all;"
             onfocus="this.style.borderColor='#2563eb';this.style.boxShadow='0 0 0 3px rgba(37,99,235,0.1)';"
             onblur="this.style.borderColor='#e2e8f0';this.style.boxShadow='none';">
           <span id="eyeOld" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:#64748b;">◡</span>
         </div>
         <div style="margin-bottom:24px;position:relative;">
-          <input id="newPwdInput" type="password" placeholder="请设置新密码" style="width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #e2e8f0;border-radius:14px;font-size:15px;outline:none;transition:0.2s all;"
+          <input id="newPwdInput" type="password" placeholder="请设置新密码" style="width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #e2e8f0;border-radius:39px;font-size:15px;outline:none;transition:0.2s all;"
             onfocus="this.style.borderColor='#2563eb';this.style.boxShadow='0 0 0 3px rgba(37,99,235,0.1)';"
             onblur="this.style.borderColor='#e2e8f0';this.style.boxShadow='none';">
           <span id="eyeNew" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:#64748b;">◡</span>
@@ -841,7 +841,7 @@ html {
     <span style="color:#9ca3af;font-weight:400;">CRM</span>
 </h2>
   <div style="margin-bottom:24px;position:relative;">
-    <input id="initSinglePwd" type="password" placeholder="首次使用请设置登录密码" style="width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #e2e8f0;border-radius:14px;font-size:15px;outline:none;transition:0.2s all;"
+    <input id="initSinglePwd" type="password" placeholder="首次使用请设置登录密码" style="width:100%;box-sizing:border-box;padding:14px 16px;border:1px solid #e2e8f0;border-radius:39px;font-size:15px;outline:none;transition:0.2s all;"
       onfocus="this.style.borderColor='#2563eb';this.style.boxShadow='0 0 0 3px rgba(37,99,235,0.1)';"
       onblur="this.style.borderColor='#e2e8f0';this.style.boxShadow='none';">
     <span id="eyeSingleInit" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:#64748b;">◡</span>
@@ -861,7 +861,7 @@ html {
   <h1>Anson <span>CRM</span></h1>
 </div>
         <div class="stats header-stats">
-        <div class="stat-item"><i class="fas fas fa-user"></i><strong id="totalCount">0</strong></div>
+        <div class="stat-item"><i class="fas fa-users"></i><strong id="totalCount">0</strong></div>
         <div class="stat-item"><i class="fab fa-weixin"></i><strong id="interactionCount">0</strong></div>
     </div>
         <div class="header-actions">
@@ -1144,14 +1144,14 @@ window.addEventListener('scroll', handleScroll, { passive: true });
     const totalPage = Math.ceil(totalFilterCount / PAGE_SIZE);
     pageFilterEl.innerHTML = '';
     if(totalPage <= 0) {
-        pageFilterEl.innerHTML = `<option value="1">  1  ｜共 0 页</option>`;
+        pageFilterEl.innerHTML = `<option value="1"> 1｜共 0 页</option>`;
         currentPage = 1;
         return;
     }
     for(let i = 1; i <= totalPage; i++) {
         const opt = document.createElement('option');
         opt.value = i;
-        opt.innerText =`  ${i}  ｜共 ${totalPage} 页`;
+        opt.innerText =` ${i} ｜共 ${totalPage} 页`;
         if(Number(opt.value) === currentPage) opt.selected = true;
         pageFilterEl.appendChild(opt);
     }
