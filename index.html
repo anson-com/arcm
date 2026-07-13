@@ -68,9 +68,14 @@ body::before {
         body.lock-scroll { overflow:hidden !important; }
         body.lock-scroll::before { display:none !important; }
         .app-container { max-width:1280px; width:100%; }
-        .header { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; margin-bottom:32px; gap:16px; }
-        .logo-area { display:flex; align-items:center; gap:12px; }
-        .logo-area i { font-size:28px; color:#2563eb; background:#dbeafe; padding:10px; border-radius:14px; }
+        .header { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:flex-end; margin-bottom:32px; gap:16px; }
+.logo-area { 
+    display:flex; 
+    align-items:center; /* 恢复垂直居中，图标文字中间对齐，不会错位 */
+    margin-left:2px; /* 改这个数值，正数往右，负数往左 */
+     gap:16px; 
+}
+   .logo-area i { font-size:28px; color:#2563eb; background:#dbeafe; padding:10px; border-radius:14px; }
         .logo-area h1 { font-size:24px; font-weight:700; letter-spacing:-0.5px; }
         .logo-area span { color:#64748b; font-weight:400; }
         .header-actions { display:flex; gap:10px; flex-wrap:wrap; }
@@ -539,7 +544,7 @@ background:#f6f9fc; }/* 下拉框背景色 */
     display: flex;
     gap: 12px;
     flex-wrap: nowrap;
-    align-items: center;
+    align-items:center /* 统计数字框底部对齐 */
     align-self: center;
     flex: 1;
     justify-content: flex-end;
@@ -587,7 +592,8 @@ background:#f6f9fc; }/* 下拉框背景色 */
     display: none;
     position: fixed;
     inset: 0;
-    background:rgba(0,0,0,0.55);
+    /* 登录遮罩background:rgba(0,0,0,0.55);当前半透明黑色遮罩 */
+background:#ffffff; /* 改为和登录框一致纯白底色 */
     backdrop-filter:blur(10px);
     -webkit-backdrop-filter:blur(10px);
     align-items:center;
@@ -848,7 +854,7 @@ html {
 <div class="app-container">
     <header class="header">
         <div class="logo-area">
-  <svg width="48" height="48" viewBox="0 0 100 100" style="background:#dbeafe; border-radius:14px; padding:10px;">
+  <svg width="55" height="55" viewBox="0 0 100 100" style="background:#dbeafe; border-radius:14px; padding:8px;">
     <circle cx="50" cy="50" r="50" fill="#2563eb"/>
     <text x="50" y="55" font-size="52" text-anchor="middle" fill="white">★</text>
   </svg>
