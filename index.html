@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AnsonCRM</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="orientation" content="portrait">
-    <meta name="screen-orientation" content="portrait">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="ACRM">
@@ -52,10 +50,7 @@ if ('serviceWorker' in navigator) {
     --scrollbar-color: #cbd5e1;    /* 滚动条颜色 */
     --fade-width: 50px;            /* 右侧渐变遮罩宽度（可自由调大小） */
     --fade-bg: #f6f9fc;            /* 渐变遮罩底色，和页面背景统一 */
-    
 
-    
-}
 body::before {
     content: "";
     position: fixed;
@@ -88,7 +83,7 @@ body::before {
         .btn-outline:hover { background:#f1f5f9; }
         .btn-danger { background:#ef4444; color:#fff; border-color:#ef4444; }
         .btn-danger:hover { background:#dc2626; box-shadow:0 4px 12px rgba(239,68,68,0.3); transform:translateY(-1px); }
-        .btn-sm { padding:4px 12px; font-size:12px; }
+        .btn-sm { padding:2px 12px; font-size:12px; } /* 上下从4px改成7px，页头菜单按钮加高 */
         .btn-icon { padding:8px 10px; }
         .toolbar { display:flex; flex-wrap:wrap; gap:16px; align-items:center; margin-bottom:28px; background:#fff; padding:16px 20px; border-radius:20px; box-shadow:0 1px 4px rgba(0,0,0,0.04); border:1px solid #eef2f6; }
         .search-wrapper { flex:1; min-width:200px; position:relative; }
@@ -104,7 +99,7 @@ solid #e2e8f0;
 font-size:14px;  /* 文字大小 */
 background:#f6f9fc; }/* 下拉框背景色 */
         .stats { display:flex; gap:20px; margin-bottom:24px; flex-wrap:wrap; }
-        .stat-item { background:#fff; padding:8px 24px 8px 20px; border-radius:40px; border:1px solid #eef2f6; display:flex; align-items:center; gap:10px; font-size:14px; font-weight:500; }
+        .stat-item { background:#f6f9fc; padding:8px 24px 8px 20px; border-radius:40px; border:1px solid #eef2f6; display:flex; align-items:center; gap:10px; font-size:14px; font-weight:500; } /*统计数据背景颜色*/
         .stat-item i { color:#2563eb; font-size:16px; }
         .stat-item strong { font-size:18px; margin-left:4px; }
         .grid { display:flex; flex-direction:column; gap:30px; }
@@ -139,9 +134,10 @@ background:#f6f9fc; }/* 下拉框背景色 */
     opacity: 0;
     transition: opacity 0.2s ease;
 }
+
 /* 文字溢出时显示渐变遮罩 */
 .group-title[data-overflow="true"]::after {
-    opacity: 1;
+    opacity: 0.7;
 }
 
 /* 横向滚动条样式，手机自动松手隐藏，PC滑动显示 */
@@ -727,29 +723,6 @@ html {
 #exhibitionListWrap::-webkit-scrollbar-track {
     background: #f1f5f9;
     border-radius: 4px;
-}
-
-/* 手机横屏强制旋转矫正，页面永远竖屏展示 */
-@media (max-width: 640px) and (orientation: landscape) {
-    html {
-        transform: rotate(-90deg);
-        transform-origin: center center;
-        width: 100vh;
-        height: 100vw;
-        overflow-x: hidden;
-        position: absolute;
-        top: 0;
-        left: 0;
-    }
-    body {
-        width: 100vh;
-        height: 100vw;
-        overflow-x: hidden;
-    }
-    /* 底部筛选下拉适配旋转后的布局，防止文字挤压 */
-    .toolbar .select-group .select-wrapper select {
-        font-size: 13px !important;
-    }
 }
     </style>
 </head>
@@ -1488,43 +1461,51 @@ window.addEventListener('scroll', handleScroll, { passive: true });
                 grid.innerHTML = `<div class="empty-state"><i class="fas fa-search"></i><h3>没有匹配的客户</h3><p>更换搜索关键词、行业或展会分类试试</p></div>`;
                 return;
             }
-/* ===================== 统计数据逻据修改  ===================== */
-                                              const groupMap = {};
-            // 1. 统计筛选结果内所有展会的全局总数量
-            const exhibitionTotalMap = {};
-            filtered.forEach(item => {
-                if (!exhibitionTotalMap[item.exhibition]) exhibitionTotalMap[item.exhibition] = 0;
-                exhibitionTotalMap[item.exhibition] += 1;
-            });
+/* ===================== 统计数据逻辑修改  ===================== */
+const groupMap = {};
+// 1. 统计筛选结果内各展会客户数量
+const exhibitionTotalMap = {};
+filtered.forEach(item => {
+    if (!exhibitionTotalMap[item.exhibition]) exhibitionTotalMap[item.exhibition] = 0;
+    exhibitionTotalMap[item.exhibition] += 1;
+});
+// 筛选结果全部客户总数
+const totalFilterAll = filtered.length;
 
-            // 分页分组逻辑不变
-            pageData.forEach(item => {
-                if (!groupMap[item.exhibition]) groupMap[item.exhibition] = [];
-                groupMap[item.exhibition].push(item);
-            });
+// 分页分组数据归集
+pageData.forEach(item => {
+    if (!groupMap[item.exhibition]) groupMap[item.exhibition] = [];
+    groupMap[item.exhibition].push(item);
+});
 
-            let html = '';
-            Object.keys(groupMap).forEach(exhibitionName => {
-                // 筛选出除当前分组外其他匹配展会
-                const otherExhibitionList = Object.keys(exhibitionTotalMap).filter(name => name !== exhibitionName);
-                let otherSummary = '';
-                otherExhibitionList.forEach((name, idx) => {
-                    const count = exhibitionTotalMap[name];
-                    if(idx > 0) otherSummary += ' ';
-                    otherSummary += `${escapeHtml(name)}(${count})`;
-                });
-                // 无其他分类时不展示后半段文字
-                let suffixText = '';
-                if(otherSummary) {
-                    suffixText = `｜${otherSummary}`;
-                }
+let html = '';
+Object.keys(groupMap).forEach(exhibitionName => {
+    const currentExhCount = exhibitionTotalMap[exhibitionName];
+    // 过滤移除当前展会，后方列表不再重复出现
+    const otherExhibitionList = Object.keys(exhibitionTotalMap).filter(name => name !== exhibitionName);
+    let otherSummary = '';
+    otherExhibitionList.forEach((name, idx) => {
+        const count = exhibitionTotalMap[name];
+        if(idx > 0) otherSummary += ' ';
+        otherSummary += `${escapeHtml(name)}(${count})`;
+    });
+    let suffixText = '';
+    if(otherSummary) {
+        suffixText = `｜${otherSummary}`;
+    }
+    // 判断：当前展会数量等于全局总数量时，不展示「共XX家」，消除重复
+    let totalText = '';
+    if(currentExhCount !== totalFilterAll){
+        totalText = `｜共${totalFilterAll}家`;
+    }
 
-             html += `<div class="group-block">
+    // 标题结构：当前展会数量 + （可选全局总数） + 其他展会（剔除自身）
+    html += `<div class="group-block">
     <h3 class="group-title" style="margin-left:8px;" onscroll="checkTitleOverflow(this)">
-    <i class="fas fa-id-card"></i> ${escapeHtml(exhibitionName)} ${exhibitionTotalMap[exhibitionName]} 家${suffixText}
+    <i class="fas fa-id-card"></i> ${escapeHtml(exhibitionName)} ${currentExhCount}家${totalText}${suffixText}
 </h3>
     <div class="group-card-wrap">`;
-/* ===================== 统计数据逻据结束  ===================== */
+/* ===================== 统计数据逻辑结束  ===================== */
                 groupMap[exhibitionName].forEach(c => {
                     const interactions = c.interactions || [];
                     const recent = interactions.slice(-3).reverse();
