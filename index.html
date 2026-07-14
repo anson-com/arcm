@@ -2,9 +2,8 @@
 <html lang="zh-CN">
 <head> 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AnsonCRM</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>AnsonCRM</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="ACRM">
@@ -30,39 +29,39 @@ if ('serviceWorker' in navigator) {
     <style>
 /* ===================== 全局移动端悬浮搜索CSS变量（可统一调整） ===================== */
 :root {
-    --floatSearch-height: 60px; /* 悬浮栏整体高度 */
-    --floatSearch-radius: 0px;  /* 悬浮栏圆角 */
+    --floatSearch-height: 60px;
+    --floatSearch-radius: 0px;
     --floatSearch-bg: #ffffff;
-
-    --floatSearch-shadow: 0 4px 16px rgba(0,0,0,0.12);/* 阴影 */
-    --floatSearch-zindex: 998;/* 层级 */
-    --floatSearch-input-h: 40px;/* 内部输入框高度 */
-    --floatBtn-size: 30px;/* 右侧加号圆形按钮尺寸 */
-    --floatBtn-bg: #2563eb; /* 按钮蓝色 */
+    --floatSearch-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    --floatSearch-zindex: 998;
+    --floatSearch-input-h: 40px;
+    --floatBtn-size: 30px;
+    --floatBtn-bg: #2563eb;
     --floatBtn-color: #fff;
     --floatBtn-radius: 50%;
     --safe-top: env(safe-area-inset-top, 0px);
- /* 展会分组标题 统一可调参数（后期只改这里数字） */
-    --title-padding-x:2px;        /* 标题左右内边距 */
-    --title-padding-bottom: 10px;  /* 标题底部内边距 */
-    --title-margin-bottom: 15px;   /* 标题下方外边距 */
-    --scrollbar-height: 2px;       /* 横向滚动条高度 */
-    --scrollbar-color: #cbd5e1;    /* 滚动条颜色 */
-    --fade-width: 50px;            /* 右侧渐变遮罩宽度（可自由调大小） */
-    --fade-bg: #f6f9fc;            /* 渐变遮罩底色，和页面背景统一 */
-
+    --safe-bottom: env(safe-area-inset-bottom,0px);
+ /* 展会分组标题 统一可调参数 */
+    --title-padding-x:2px;
+    --title-padding-bottom: 10px;
+    --title-margin-bottom: 15px;
+    --scrollbar-height: 2px;
+    --scrollbar-color: #cbd5e1;
+    --fade-width: 50px;
+    --fade-bg: #f6f9fc;
+}
 body::before {
     content: "";
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    height: env(safe-area-inset-top);
+    height: var(--safe-top);
     background: #f6f9fc;
     z-index: 998;
     pointer-events: none;
 }
-        * { margin:0; padding:0; box-sizing:border-box; }
+        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family:'Inter',sans-serif; background:#f6f9fc; color:#1e293b; padding:24px; min-height:100vh; display:flex; justify-content:center; }
         body.modal-open { overflow: hidden; }
         body.lock-scroll { overflow:hidden !important; }
@@ -71,8 +70,8 @@ body::before {
         .header { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:flex-end; margin-bottom:32px; gap:16px; }
 .logo-area { 
     display:flex; 
-    align-items:center; /* 恢复垂直居中，图标文字中间对齐，不会错位 */
-    margin-left:2px; /* 改这个数值，正数往右，负数往左 */
+    align-items:center;
+    margin-left:2px;
      gap:16px; 
 }
    .logo-area i { font-size:28px; color:#2563eb; background:#dbeafe; padding:10px; border-radius:14px; }
@@ -88,7 +87,7 @@ body::before {
         .btn-outline:hover { background:#f1f5f9; }
         .btn-danger { background:#ef4444; color:#fff; border-color:#ef4444; }
         .btn-danger:hover { background:#dc2626; box-shadow:0 4px 12px rgba(239,68,68,0.3); transform:translateY(-1px); }
-        .btn-sm { padding:2px 12px; font-size:12px; } /* 上下从4px改成7px，页头菜单按钮加高 */
+        .btn-sm { padding:2px 12px; font-size:12px; }
         .btn-icon { padding:8px 10px; }
         .toolbar { display:flex; flex-wrap:wrap; gap:16px; align-items:center; margin-bottom:28px; background:#fff; padding:16px 20px; border-radius:20px; box-shadow:0 1px 4px rgba(0,0,0,0.04); border:1px solid #eef2f6; }
         .search-wrapper { flex:1; min-width:200px; position:relative; }
@@ -97,36 +96,29 @@ body::before {
         .search-wrapper input:focus { outline:none; border-color:#2563eb; background:#fff; box-shadow:0 0 0 3px rgba(37,99,235,0.1); }
         .select-wrapper { min-width:160px; }
         .select-wrapper select { width:100%; 
-padding:9px 12px; /* 上下9px，左右12px → 控制下拉框内部文字间距、整体高度 */
-border-radius:39px;/* 圆角大小 */
- border:1px 
-solid #e2e8f0; 
-font-size:14px;  /* 文字大小 */
-background:#f6f9fc; }/* 下拉框背景色 */
+padding:9px 12px;
+border-radius:39px;
+ border:1px solid #e2e8f0; 
+font-size:14px;
+background:#f6f9fc; }
         .stats { display:flex; gap:20px; margin-bottom:24px; flex-wrap:wrap; }
-        .stat-item { background:#f6f9fc; padding:8px 24px 8px 20px; border-radius:40px; border:1px solid #eef2f6; display:flex; align-items:center; gap:10px; font-size:14px; font-weight:500; } /*统计数据背景颜色*/
+        .stat-item { background:#f6f9fc; padding:8px 24px 8px 20px; border-radius:40px; border:1px solid #eef2f6; display:flex; align-items:center; gap:10px; font-size:14px; font-weight:500; }
         .stat-item i { color:#2563eb; font-size:16px; }
         .stat-item strong { font-size:18px; margin-left:4px; }
         .grid { display:flex; flex-direction:column; gap:30px; }
-
-
 
        .group-title {
     font-size: 16px;
     font-weight: 600;
     color: #334155;
-    /* 统一变量控制上下左右内边距 */
     padding: 0 var(--title-padding-x) var(--title-padding-bottom);
     border-bottom: 1px solid #e2e8f0;
     margin-bottom: var(--title-margin-bottom);
-
     white-space: nowrap;
     overflow-x: auto;
     overflow-y: hidden;
     position: relative;
 }
-
-/* 右侧渐变遮罩：文字溢出时显示，提示可左右滑动，宽度由--fade-width控制 */
 .group-title::after {
     content: "";
     position: absolute;
@@ -139,13 +131,9 @@ background:#f6f9fc; }/* 下拉框背景色 */
     opacity: 0;
     transition: opacity 0.2s ease;
 }
-
-/* 文字溢出时显示渐变遮罩 */
 .group-title[data-overflow="true"]::after {
     opacity: 0.7;
 }
-
-/* 横向滚动条样式，手机自动松手隐藏，PC滑动显示 */
 .group-title::-webkit-scrollbar {
     height: var(--scrollbar-height);
 }
@@ -157,9 +145,8 @@ background:#f6f9fc; }/* 下拉框背景色 */
     background: transparent;
 }
 
-/* ===================== 数据统计滑动特效===================== */
         .group-card-wrap { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:20px; }
-        .contact-card { background:#fff; border-radius:20px; padding:12px 16px 12px; border:1px solid #eef2f6; transition:all .2s; box-shadow:0 2px 6px rgba(0,0,0,0.02); display:flex; flex-direction:column; }/*客户卡片 上 左右 下 */
+        .contact-card { background:#fff; border-radius:20px; padding:12px 16px 12px; border:1px solid #eef2f6; transition:all .2s; box-shadow:0 2px 6px rgba(0,0,0,0.02); display:flex; flex-direction:column; }
         .contact-card:hover { border-color:#cbd5e1; box-shadow:0 8px 20px rgba(0,0,0,0.04); transform:translateY(-2px); }
         .card-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; }
         .card-name { font-weight:700; font-size:18px; letter-spacing:-0.3px; }
@@ -175,7 +162,6 @@ background:#f6f9fc; }/* 下拉框背景色 */
         .card-details a { color:#2563eb; text-decoration:none; }
         .card-details a:hover { text-decoration:underline; }
         .card-notes { font-size:14px; color:#475569; background:#f8fafc; padding:8px 12px; border-radius:12px; margin:8px 0 12px; border-left:3px solid #dbeafe; }
-/* ===================== 数据统计滑动特效===================== */
         .interactions-section { margin-top:auto; border-top:1px solid #f1f5f9; padding-top:12px; }
         .interactions-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
         .interactions-header span { font-size:12px; font-weight:600; text-transform:uppercase; color:#94a3b8; letter-spacing:0.4px; }
@@ -196,18 +182,16 @@ background:#f6f9fc; }/* 下拉框背景色 */
         .empty-state h3 { color:#475569; margin-bottom:4px; }
         .modal-overlay { display:none; position:fixed; inset:0; background:rgba(15,23,42,0.3); backdrop-filter:blur(4px); justify-content:center; align-items:center; z-index:999; padding:20px; }
         .modal-overlay.active { display:flex; }
-
-/* 弹窗整体高度兜底，防止超大屏幕溢出 */
         .modal {  
     background: #fff;
-    max-width: 360px;/* 控制弹窗最大宽度，改这里！ */
-    max-height: 90vh; /* 新增：弹窗最高不超过屏幕90% */
+    max-width: 360px;
+    max-height: 90vh;
     width: 100%;
     border-radius: 28px;
-    padding: 12px 12px; /* 弹窗内部四周留白（上下左右内边距） */
+    padding: 12px 12px;
     box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
     animation: fadeUp .2s ease;
-    overflow-y: auto; /* 兜底滚动 */
+    overflow-y: auto;
 }
         @keyframes fadeUp { from { opacity:0; transform:scale(0.96) translateY(10px); } to { opacity:1; transform:scale(1) translateY(0); } }
         .modal h2 { font-size:22px; font-weight:700; margin-bottom:20px; display:flex; align-items:center; gap:10px; }
@@ -225,10 +209,10 @@ background:#f6f9fc; }/* 下拉框背景色 */
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0px 12px;/* 单行上下内边距，加大行高弹窗变高 */
+    padding: 0px 12px;
     border: 1px solid #e2e8f0;
     border-radius: 14px;
-    margin-bottom: 3px;/* 条目之间垂直间距 */
+    margin-bottom: 3px;
     background: #ffffff;
     transition: 0.2s ease all;
     min-height: 14px;
@@ -259,7 +243,7 @@ background:#f6f9fc; }/* 下拉框背景色 */
         .add-tag-row {
             display:flex;
             gap:6px;
-            margin-top:0px;/* 【核心参数：列表与输入框上下距离】改这个数字 */
+            margin-top:0px;
             align-items:center;
             flex-wrap:wrap;
         }
@@ -302,32 +286,92 @@ background:#f6f9fc; }/* 下拉框背景色 */
 
         .copyright-text { line-height:1.8; text-align:center; color:#475569; }
 
+/* ========== 移动端新增全局抽屉基础样式 ========== */
+.mobile-drawer-overlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(15,23,42,0.35);
+    z-index:1010;
+}
+.mobile-drawer-overlay.active{
+    display:block;
+}
+.mobile-drawer{
+    position:fixed;
+    left:12px;
+    right:12px;
+    bottom:calc(var(--safe-bottom) + 12px);
+    background:#fff;
+    border-radius:20px;
+    max-height:70vh;
+    transform:translateY(110%);
+    transition:transform 0.24s ease;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+}
+.mobile-drawer-overlay.active .mobile-drawer{
+    transform:translateY(0);
+}
+.drawer-handle{
+    width:40px;
+    height:4px;
+    background:#d1d5db;
+    border-radius:4px;
+    margin:10px auto;
+}
+.drawer-content{
+    flex:1;
+    overflow-y:auto;
+    padding:8px 16px 16px;
+}
+.drawer-menu-item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:14px 10px;
+    font-size:15px;
+    border-radius:12px;
+    cursor:pointer;
+    transition:0.18s;
+}
+.drawer-menu-item:active{
+    background:#f1f5f9;
+    transform:scale(0.98);
+}
+.drawer-divider{
+    height:1px;
+    background:#e5e7eb;
+    margin:8px 0;
+}
+
 /* ===================== 移动端专属样式 max-width:640px ===================== */
 @media (max-width:640px) {
-    /* ===== 新增悬浮搜索栏容器 ===== */
+    /* 全局清除滚动条 */
+    ::-webkit-scrollbar{display:none !important;}
+    html,body{overflow-x:hidden;}
+
+    /* 顶层悬浮搜索栏 */
     .float-search-bar {
         position: fixed;
-        top: calc(var(--safe-top) + 0px);/* 顶部距离屏幕顶部 8px，改数字即可 */
-        left: 0px; /* 左边距 */
-        right: 0px;/* 右边距 */
-        height: var(--floatSearch-height);/* 输入框 和 加号按钮 中间间距 *
-        background: var(--floatSearch-bg);/* 悬浮栏内部左右内边距 */
-        border-radius: var(--floatSearch-radius);
+        top: calc(var(--safe-top));
+        left: 0px;
+        right: 0px;
+        height: var(--floatSearch-height);
+        background: var(--floatSearch-bg);
         box-shadow: var(--floatSearch-shadow);
         z-index: var(--floatSearch-zindex);
         display: flex;
         align-items: center;
         gap: 10px;
         padding: 0 14px;
-        opacity: 0; /* 永久固定完全不透明，不再变化 */
+        opacity: 0;
         visibility: hidden;
-        background: #f6f9fc; /* ===== 解除磨砂用这个 ===== */     
         transform: translateY(-10px);
-    /* 透明度瞬间切换，无渐变；位移正常顺滑动画 */
-    transition: transform 0.24s ease, visibility 0.24s ease, opacity 0s linear;
-    /* 磨砂玻璃核心代码 */
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+        transition: transform 0.24s ease, visibility 0.24s ease, opacity 0s linear;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
     }
    .float-search-bar.show {
     opacity: 1;
@@ -350,7 +394,7 @@ background:#f6f9fc; }/* 下拉框背景色 */
     .float-search-input {
         width: 100%;
         height: 100%;
-        padding: 0 14px 0 36px;/* 左36px留给搜索图标，右边14px留白 */
+        padding: 0 14px 0 36px;
         border-radius: 40px;
         border: 1px solid #e2e8f0;
         font-size: 14px;
@@ -361,221 +405,183 @@ background:#f6f9fc; }/* 下拉框背景色 */
         border-color: #2563eb;
         box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
     }
-    .float-add-btn {
-        width: var(--floatBtn-size);
-        height: var(--floatBtn-size);
-        border-radius: var(--floatBtn-radius);
-        background: var(--floatBtn-bg);
-        color: var(--floatBtn-color);
-        border: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
-        flex-shrink: 0;
-        cursor: pointer;
-        transition: 0.2s;
+    /* 右侧三点菜单按钮，替换原有加号 */
+    .float-menu-btn{
+        width:var(--floatBtn-size);
+        height:var(--floatBtn-size);
+        border-radius:50%;
+        border:none;
+        background:#f1f5f9;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:16px;
+        cursor:pointer;
+        flex-shrink:0;
+        transition:0.2s;
     }
-    .float-add-btn:active {
-        transform: scale(0.94);
-        background: #1d4ed8;
+    .float-menu-btn:active{
+        transform:scale(0.94);
+        background:#e2e8f0;
     }
 
-    /* ===== 页面整体底部留空 ===== */
+    /* 页面整体布局改造：中间独立滚动容器 */
     body {
-        padding: calc(var(--floatSearch-height) + 16px) 12px 85px 12px;
-    }
-
-    /* ===== 头部区域 ===== */
-    .header {
-        flex-direction: row;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 10px;
         padding: 0;
-        margin: 0 -12px 20px -12px;
     }
-    .logo-area {
-        flex-shrink: 0;
-        min-width: 130px;
-        padding-left: 12px;
-    }
-    .header-stats {
-        flex: 1;
-        min-width: 0;
-        margin: 0 6px 0 0;
-        gap: 4px;
-        justify-content: flex-end;
-    }
-    .header-stats .stat-item {
-        flex-shrink: 1;
-        white-space: nowrap;
-        padding: 2px 6px 2px 4px;
-        font-size: 9px;
-        gap: 2px;
-    }
-    .header-stats .stat-item strong {
-        font-size: 12px;
-    }
-    .header-actions {
-        justify-content: center;
-        width: 100%;
-        margin-top: 6px;
-        gap: 14px;
-        row-gap: 8px;
-        padding: 0 12px;
+    .app-container{
+        position:fixed;
+        top:var(--floatSearch-height);
+        left:0;
+        right:0;
+        bottom:calc(65px + var(--safe-bottom));
+        overflow-y:auto;
+        padding:12px;
     }
 
-    /* ===== 工具栏：纵向排列（搜索框 + 添加按钮） ===== */
-    .toolbar {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 10px;
-        padding: 12px 12px 12px 12px;
-        margin-bottom: 16px;
-    }
-    .toolbar .search-wrapper {
-        width: 100%;
-    }
-    .toolbar #addBtn {
-        width: 100%;
+    /* PC端顶部头部、原生工具栏在移动端隐藏 */
+    .header,.toolbar{
+        display:none !important;
     }
 
-    /* ===== 三个下拉菜单固定悬浮在屏幕底部 ===== */
-    .toolbar .select-group {
-        position: fixed !important;
-        left: 0px;
-        right: 0px;
-        bottom: 0px;
-        display: flex !important;
-        gap: 8px;
-        padding-top:8px;/* 上边距 */
-        padding-bottom:20px;/* 下边距 */
-        padding-left:16px;  /* 左边距 */
-        padding-right:16px; /* 右边距 */
-        background: #f6f9fc;
-        border-radius: 0px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
-        z-index: 999;
-        box-sizing: border-box;
-        max-width: 100%;
-        overflow: hidden;
-        width: auto;
-    }
-    .toolbar .select-group .select-wrapper {
-        flex: 1 1 0;
-        min-width: 0;
-        max-width: 100%;
-        box-sizing: border-box;
-    }
-    .toolbar .select-group .select-wrapper select {
-        width: 100%;
-        max-width: 100%;
-        box-sizing: border-box;
-        height: 41px;
-        line-height: 41px;
-        padding: 0 16px;/* 文字左右留白 */
-        font-size: 15px;
-        border-radius: 50px;
-        border: 1px solid #e2e8f0;
-        background: #f1f5f9;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        -webkit-appearance: none;
-        appearance: auto;
-        min-width: 0;
+    /* 移除旧底部筛选select-group */
+    .toolbar .select-group{
+        display:none !important;
     }
 
-    /* 分页下拉单独微调（可选） */
-    .toolbar .select-group .select-wrapper:nth-child(3) select {
-        font-size: 15px;
-        padding: 0 16px;
-        border-radius: 50px;
-    }
-
-    /* ===== 客户卡片单列 ===== */
+    /* 客户卡片单列 */
     .group-card-wrap {
         grid-template-columns: 1fr;
     }
-    .group-card-wrap:has(.contact-card:only-child) .contact-card {
-        width: 100%;
-        max-width: 100%;
+
+    /* =========== 底部常驻Tab导航栏 =========== */
+    .mobile-bottom-tab{
+        position:fixed;
+        left:12px;
+        right:12px;
+        bottom:calc(var(--safe-bottom) + 8px);
+        height:54px;
+        background:#fff;
+        border-radius:16px;
+        box-shadow:0 2px 12px rgba(0,0,0,0.08);
+        display:grid;
+        grid-template-columns:1fr 1fr auto 1fr 1fr;
+        align-items:center;
+        z-index:997;
+        padding:0 6px;
+    }
+    .tab-item{
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        justify-content:center;
+        height:100%;
+        color:#64748b;
+        font-size:11px;
+        gap:3px;
+        cursor:pointer;
+    }
+    .tab-item i{
+        font-size:18px;
+    }
+    /* 中间凸起新增按钮 */
+    .tab-add-btn{
+        width:44px;
+        height:44px;
+        background:#2563eb;
+        border-radius:50%;
+        color:#fff;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:20px;
+        margin-top:-14px;
+        box-shadow:0 3px 10px rgba(37,99,235,0.3);
+        border:none;
+        cursor:pointer;
+        transition:0.18s;
+    }
+    .tab-add-btn:active{
+        transform:scale(0.92);
     }
 
+    /* 移动端卡片精简样式（列表仅展示姓名、电话、展会标签） */
+    .contact-card{
+        padding:14px;
+    }
+    /* 抽屉内详情卡片展示完整信息；列表卡片隐藏多余模块 */
+    .contact-card .card-company,
+    .contact-card .card-industry-tag,
+    .contact-card .card-details,
+    .contact-card .card-notes,
+    .contact-card .interactions-section,
+    .contact-card .card-actions{
+        display:none;
+    }
+    .contact-card.mobile-full-card .card-company,
+    .contact-card.mobile-full-card .card-industry-tag,
+    .contact-card.mobile-full-card .card-details,
+    .contact-card.mobile-full-card .card-notes,
+    .contact-card.mobile-full-card .interactions-section,
+    .contact-card.mobile-full-card .card-actions{
+        display:flex;
+    }
+    .contact-card .card-header{
+        margin-bottom:4px;
+    }
+    .contact-card .tag-row{
+        margin:4px 0 0;
+    }
+    .card-phone-row{
+        display:flex;
+        align-items:center;
+        gap:8px;
+        margin-top:6px;
+        font-size:15px;
+    }
+    .card-phone-row a{
+        color:#2563eb;
+        text-decoration:none;
+    }
+    .contact-card{
+        cursor:pointer;
+    }
+    .contact-card:active{
+        transform:scale(0.97);
+    }
 
-
-    /* ===== 其他原有手机端样式 ===== */
-    .stats {
-        gap: 10px;
+    /* 三点悬浮菜单气泡 */
+    .float-bubble-menu{
+        position:fixed;
+        top:calc(var(--safe-top) + var(--floatSearch-height) + 6px);
+        right:14px;
+        background:#fff;
+        border-radius:12px;
+        box-shadow:0 4px 16px rgba(0,0,0,0.12);
+        z-index:999;
+        overflow:hidden;
+        display:none;
     }
-    .stat-item {
-        padding: 6px 16px;
+    .float-bubble-menu.active{
+        display:block;
     }
-    .add-tag-row {
-        flex-direction: column;
-        gap: 10px;
+    .bubble-item{
+        padding:12px 16px;
+        font-size:14px;
+        cursor:pointer;
+        white-space:nowrap;
     }
-    .add-tag-row input {
-        width: 100%;
-    }
-    .add-tag-row .btn {
-        width: 100%;
-        justify-content: center;
-    }
-    .modal h2 {
-        text-align: left;
-    }
-    .form-group label,
-    .form-group input,
-    .form-group textarea,
-    .form-group select {
-        text-align: left;
-    }
-    .modal-actions {
-        justify-content: flex-end !important;
-    }
-    #copyrightModal .copyright-text {
-        text-align: center !important;
-    }
-}
-
-.header-stats {
-    display: flex;
-    gap: 12px;
-    flex-wrap: nowrap;
-    align-items:center /* 统计数字框底部对齐 */
-    align-self: center;
-    flex: 1;
-    justify-content: flex-end;
-    margin: 0 20px;
-}
-.header-stats .stat-item {
-    display: flex;
-    align-items: center;
-    min-width: 8px;
-    flex-shrink:0;
-}
-
-@media (max-width: 640px) {
-    #loginMask {
-        padding-top: env(safe-area-inset-top) !important;
-        padding-bottom: env(safe-area-inset-bottom) !important;
-    }
-    #loginBox {
-        padding-top: max(30px, env(safe-area-inset-top) + 16px) !important;
-    }
-    #initPwdBox {
-        width: 100%;
-        max-width: unset;
-        margin: 20px 12px;
+    .bubble-item:active{
+        background:#f1f5f9;
     }
 }
 
 @media (min-width:641px){
-    #pwaSplash{display:none !important;}
-    /* PC端隐藏悬浮搜索DOM */
-    .float-search-bar {
+    /* PC端隐藏移动端DOM */
+    .float-search-bar,
+    .mobile-bottom-tab,
+    .mobile-drawer-overlay,
+    .float-bubble-menu{
         display: none !important;
     }
 }
@@ -587,15 +593,11 @@ background:#f6f9fc; }/* 下拉框背景色 */
   transform:scale(0.97);
   transition:0.1s;
 }
-/* 登录遮罩通用居中 */
 #loginMask, #resetMask {
     display: none;
     position: fixed;
     inset: 0;
-    /* 登录遮罩background:rgba(0,0,0,0.55);当前半透明黑色遮罩 */
-background:#f6f9fc; /* 改为和登录框一致纯白底色 */
- /* backdrop-filter:blur(10px); */
- /* -webkit-backdrop-filter:blur(10px); */
+background:#f6f9fc;
     align-items:center;
     justify-content:center;
     z-index:9999;
@@ -605,14 +607,14 @@ background:#f6f9fc; /* 改为和登录框一致纯白底色 */
     display:flex;
 }
 #loginBox, #resetBox {
-    background:#f6f9fc;/* 这里是底色，改成#f6f9fc和页面背景一致 */
+    background:#f6f9fc;
     border-radius:39px;
     width:100%;
     max-width:300px;
     box-shadow:0 10px 40px rgba(0,0,0,0.18);
 }
 #initPwdBox {
-    background:#f6f9fc; /* 全屏遮罩底色，当前和页面背景同色 */
+    background:#f6f9fc;
     padding:32px 24px 34px 24px;
     border-radius:39px;
     width:100%;
@@ -629,15 +631,12 @@ input[type="password"]::-ms-reveal { display:none; }
 html, body {
   overflow-x: hidden !important;
 }
-
-/* 主容器最大宽度固定1800px */
 .app-container {
   max-width: 1800px;
   width: 100%;
   flex: 1 1 0;
   margin: 0 auto;
 }
-/* 基础网格：窗口窄于5列总宽度时，卡片最小300px，自动换行 */
 .group-card-wrap {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -646,25 +645,16 @@ html, body {
   overflow-x: hidden;
   justify-items: center;
 }
-
-/* 宽度足够放下5张卡片时，锁定5列，卡片自适应均分展开 */
 @media (min-width: calc(300px * 5 + 20px * 4)) {
   .group-card-wrap {
-    /* 5等分，卡片自由拉伸铺满整行 */
     grid-template-columns: repeat(5, minmax(0, 1fr));
-    /* 5张卡片整体铺满容器，居中不留白扩散 */
     justify-items: stretch;
   }
-  /* 宽屏模式下取消卡片最大宽度限制，允许自适应拉伸 */
   .group-card-wrap .contact-card {
     max-width: unset;
     width: 100%;
   }
 }
-
-
-
-/* 超长备注、网址自动换行，杜绝卡片横向溢出 */
 .contact-card {
   overflow-x: hidden !important;
   width: 100%;
@@ -677,12 +667,7 @@ html, body {
   word-break: break-all !important;
   overflow-wrap: anywhere !important;
 }
-
-/* 移动端适配，手机端自动单列铺满屏幕 */
 @media (max-width:640px) {
-  body {
-    padding: 12px;
-  }
   .group-card-wrap {
     grid-template-columns: 1fr;
   }
@@ -691,12 +676,9 @@ html, body {
     max-width: 100%;
   }
 }
-
-/* PC端保持原有横向布局，不产生任何变化 */
 .select-group {
     display: contents;
 }
-/* 全局强制满屏兜底 */
 html {
   width: 100vw;
   min-width: 100vw;
@@ -705,9 +687,6 @@ html {
   width: 100%;
   min-width: 100%;
 }
-
-/* ========== 下面粘贴新增的弹窗滚动代码 ========== */
-/* 行业、展会弹窗列表超长滚动，底部关闭按钮永久可见 PC+手机通用 */
 #industryListWrap,
 #exhibitionListWrap {
     max-height: 320px;
@@ -739,7 +718,29 @@ html {
         <i class="fas fa-search"></i>
         <input class="float-search-input" placeholder="搜索客户、公司、电话、行业、展会...">
     </div>
-    <button class="float-add-btn"><i class="fas fa-plus"></i></button>
+    <button class="float-menu-btn"><i class="fas fa-ellipsis-v"></i></button>
+</div>
+<!-- 顶部三点气泡菜单 -->
+<div class="float-bubble-menu">
+    <div class="bubble-item" data-action="clearSearch">清空搜索关键词</div>
+    <div class="bubble-item" data-action="resetFilter">一键重置所有筛选条件</div>
+</div>
+
+<!-- 移动端底部Tab导航 -->
+<div class="mobile-bottom-tab">
+    <div class="tab-item" data-drawer="filter"><i class="fas fa-filter"></i><span>筛选</span></div>
+    <div class="tab-item" data-drawer="group"><i class="fas fa-list"></i><span>分组</span></div>
+    <button class="tab-add-btn"><i class="fas fa-plus"></i></button>
+    <div class="tab-item" data-drawer="stat"><i class="fas fa-chart-pie"></i><span>统计</span></div>
+    <div class="tab-item" data-drawer="setting"><i class="fas fa-cog"></i><span>设置</span></div>
+</div>
+
+<!-- 全局抽屉遮罩容器 -->
+<div class="mobile-drawer-overlay">
+    <div class="mobile-drawer">
+        <div class="drawer-handle"></div>
+        <div class="drawer-content" id="drawerContent"></div>
+    </div>
 </div>
 
 <div id="pwaSplash" style="position:fixed;inset:0;background:#f6f9fc;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:320px;">
@@ -867,7 +868,7 @@ html {
         <div class="header-actions">
             <button class="btn btn-outline btn-sm" id="manageIndustryBtn"><i class="fas fa-tags"></i> 行业分类管理</button>
             <button class="btn btn-outline btn-sm" id="manageExhibitionBtn"><i class="fas fa-building"></i> 展会分类管理</button>
-            <button class="btn btn-danger btn-sm" id="resetAllDataBtn"><i class="fas fa-trash-alt"></i> 清空数据</button>
+                        <button class="btn btn-danger btn-sm" id="resetAllDataBtn"><i class="fas fa-trash-alt"></i> 清空数据</button>
             <button class="btn btn-outline btn-sm" id="exportBtn"><i class="fas fa-download"></i> 导出备份</button>
             <button class="btn btn-outline btn-sm" id="importBtn"><i class="fas fa-upload"></i> 导入备份</button>
             <button class="btn btn-outline btn-sm" id="copyrightBtn"><i class="fas fa-info-circle"></i> 版权信息</button>
@@ -1027,9 +1028,15 @@ window.addEventListener('load',()=>{
 </script>
 
 <script>
-    // 分页全局配置
+    // ===================== 全局配置 =====================
     const PAGE_SIZE = 25;
+    const MOBILE_PAGE_SIZE = 50;
+    const MOBILE_MAX_LOAD = 250;
+
     let currentPage = 1;
+    let mobileLoadedCount = 0;
+    let isMobileLoading = false;
+    let mobileAllLoaded = false;
 
     let contacts = [];
     let industryList = [];
@@ -1037,79 +1044,519 @@ window.addEventListener('load',()=>{
     let exhibitionList = [];
     const DEFAULT_EXHIBITION = '未归类展会';
 
-    // 悬浮搜索DOM与同步逻辑
+    // 当前移动端临时筛选缓存，不影响PC分页
+    let mobileFilterCache = [];
+
+    // ===================== 移动端DOM引用 =====================
     const floatSearchBar = document.querySelector('.float-search-bar');
     const floatSearchInput = document.querySelector('.float-search-input');
-    const floatAddBtn = document.querySelector('.float-add-btn');
-    const originSearchInput = document.getElementById('searchInput');
+    const floatMenuBtn = document.querySelector('.float-menu-btn');
+    const floatBubbleMenu = document.querySelector('.float-bubble-menu');
+    const floatAddBtn = document.querySelector('.tab-add-btn');
+    const drawerOverlay = document.querySelector('.mobile-drawer-overlay');
+    const drawerContent = document.getElementById('drawerContent');
     const appContainer = document.querySelector('.app-container');
 
-    // 双向同步搜索框内容
+    const originSearchInput = document.getElementById('searchInput');
+    const industryFilterEl = document.getElementById('industryFilter');
+    const exhibitionFilterEl = document.getElementById('exhibitionFilter');
+    const pageFilterEl = document.getElementById('pageFilter');
+
+    // ===================== 双向同步搜索 =====================
     floatSearchInput.addEventListener('input', function(){
         originSearchInput.value = this.value;
         currentPage = 1;
+        resetMobileLoad();
         render();
     });
+
     originSearchInput.addEventListener('input', function(){
         floatSearchInput.value = this.value;
     });
 
-    // 悬浮添加客户按钮
+    // ===================== 顶部三点菜单 =====================
+    floatMenuBtn.addEventListener('click', function(e){
+        e.stopPropagation();
+        floatBubbleMenu.classList.toggle('active');
+    });
+
+    document.addEventListener('click', function(e){
+        if(!floatBubbleMenu.contains(e.target) && e.target !== floatMenuBtn){
+            floatBubbleMenu.classList.remove('active');
+        }
+    });
+
+    floatBubbleMenu.addEventListener('click', function(e){
+        const item = e.target.closest('.bubble-item');
+        if(!item) return;
+
+        const action = item.dataset.action;
+        floatBubbleMenu.classList.remove('active');
+
+        if(action === 'clearSearch'){
+            floatSearchInput.value = '';
+            originSearchInput.value = '';
+            currentPage = 1;
+            resetMobileLoad();
+            render();
+        }
+
+        if(action === 'resetFilter'){
+            floatSearchInput.value = '';
+            originSearchInput.value = '';
+            industryFilterEl.value = '';
+            currentPage = 1;
+            resetMobileLoad();
+            render();
+        }
+    });
+
+    // ===================== 底部Tab：新增客户 =====================
     floatAddBtn.addEventListener('click', ()=> openModal());
 
-// 滚动节流工具函数，降低执行频率防抖动、防误触
-function throttle(fn, delay = 30) {
-    let lastTime = 0;
-    return function () {
-        const now = Date.now();
-        if (now - lastTime >= delay) {
-            lastTime = now;
-            fn.apply(this, arguments);
+    // ===================== 底部Tab：筛选/分组/统计/设置抽屉 =====================
+    document.querySelectorAll('.mobile-bottom-tab .tab-item').forEach(tab=>{
+        tab.addEventListener('click', function(){
+            const drawerType = this.dataset.drawer;
+            openDrawer(drawerType);
+        });
+    });
+
+    drawerOverlay.addEventListener('click', function(e){
+        if(e.target === drawerOverlay) closeDrawer();
+    });
+
+    function openDrawer(type){
+        drawerOverlay.classList.add('active');
+        document.body.classList.add('lock-scroll');
+
+        if(type === 'filter'){
+            renderFilterDrawer();
+        }
+
+        if(type === 'group'){
+            renderGroupDrawer();
+        }
+
+        if(type === 'stat'){
+            renderStatDrawer();
+        }
+
+        if(type === 'setting'){
+            renderSettingDrawer();
         }
     }
-}
 
-// 悬浮栏滚动判定核心变量
-let toolbarBottom = 0;
-const toolbar = document.querySelector('.toolbar');
-const MIN_SCROLL_THRESHOLD = 15; // 最小有效滑动距离，过滤手指微抖
-let lastScrollY = 0;
-
-// 实时计算工具栏上下边界
-function calcToolbarRect() {
-    if (!toolbar) return;
-    const rect = toolbar.getBoundingClientRect();
-    toolbarBottom = rect.bottom;
-}
-
-// 滚动处理主逻辑
-const handleScroll = throttle(function () {
-    calcToolbarRect();
-    const currentScrollY = window.pageYOffset || document.documentElement.scrollTop;
-    const scrollDiff = Math.abs(currentScrollY - lastScrollY);
-
-    // 滑动距离过小直接跳过，不切换悬浮栏状态
-    if (scrollDiff < MIN_SCROLL_THRESHOLD) return;
-    lastScrollY = currentScrollY;
-
-    // 判定1：工具栏底部 < 0 → 整个工具栏完全滚出屏幕，显示悬浮搜索
-    if (toolbarBottom < 0) {
-        floatSearchBar.classList.add('show');
-    } else {
-        // 判定2：工具栏任意一截出现在屏幕，立刻隐藏悬浮框
-        floatSearchBar.classList.remove('show');
+    function closeDrawer(){
+        drawerOverlay.classList.remove('active');
+        document.body.classList.remove('lock-scroll');
+        drawerContent.innerHTML = '';
     }
-});
 
-// 页面加载、窗口缩放重新计算工具栏边界
-function recalcLayout() {
-    calcToolbarRect();
-}
-window.addEventListener('resize', recalcLayout);
-window.addEventListener('load', recalcLayout);
-// 绑定滚动事件
-window.addEventListener('scroll', handleScroll, { passive: true });
+    // ===================== 筛选抽屉：仅行业，单行纵向列表 =====================
+    function renderFilterDrawer(){
+        let html = `
+            <div style="padding:4px 0;">
+                <div style="font-size:18px;font-weight:700;margin-bottom:16px;">筛选客户</div>
+                <div class="drawer-menu-item" data-industry="">
+                    <i class="fas fa-check-circle" style="color:#2563eb;"></i>
+                    <span>全部行业</span>
+                </div>
+                ${industryList.map(name=>`
+                    <div class="drawer-menu-item" data-industry="${escapeHtml(name)}">
+                        <i class="fas fa-circle" style="color:#d1d5db;"></i>
+                        <span>${escapeHtml(name)}</span>
+                    </div>
+                `).join('')}
+                <div class="drawer-divider"></div>
+                <div class="drawer-menu-item" data-reset-filter>
+                    <i class="fas fa-undo" style="color:#64748b;"></i>
+                    <span>重置筛选</span>
+                </div>
+            </div>
+        `;
 
+        drawerContent.innerHTML = html;
+
+        drawerContent.querySelectorAll('.drawer-menu-item[data-industry]').forEach(item=>{
+            item.addEventListener('click', function(){
+                const industry = this.dataset.industry;
+                industryFilterEl.value = industry;
+                currentPage = 1;
+                resetMobileLoad();
+                closeDrawer();
+                render();
+            });
+        });
+
+        drawerContent.querySelector('[data-reset-filter]').addEventListener('click', function(){
+            industryFilterEl.value = '';
+            currentPage = 1;
+            resetMobileLoad();
+            closeDrawer();
+            render();
+        });
+    }
+
+    // ===================== 分组抽屉：仅切换展会 =====================
+    function renderGroupDrawer(){
+        let html = `
+            <div style="padding:4px 0;">
+                <div style="font-size:18px;font-weight:700;margin-bottom:16px;">选择展会分组</div>
+                ${exhibitionList.map(name=>`
+                    <div class="drawer-menu-item" data-exhibition="${escapeHtml(name)}">
+                        <i class="fas fa-circle" style="color:#d1d5db;"></i>
+                        <span>${escapeHtml(name)}</span>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+
+        drawerContent.innerHTML = html;
+
+        drawerContent.querySelectorAll('.drawer-menu-item[data-exhibition]').forEach(item=>{
+            item.addEventListener('click', function(){
+                const exhibition = this.dataset.exhibition;
+                exhibitionFilterEl.value = exhibition;
+                currentPage = 1;
+                resetMobileLoad();
+                closeDrawer();
+                render();
+            });
+        });
+    }
+
+    // ===================== 统计抽屉 =====================
+    function renderStatDrawer(){
+        const keyword = originSearchInput.value.toLowerCase().trim();
+        const selectIndustry = industryFilterEl.value;
+        const selectExhibition = exhibitionFilterEl.value;
+
+        const filtered = contacts.filter(c => {
+            const matchSearch = keyword === '' || (
+                c.name.toLowerCase().includes(keyword) ||
+                (c.company && c.company.toLowerCase().includes(keyword)) ||
+                c.phone.includes(keyword) ||
+                (c.email && c.email.toLowerCase().includes(keyword)) ||
+                (c.product && c.product.toLowerCase().includes(keyword)) ||
+                (c.industry && c.industry.toLowerCase().includes(keyword)) ||
+                (c.exhibition && c.exhibition.toLowerCase().includes(keyword))
+            );
+            const matchIndustry = selectIndustry === '' || c.industry === selectIndustry;
+            const matchExhibition = selectExhibition === '' || c.exhibition === selectExhibition;
+            return matchSearch && matchIndustry && matchExhibition;
+        });
+
+        const total = filtered.length;
+        const interacted = filtered.filter(c => c.interactions && c.interactions.length > 0).length;
+        const noInteraction = total - interacted;
+
+        const industryCount = {};
+        filtered.forEach(c=>{
+            industryCount[c.industry] = (industryCount[c.industry] || 0) + 1;
+        });
+
+        let html = `
+            <div style="padding:4px 0;">
+                <div style="font-size:18px;font-weight:700;margin-bottom:16px;">数据统计</div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px;">
+                    <div style="background:#eff6ff;border-radius:16px;padding:12px;text-align:center;">
+                        <div style="font-size:20px;font-weight:700;color:#2563eb;">${total}</div>
+                        <div style="font-size:12px;color:#64748b;">客户总数</div>
+                    </div>
+                    <div style="background:#f0fdf4;border-radius:16px;padding:12px;text-align:center;">
+                        <div style="font-size:20px;font-weight:700;color:#059669;">${interacted}</div>
+                        <div style="font-size:12px;color:#64748b;">有互动</div>
+                    </div>
+                    <div style="background:#fffbeb;border-radius:16px;padding:12px;text-align:center;">
+                        <div style="font-size:20px;font-weight:700;color:#b45309;">${noInteraction}</div>
+                        <div style="font-size:12px;color:#64748b;">无互动</div>
+                    </div>
+                </div>
+
+                <div style="font-size:16px;font-weight:600;margin-bottom:12px;">行业分布</div>
+                ${Object.keys(industryCount).length === 0 ? `
+                    <div style="color:#94a3b8;font-size:14px;">暂无数据</div>
+                ` : Object.keys(industryCount).map(key=>`
+                    <div class="drawer-menu-item">
+                        <span>${escapeHtml(key)}</span>
+                        <span style="margin-left:auto;font-weight:600;">${industryCount[key]}</span>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+
+        drawerContent.innerHTML = html;
+    }
+
+    // ===================== 设置抽屉：顺序严格定稿 =====================
+    function renderSettingDrawer(){
+        let html = `
+            <div style="padding:4px 0;">
+                <div style="font-size:18px;font-weight:700;margin-bottom:16px;">设置</div>
+
+                <div class="drawer-menu-item" data-setting="exhibition-manage">
+                    <i class="fas fa-building" style="color:#2563eb;"></i>
+                    <span>展会分类管理</span>
+                    <i class="fas fa-chevron-right" style="margin-left:auto;color:#d1d5db;"></i>
+                </div>
+
+                <div class="drawer-menu-item" data-setting="industry-manage">
+                    <i class="fas fa-tags" style="color:#2563eb;"></i>
+                    <span>行业分类管理</span>
+                    <i class="fas fa-chevron-right" style="margin-left:auto;color:#d1d5db;"></i>
+                </div>
+
+                <div class="drawer-menu-item" data-setting="import-export">
+                    <i class="fas fa-exchange-alt" style="color:#2563eb;"></i>
+                    <span>导入导出数据</span>
+                    <i class="fas fa-chevron-right" style="margin-left:auto;color:#d1d5db;"></i>
+                </div>
+
+                <div class="drawer-menu-item" data-setting="clear-all">
+                    <i class="fas fa-trash-alt" style="color:#ef4444;"></i>
+                    <span style="color:#ef4444;">清空全部数据</span>
+                    <i class="fas fa-chevron-right" style="margin-left:auto;color:#d1d5db;"></i>
+                </div>
+
+                <div class="drawer-menu-item" data-setting="password">
+                    <i class="fas fa-key" style="color:#64748b;"></i>
+                    <span>修改登录密码</span>
+                    <i class="fas fa-chevron-right" style="margin-left:auto;color:#d1d5db;"></i>
+                </div>
+
+                <div class="drawer-menu-item" data-setting="about">
+                    <i class="fas fa-info-circle" style="color:#64748b;"></i>
+                    <span>关于系统信息</span>
+                    <i class="fas fa-chevron-right" style="margin-left:auto;color:#d1d5db;"></i>
+                </div>
+            </div>
+        `;
+
+        drawerContent.innerHTML = html;
+
+        drawerContent.querySelectorAll('.drawer-menu-item[data-setting]').forEach(item=>{
+            item.addEventListener('click', function(){
+                const action = this.dataset.setting;
+                closeDrawer();
+
+                if(action === 'exhibition-manage'){
+                    openExhibitionManageModal();
+                }
+
+                if(action === 'industry-manage'){
+                    openIndustryManageModal();
+                }
+
+                if(action === 'import-export'){
+                    document.getElementById('importBtn').click();
+                }
+
+                if(action === 'clear-all'){
+                    resetAllData();
+                }
+
+                if(action === 'password'){
+                    alert('请先退出登录后再修改密码');
+                }
+
+                if(action === 'about'){
+                    openCopyrightModal();
+                }
+            });
+        });
+    }
+
+    // ===================== 客户详情抽屉 =====================
+    function openCustomerDetailDrawer(customerId){
+        const customer = contacts.find(c => c.id === customerId);
+        if(!customer) return;
+
+        const interactions = customer.interactions || [];
+        const recent = interactions.slice(-3).reverse();
+
+        let html = `
+            <div style="padding:4px 0;">
+                <div style="font-size:18px;font-weight:700;margin-bottom:16px;">客户详情</div>
+
+                <div class="contact-card mobile-full-card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-name">${escapeHtml(customer.name)}</div>
+                            <div class="card-company">${escapeHtml(customer.company) || '未登记公司'}</div>
+                            <div class="tag-row">
+                                <span class="card-industry-tag">${escapeHtml(customer.industry)}</span>
+                                <span class="card-exhibition-tag">${escapeHtml(customer.exhibition)}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-details">
+                        <div><i class="fas fa-phone"></i> ${escapeHtml(customer.phone)}</div>
+                        ${customer.email ? `<div><i class="fas fa-envelope"></i> <a href="mailto:${escapeHtml(customer.email)}">${escapeHtml(customer.email)}</a></div>` : ''}
+                        ${customer.website ? `<div><i class="fas fa-globe"></i> <span style="color:#2563eb;cursor:pointer;text-decoration:underline;" onclick="openExternalUrl('${escapeHtml(customer.website)}')">${escapeHtml(customer.website)}</span></div>` : ''}
+                        ${customer.product ? `<div><i class="fas fa-tag"></i> ${escapeHtml(customer.product)}</div>` : ''}
+                    </div>
+
+                    ${customer.notes ? `<div class="card-notes"><i class="fas fa-pencil-alt" style="margin-right:6px;color:#64748b;"></i>${escapeHtml(customer.notes)}</div>` : ''}
+
+                    <div class="interactions-section">
+                        <div class="interactions-header">
+                            <span><i class="fas fa-clock"></i> 最近互动</span>
+                            <button class="btn btn-primary btn-sm interaction-add-btn" data-id="${customer.id}"><i class="fas fa-plus"></i> 记录</button>
+                        </div>
+                        ${interactions.length === 0 ? '<div style="font-size:12px;color:#94a3b8;padding:4px 0;">暂无互动记录</div>' :
+                            `<div class="interaction-list">${recent.map((inter, idx) => {
+                                const realIndex = interactions.length - 1 - idx;
+                                const date = new Date(inter.date).toLocaleString('zh-CN', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
+                                let cls = '';
+                                if(inter.type === '电话') cls = 'phone';
+                                else if(inter.type === '微信') cls = 'wechat';
+                                else if(inter.type === 'QQ') cls = 'qq';
+                                else if(inter.type === '会面') cls = 'meeting';
+                                else if(inter.type === '邮件') cls = 'email';
+
+                                return `<div class="interaction-item">
+                                    <div>
+                                        <span class="badge ${cls}">${inter.type}</span>
+                                        <span>${escapeHtml(inter.content)}</span>
+                                        <span style="margin-left:auto;color:#94a3b8;font-size:10px;">${date}</span>
+                                    </div>
+                                    <i class="fas fa-times del-inter" data-index="${realIndex}"></i>
+                                </div>`;
+                            }).join('')}
+                            ${interactions.length > 3 ? `<div style="font-size:11px;color:#94a3b8;text-align:right;">共 ${interactions.length} 条</div>` : ''}
+                        </div>`
+                    }
+                    </div>
+                </div>
+
+                <div class="modal-actions" style="margin-top:16px;justify-content:space-between;">
+                    <button class="btn btn-outline" onclick="closeDrawer()">关闭</button>
+                    <button class="btn btn-primary" onclick="openModal('${customer.id}'); closeDrawer();">编辑客户</button>
+                    <button class="btn btn-danger" onclick="deleteContact('${customer.id}'); closeDrawer();">删除</button>
+                </div>
+            </div>
+        `;
+
+        drawerContent.innerHTML = html;
+
+        drawerContent.querySelector('.interaction-add-btn').addEventListener('click', function(){
+            const id = this.dataset.id;
+            closeDrawer();
+            openInteractionModal(id);
+        });
+
+        drawerContent.querySelector('.del-inter')?.addEventListener('click', function(){
+            const index = Number(this.dataset.index);
+            deleteSingleInteraction(customerId, index);
+            closeDrawer();
+        });
+    }
+
+    // ===================== 移动端无限加载 =====================
+    function resetMobileLoad(){
+        mobileLoadedCount = 0;
+        mobileAllLoaded = false;
+        mobileFilterCache = [];
+    }
+
+    function loadMoreMobile(){
+        if(isMobileLoading || mobileAllLoaded) return;
+
+        isMobileLoading = true;
+
+        const keyword = originSearchInput.value.toLowerCase().trim();
+        const selectIndustry = industryFilterEl.value;
+        const selectExhibition = exhibitionFilterEl.value;
+
+        const filtered = contacts.filter(c => {
+            const matchSearch = keyword === '' || (
+                c.name.toLowerCase().includes(keyword) ||
+                (c.company && c.company.toLowerCase().includes(keyword)) ||
+                c.phone.includes(keyword) ||
+                (c.email && c.email.toLowerCase().includes(keyword)) ||
+                (c.product && c.product.toLowerCase().includes(keyword)) ||
+                (c.industry && c.industry.toLowerCase().includes(keyword)) ||
+                (c.exhibition && c.exhibition.toLowerCase().includes(keyword))
+            );
+            const matchIndustry = selectIndustry === '' || c.industry === selectIndustry;
+            const matchExhibition = selectExhibition === '' || c.exhibition === selectExhibition;
+            return matchSearch && matchIndustry && matchExhibition;
+        });
+
+        mobileFilterCache = filtered;
+
+        const nextCount = Math.min(mobileLoadedCount + MOBILE_PAGE_SIZE, MOBILE_MAX_LOAD, filtered.length);
+        const pageData = filtered.slice(mobileLoadedCount, nextCount);
+
+        mobileLoadedCount = nextCount;
+
+        if(mobileLoadedCount >= MOBILE_MAX_LOAD || mobileLoadedCount >= filtered.length){
+            mobileAllLoaded = true;
+        }
+
+        isMobileLoading = false;
+
+        return pageData;
+    }
+
+    // ===================== 滚动节流 =====================
+    function throttle(fn, delay = 30) {
+        let lastTime = 0;
+        return function () {
+            const now = Date.now();
+            if (now - lastTime >= delay) {
+                lastTime = now;
+                fn.apply(this, arguments);
+            }
+        }
+    }
+
+    // ===================== 悬浮搜索栏滚动显示 =====================
+    const toolbar = document.querySelector('.toolbar');
+    let toolbarBottom = 0;
+    let lastScrollY = 0;
+    const MIN_SCROLL_THRESHOLD = 15;
+
+    function calcToolbarRect() {
+        if (!toolbar) return;
+        const rect = toolbar.getBoundingClientRect();
+        toolbarBottom = rect.bottom;
+    }
+
+    const handleScroll = throttle(function () {
+        calcToolbarRect();
+        const currentScrollY = window.pageYOffset || document.documentElement.scrollTop;
+        const scrollDiff = Math.abs(currentScrollY - lastScrollY);
+
+        if (scrollDiff < MIN_SCROLL_THRESHOLD) return;
+        lastScrollY = currentScrollY;
+
+        if (toolbarBottom < 0) {
+            floatSearchBar.classList.add('show');
+        } else {
+            floatSearchBar.classList.remove('show');
+        }
+
+        // 移动端无限加载触底
+        if(window.innerHeight + window.scrollY >= document.body.offsetHeight - 300){
+            if(!isMobileLoading && !mobileAllLoaded){
+                render(true);
+            }
+        }
+    });
+
+    function recalcLayout() {
+        calcToolbarRect();
+    }
+
+    window.addEventListener('resize', recalcLayout);
+    window.addEventListener('load', recalcLayout);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    // ===================== 原有业务逻辑兼容 =====================
     function openExternalUrl(url) {
         try {
             if (!url || url.trim() === '') return;
@@ -1133,36 +1580,27 @@ window.addEventListener('scroll', handleScroll, { passive: true });
         }
     }
 
-    const industryFilterEl = document.getElementById('industryFilter');
-    const industrySelectEl = document.getElementById('industry');
-    const exhibitionFilterEl = document.getElementById('exhibitionFilter');
-    const exhibitionSelectEl = document.getElementById('exhibition');
-    const pageFilterEl = document.getElementById('pageFilter');
-
-    // 刷新分页下拉页码列表
     function refreshPageOptions(totalFilterCount) {
-    const totalPage = Math.ceil(totalFilterCount / PAGE_SIZE);
-    pageFilterEl.innerHTML = '';
-    if(totalPage <= 0) {
-        pageFilterEl.innerHTML = `<option value="1"> 1｜共 0 页</option>`;
-        currentPage = 1;
-        return;
+        const totalPage = Math.ceil(totalFilterCount / PAGE_SIZE);
+        pageFilterEl.innerHTML = '';
+        if(totalPage <= 0) {
+            pageFilterEl.innerHTML = `<option value="1"> 1｜共 0 页</option>`;
+            currentPage = 1;
+            return;
+        }
+        for(let i = 1; i <= totalPage; i++) {
+            const opt = document.createElement('option');
+            opt.value = i;
+            opt.innerText =` ${i} ｜共 ${totalPage} 页`;
+            if(Number(opt.value) === currentPage) opt.selected = true;
+            pageFilterEl.appendChild(opt);
+        }
+        if(currentPage > totalPage) {
+            currentPage = 1;
+            pageFilterEl.value = 1;
+        }
     }
-    for(let i = 1; i <= totalPage; i++) {
-        const opt = document.createElement('option');
-        opt.value = i;
-        opt.innerText =` ${i} ｜共 ${totalPage} 页`;
-        if(Number(opt.value) === currentPage) opt.selected = true;
-        pageFilterEl.appendChild(opt);
-    }
-    // 当前页超过总页数自动切回第一页
-    if(currentPage > totalPage) {
-        currentPage = 1;
-        pageFilterEl.value = 1;
-    }
-}
 
-    // 截取当前分页数据
     function getPageData(filteredList) {
         const startIdx = (currentPage - 1) * PAGE_SIZE;
         const endIdx = startIdx + PAGE_SIZE;
@@ -1211,7 +1649,6 @@ window.addEventListener('scroll', handleScroll, { passive: true });
         } catch (e) {
             console.error('加载行业数据失败', e);
             industryList = [DEFAULT_INDUSTRY];
-
             saveIndustryStorage();
         }
 
@@ -1258,6 +1695,7 @@ window.addEventListener('scroll', handleScroll, { passive: true });
             console.error('保存行业失败', e);
         }
     }
+
     function saveExhibitionStorage() {
         try {
             localStorage.setItem('crm_exhibition_list', JSON.stringify(exhibitionList));
@@ -1265,6 +1703,7 @@ window.addEventListener('scroll', handleScroll, { passive: true });
             console.error('保存展会失败', e);
         }
     }
+
     function saveContactStorage() {
         try {
             localStorage.setItem('crm_contacts', JSON.stringify(contacts));
@@ -1285,6 +1724,7 @@ window.addEventListener('scroll', handleScroll, { passive: true });
                 opt.innerText = name;
                 industryFilterEl.appendChild(opt);
             });
+
             exhibitionFilterEl.innerHTML = '<option value="">全部展会</option>';
             exhibitionList.forEach(name => {
                 const opt = document.createElement('option');
@@ -1293,27 +1733,27 @@ window.addEventListener('scroll', handleScroll, { passive: true });
                 exhibitionFilterEl.appendChild(opt);
             });
 
-            industrySelectEl.innerHTML = '';
+            document.getElementById('industry').innerHTML = '';
             let industryDefaultIndex = 0;
             industryList.forEach((name, idx) => {
                 const opt = document.createElement('option');
                 opt.value = name;
                 opt.innerText = name;
-                industrySelectEl.appendChild(opt);
+                document.getElementById('industry').appendChild(opt);
                 if(name === DEFAULT_INDUSTRY) industryDefaultIndex = idx;
             });
-            industrySelectEl.selectedIndex = industryDefaultIndex;
+            document.getElementById('industry').selectedIndex = industryDefaultIndex;
 
-            exhibitionSelectEl.innerHTML = '';
+            document.getElementById('exhibition').innerHTML = '';
             let exhibitionDefaultIndex = 0;
             exhibitionList.forEach((name, idx) => {
                 const opt = document.createElement('option');
                 opt.value = name;
                 opt.innerText = name;
-                exhibitionSelectEl.appendChild(opt);
+                document.getElementById('exhibition').appendChild(opt);
                 if(name === DEFAULT_EXHIBITION) exhibitionDefaultIndex = idx;
             });
-            exhibitionSelectEl.selectedIndex = exhibitionDefaultIndex;
+            document.getElementById('exhibition').selectedIndex = exhibitionDefaultIndex;
         } catch (e) {
             console.error('刷新下拉选项失败', e);
         }
@@ -1331,6 +1771,7 @@ window.addEventListener('scroll', handleScroll, { passive: true });
             console.error('渲染行业列表失败', e);
         }
     }
+
     function addNewIndustry() {
         try {
             const input = document.getElementById('newIndustryInput');
@@ -1347,6 +1788,7 @@ window.addEventListener('scroll', handleScroll, { passive: true });
             alert('新增分类异常');
         }
     }
+
     function deleteIndustry(index) {
         try {
             const targetName = industryList[index];
@@ -1381,6 +1823,7 @@ window.addEventListener('scroll', handleScroll, { passive: true });
             console.error('渲染展会列表失败', e);
         }
     }
+
     function addNewExhibition() {
         try {
             const input = document.getElementById('newExhibitionInput');
@@ -1397,6 +1840,7 @@ window.addEventListener('scroll', handleScroll, { passive: true });
             alert('新增分类异常');
         }
     }
+
     function deleteExhibition(index) {
         try {
             const targetName = exhibitionList[index];
@@ -1436,9 +1880,9 @@ window.addEventListener('scroll', handleScroll, { passive: true });
         return div.innerHTML;
     }
 
-    function render() {
+    function render(append = false) {
         try {
-            const keyword = document.getElementById('searchInput').value.toLowerCase().trim();
+            const keyword = originSearchInput.value.toLowerCase().trim();
             const selectIndustry = industryFilterEl.value;
             const selectExhibition = exhibitionFilterEl.value;
 
@@ -1457,93 +1901,166 @@ window.addEventListener('scroll', handleScroll, { passive: true });
                 return matchSearch && matchIndustry && matchExhibition;
             });
 
-            // 刷新分页下拉
-            refreshPageOptions(filtered.length);
-            // 获取当前页数据
-            const pageData = getPageData(filtered);
+            const isMobile = window.innerWidth <= 640;
 
-            const grid = document.getElementById('contactGrid');
-            if (filtered.length === 0) {
-                grid.innerHTML = `<div class="empty-state"><i class="fas fa-search"></i><h3>没有匹配的客户</h3><p>更换搜索关键词、行业或展会分类试试</p></div>`;
+            if(isMobile){
+                if(!append){
+                    mobileLoadedCount = 0;
+                    mobileAllLoaded = false;
+                    mobileFilterCache = filtered;
+                }
+
+                const nextCount = Math.min(mobileLoadedCount + MOBILE_PAGE_SIZE, MOBILE_MAX_LOAD, filtered.length);
+                const pageData = filtered.slice(mobileLoadedCount, nextCount);
+                mobileLoadedCount = nextCount;
+
+                if(mobileLoadedCount >= MOBILE_MAX_LOAD || mobileLoadedCount >= filtered.length){
+                    mobileAllLoaded = true;
+                }
+
+                renderMobileList(pageData, append);
                 return;
             }
-/* ===================== 统计数据逻辑修改  ===================== */
-const groupMap = {};
-// 1. 统计筛选结果内各展会客户数量
-const exhibitionTotalMap = {};
-filtered.forEach(item => {
-    if (!exhibitionTotalMap[item.exhibition]) exhibitionTotalMap[item.exhibition] = 0;
-    exhibitionTotalMap[item.exhibition] += 1;
-});
-// 筛选结果全部客户总数
-const totalFilterAll = filtered.length;
 
-// 分页分组数据归集
-pageData.forEach(item => {
-    if (!groupMap[item.exhibition]) groupMap[item.exhibition] = [];
-    groupMap[item.exhibition].push(item);
-});
+            refreshPageOptions(filtered.length);
+            const pageData = getPageData(filtered);
+            renderDesktopList(pageData, filtered.length);
 
-let html = '';
-Object.keys(groupMap).forEach(exhibitionName => {
-    const currentExhCount = exhibitionTotalMap[exhibitionName];
-    // 过滤移除当前展会，后方列表不再重复出现
-    const otherExhibitionList = Object.keys(exhibitionTotalMap).filter(name => name !== exhibitionName);
-    let otherSummary = '';
-    otherExhibitionList.forEach((name, idx) => {
-        const count = exhibitionTotalMap[name];
-        if(idx > 0) otherSummary += ' ';
-        otherSummary += `${escapeHtml(name)}(${count})`;
-    });
-    let suffixText = '';
-    if(otherSummary) {
-        suffixText = `｜${otherSummary}`;
-    }
-    // 判断：当前展会数量等于全局总数量时，不展示「共XX家」，消除重复
-    let totalText = '';
-    if(currentExhCount !== totalFilterAll){
-        totalText = `｜共${totalFilterAll}家`;
+        } catch (e) {
+            console.error('渲染客户列表失败', e);
+            document.getElementById('contactGrid').innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>列表渲染异常</h3><p>请刷新页面恢复</p></div>`;
+        }
     }
 
-    // 标题结构：当前展会数量 + （可选全局总数） + 其他展会（剔除自身）
-    html += `<div class="group-block">
-    <h3 class="group-title" style="margin-left:8px;" onscroll="checkTitleOverflow(this)">
-    <i class="fas fa-id-card"></i> ${escapeHtml(exhibitionName)} ${currentExhCount}家${totalText}${suffixText}
-</h3>
-    <div class="group-card-wrap">`;
-/* ===================== 统计数据逻辑结束  ===================== */
-                groupMap[exhibitionName].forEach(c => {
-                    const interactions = c.interactions || [];
-                    const recent = interactions.slice(-3).reverse();
-                    html += `
-                    <div class="contact-card" data-cid="${escapeHtml(c.id)}">
-                        <div class="card-header">
-                            <div>
-                                <div class="card-name">${escapeHtml(c.name)}</div>
-                                <div class="card-company">${escapeHtml(c.company) || '未登记公司'}</div>
-                                <div class="tag-row">
-                                    <span class="card-industry-tag">${escapeHtml(c.industry)}</span>
-                                    <span class="card-exhibition-tag">${escapeHtml(c.exhibition)}</span>
-                                </div>
-                            </div>
-                            <div class="card-actions">
-                                <button class="btn btn-icon btn-sm edit-btn" data-id="${c.id}" title="编辑"><i class="fas fa-pen"></i></button>
-                                <button class="btn btn-icon btn-sm delete-btn" data-id="${c.id}" title="删除" style="color:#ef4444;"><i class="fas fa-trash"></i></button>
+    function renderMobileList(list, append = false){
+        const grid = document.getElementById('contactGrid');
+
+        if(!append){
+            grid.innerHTML = '';
+        }
+
+        if(mobileFilterCache.length === 0 && append === false){
+            grid.innerHTML = `<div class="empty-state"><i class="fas fa-search"></i><h3>没有匹配的客户</h3><p>更换搜索关键词、行业或展会分类试试</p></div>`;
+            return;
+        }
+
+        list.forEach(c => {
+            const card = document.createElement('div');
+            card.className = 'contact-card';
+            card.dataset.cid = c.id;
+
+            card.innerHTML = `
+                <div class="card-header">
+                    <div>
+                        <div class="card-name">${escapeHtml(c.name)}</div>
+                        <div class="card-company">${escapeHtml(c.company) || '未登记公司'}</div>
+                    </div>
+                </div>
+                <div class="card-phone-row">
+                    <i class="fas fa-phone" style="color:#64748b;"></i>
+                    <a href="tel:${escapeHtml(c.phone)}">${escapeHtml(c.phone)}</a>
+                </div>
+                <div class="tag-row">
+                    <span class="card-exhibition-tag">${escapeHtml(c.exhibition)}</span>
+                </div>
+            `;
+
+            card.addEventListener('click', function(){
+                openCustomerDetailDrawer(c.id);
+            });
+
+            grid.appendChild(card);
+        });
+
+        if(mobileAllLoaded && mobileFilterCache.length > 0){
+            const tip = document.createElement('div');
+            tip.style.textAlign = 'center';
+            tip.style.color = '#94a3b8';
+            tip.style.fontSize = '13px';
+            tip.style.padding = '16px 0';
+            tip.textContent = mobileLoadedCount >= MOBILE_MAX_LOAD
+                ? '已加载最大数量，可使用筛选缩小查看范围'
+                : '没有更多客户了';
+            grid.appendChild(tip);
+        }
+    }
+
+    function renderDesktopList(pageData, totalCount){
+        const grid = document.getElementById('contactGrid');
+
+        if(totalCount === 0){
+            grid.innerHTML = `<div class="empty-state"><i class="fas fa-search"></i><h3>没有匹配的客户</h3><p>更换搜索关键词、行业或展会分类试试</p></div>`;
+            return;
+        }
+
+        const groupMap = {};
+        const exhibitionTotalMap = {};
+
+        pageData.forEach(item => {
+            if (!exhibitionTotalMap[item.exhibition]) exhibitionTotalMap[item.exhibition] = 0;
+            exhibitionTotalMap[item.exhibition] += 1;
+        });
+
+        pageData.forEach(item => {
+            if (!groupMap[item.exhibition]) groupMap[item.exhibition] = [];
+            groupMap[item.exhibition].push(item);
+        });
+
+        let html = '';
+
+        Object.keys(groupMap).forEach(exhibitionName => {
+            const currentExhCount = exhibitionTotalMap[exhibitionName];
+            const otherExhibitionList = Object.keys(exhibitionTotalMap).filter(name => name !== exhibitionName);
+
+            let otherSummary = '';
+            otherExhibitionList.forEach((name, idx) => {
+                const count = exhibitionTotalMap[name];
+                if(idx > 0) otherSummary += ' ';
+                otherSummary += `${escapeHtml(name)}(${count})`;
+            });
+
+            let suffixText = otherSummary ? `｜${otherSummary}` : '';
+            let totalText = currentExhCount !== totalCount ? `｜共${totalCount}家` : '';
+
+            html += `<div class="group-block">
+                <h3 class="group-title" style="margin-left:8px;" onscroll="checkTitleOverflow(this)">
+                    <i class="fas fa-id-card"></i> ${escapeHtml(exhibitionName)} ${currentExhCount}家${totalText}${suffixText}
+                </h3>
+                <div class="group-card-wrap">`;
+
+            groupMap[exhibitionName].forEach(c => {
+                const interactions = c.interactions || [];
+                const recent = interactions.slice(-3).reverse();
+
+                html += `
+                <div class="contact-card" data-cid="${escapeHtml(c.id)}">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-name">${escapeHtml(c.name)}</div>
+                            <div class="card-company">${escapeHtml(c.company) || '未登记公司'}</div>
+                            <div class="tag-row">
+                                <span class="card-industry-tag">${escapeHtml(c.industry)}</span>
+                                <span class="card-exhibition-tag">${escapeHtml(c.exhibition)}</span>
                             </div>
                         </div>
-                        <div class="card-details">
-                            <div><i class="fas fa-phone"></i> ${escapeHtml(c.phone)}</div>
-                            ${c.email ? `<div><i class="fas fa-envelope"></i> <a href="mailto:${escapeHtml(c.email)}">${escapeHtml(c.email)}</a></div>` : ''}
-                            ${c.website ? `<div><i class="fas fa-globe"></i> <span style="color:#2563eb;cursor:pointer;text-decoration:underline;" onclick="openExternalUrl('${escapeHtml(c.website)}')">${escapeHtml(c.website)}</span></div>` : ''}
-                            ${c.product ? `<div><i class="fas fa-tag"></i> ${escapeHtml(c.product)}</div>` : ''}
+                        <div class="card-actions">
+                            <button class="btn btn-icon btn-sm edit-btn" data-id="${c.id}" title="编辑"><i class="fas fa-pen"></i></button>
+                            <button class="btn btn-icon btn-sm delete-btn" data-id="${c.id}" title="删除" style="color:#ef4444;"><i class="fas fa-trash"></i></button>
                         </div>
-                        ${c.notes ? `<div class="card-notes"><i class="fas fa-pencil-alt" style="margin-right:6px;color:#64748b;"></i>${escapeHtml(c.notes)}</div>` : ''}
-                        <div class="interactions-section">
-                            <div class="interactions-header">
-                                <span><i class="fas fa-clock"></i> 最近互动</span>
-                                <button class="btn btn-primary btn-sm interaction-add-btn" data-id="${c.id}"><i class="fas fa-plus"></i> 记录</button>
-                            </div>
-                            ${interactions.length === 0 ? '<div style="font-size:12px;color:#94a3b8;padding:4px 0;">暂无互动记录</div>' :
+                    </div>
+                    <div class="card-details">
+                        <div><i class="fas fa-phone"></i> ${escapeHtml(c.phone)}</div>
+                        ${c.email ? `<div><i class="fas fa-envelope"></i> <a href="mailto:${escapeHtml(c.email)}">${escapeHtml(c.email)}</a></div>` : ''}
+                        ${c.website ? `<div><i class="fas fa-globe"></i> <span style="color:#2563eb;cursor:pointer;text-decoration:underline;" onclick="openExternalUrl('${escapeHtml(c.website)}')">${escapeHtml(c.website)}</span></div>` : ''}
+                        ${c.product ? `<div><i class="fas fa-tag"></i> ${escapeHtml(c.product)}</div>` : ''}
+                    </div>
+                    ${c.notes ? `<div class="card-notes"><i class="fas fa-pencil-alt" style="margin-right:6px;color:#64748b;"></i>${escapeHtml(c.notes)}</div>` : ''}
+                    <div class="interactions-section">
+                        <div class="interactions-header">
+                            <span><i class="fas fa-clock"></i> 最近互动</span>
+                            <button class="btn btn-primary btn-sm interaction-add-btn" data-id="${c.id}"><i class="fas fa-plus"></i> 记录</button>
+                        </div>
+                        ${interactions.length === 0 ? '<div style="font-size:12px;color:#94a3b8;padding:4px 0;">暂无互动记录</div>' :
                             `<div class="interaction-list">${recent.map((inter, idx) => {
                                 const realIndex = interactions.length - 1 - idx;
                                 const date = new Date(inter.date).toLocaleString('zh-CN', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
@@ -1553,19 +2070,26 @@ Object.keys(groupMap).forEach(exhibitionName => {
                                 else if(inter.type === 'QQ') cls = 'qq';
                                 else if(inter.type === '会面') cls = 'meeting';
                                 else if(inter.type === '邮件') cls = 'email';
-                                return `<div class="interaction-item"><div><span class="badge ${cls}">${inter.type}</span> <span>${escapeHtml(inter.content)}</span> <span style="margin-left:auto;color:#94a3b8;font-size:10px;">${date}</span></div><i class="fas fa-times del-inter" data-index="${realIndex}"></i></div>`;
-                            }).join('')}${interactions.length > 3 ? `<div style="font-size:11px;color:#94a3b8;text-align:right;">共 ${interactions.length} 条</div>` : ''}</div>`}
-                        </div>
-                    </div>`;
-                });
-                html += `</div></div>`;
+
+                                return `<div class="interaction-item">
+                                    <div>
+                                        <span class="badge ${cls}">${inter.type}</span>
+                                        <span>${escapeHtml(inter.content)}</span>
+                                        <span style="margin-left:auto;color:#94a3b8;font-size:10px;">${date}</span>
+                                    </div>
+                                    <i class="fas fa-times del-inter" data-index="${realIndex}"></i>
+                                </div>`;
+                            }).join('')}
+                            ${interactions.length > 3 ? `<div style="font-size:11px;color:#94a3b8;text-align:right;">共 ${interactions.length} 条</div>` : ''}
+                        </div>`
+                        }
+                    </div>
+                </div>`;
             });
-            grid.innerHTML = html;
-refreshAllTitleOverflow();
-        } catch (e) {
-            console.error('渲染客户列表失败', e);
-            document.getElementById('contactGrid').innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-circle"></i><h3>列表渲染异常</h3><p>请刷新页面恢复</p></div>`;
-        }
+            html += `</div></div>`;
+        });
+        grid.innerHTML = html;
+        refreshAllTitleOverflow();
     }
 
     function openModal(id = null) {
@@ -1877,20 +2401,21 @@ refreshAllTitleOverflow();
         document.getElementById('importInput').addEventListener('change', function(e) {
             if (this.files.length) importData(this.files[0]);
         });
-        // 搜索、行业、展会筛选切换，重置到第一页
         document.getElementById('searchInput').addEventListener('input', function(){
             currentPage = 1;
+            resetMobileLoad();
             render();
         });
         industryFilterEl.addEventListener('change', function(){
             currentPage = 1;
+            resetMobileLoad();
             render();
         });
         exhibitionFilterEl.addEventListener('change', function(){
             currentPage = 1;
+            resetMobileLoad();
             render();
         });
-        // 分页切换事件
         pageFilterEl.addEventListener('change', function(){
             currentPage = Number(this.value);
             render();
@@ -1936,6 +2461,20 @@ refreshAllTitleOverflow();
             }
         });
     });
+
+function checkTitleOverflow(el) {
+    if (el.scrollWidth > el.clientWidth) {
+        el.dataset.overflow = "true";
+    } else {
+        el.dataset.overflow = "";
+    }
+}
+function refreshAllTitleOverflow() {
+    const allTitles = document.querySelectorAll(".group-title");
+    allTitles.forEach(titleEl => {
+        setTimeout(() => checkTitleOverflow(titleEl), 20);
+    });
+}
 </script>
 
 <!-- 登录逻辑完整JS -->
