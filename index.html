@@ -2728,6 +2728,24 @@ function refreshAllTitleOverflow() {
         setTimeout(() => checkTitleOverflow(titleEl), 20);
     });
 }
+
+// 页面初次加载立刻执行一次位置检测
+calcToolbarRect();
+const currentScrollY = window.pageYOffset;
+if (toolbarBottom < 0) {
+    floatSearchBar.classList.add('show');
+}
+
+// 悬浮栏出现时给容器增加上边距防止遮挡
+const observerFloat = new MutationObserver(()=>{
+    const isShow = floatSearchBar.classList.contains('show');
+    if(isShow){
+        appContainer.style.top = `calc(var(--floatSearch-height) + var(--safe-top))`;
+    }else{
+        appContainer.style.top = `var(--safe-top)`;
+    }
+});
+observerFloat.observe(floatSearchBar, {attributes:true, attributeFilter:['class']});
 </script>
 </body>
 </html>
