@@ -263,7 +263,7 @@
         .grid {
             display: flex;
             flex-direction: column;
-            gap: 30px;
+            gap: 8px;
         }
 
         .group-title {
@@ -634,6 +634,14 @@
             color: #dc2626;
         }
 
+/*===== 粘贴下面这两段在这里 =====*/
+.drawer-filter-item {
+    cursor: pointer;
+}
+.drawer-filter-item:active {
+    background: #dbeafe !important;
+}
+
         .add-tag-row {
             display: flex;
             gap: 6px;
@@ -857,10 +865,6 @@
                 display: none !important;
             }
 
-            /* 客户卡片单列 */
-            .group-card-wrap {
-                grid-template-columns: 1fr;
-            }
 
             /* =========== 底部常驻Tab导航栏 =========== */
             .mobile-bottom-tab {
@@ -918,7 +922,6 @@
                 padding: 14px;
             }
             /* 抽屉内详情卡片展示完整信息；列表卡片隐藏多余模块 */
-            .contact-card .card-company,
             .contact-card .card-industry-tag,
             .contact-card .card-details,
             .contact-card .card-notes,
@@ -1084,6 +1087,7 @@
         @media (max-width:640px) {
             .group-card-wrap {
                 grid-template-columns: 1fr;
+gap:6px !important;
             }
             .group-card-wrap:has(.contact-card:only-child) .contact-card {
                 width: 100%;
@@ -1467,7 +1471,7 @@
         const pageFilterEl = document.getElementById('pageFilter');
 
         // ★ 修复3：全局标识移动端
-        const isMobileDevice = window.innerWidth <= 640;
+        
 
         // ===================== 双向同步搜索 =====================
         floatSearchInput.addEventListener('input', function() {
@@ -1562,82 +1566,86 @@
 
         // ===================== 筛选抽屉：仅行业，单行纵向列表 =====================
         function renderFilterDrawer() {
-            let html = `
-            <div style="padding:4px 0;">
-                <div style="font-size:18px;font-weight:700;margin-bottom:16px;">筛选客户</div>
-                <div class="drawer-menu-item" data-industry="">
-                    <i class="fas fa-check-circle" style="color:#2563eb;"></i>
-                    <span>全部行业</span>
-                </div>
-                ${industryList.map(name=>`
-                    <div class="drawer-menu-item" data-industry="${escapeHtml(name)}">
-                        <i class="fas fa-circle" style="color:#d1d5db;"></i>
-                        <span>${escapeHtml(name)}</span>
-                    </div>
-                `).join('')}
-                <div class="drawer-divider"></div>
-                <div class="drawer-menu-item" data-reset-filter>
-                    <i class="fas fa-undo" style="color:#64748b;"></i>
-                    <span>重置筛选</span>
-                </div>
+    // 获取当前选中行业
+    const currentSelect = industryFilterEl.value;
+    let html = `
+    <div style="padding:4px 0;">
+        <div style="font-size:18px;font-weight:700;margin-bottom:16px;">筛选客户 - 行业</div>
+        
+        <div class="manage-item-row drawer-filter-item" data-industry="">
+            <span>全部行业</span>
+            ${currentSelect === '' ? '<i class="fas fa-check" style="color:#2563eb;"></i>' : ''}
+        </div>
+        ${industryList.map(name=>`
+            <div class="manage-item-row drawer-filter-item" data-industry="${escapeHtml(name)}">
+                <span>${escapeHtml(name)}</span>
+                ${currentSelect === name ? '<i class="fas fa-check" style="color:#2563eb;"></i>' : ''}
             </div>
-        `;
+        `).join('')}
 
-            drawerContent.innerHTML = html;
+        <div class="drawer-divider"></div>
+        
+        <div class="manage-item-row drawer-filter-item" data-reset-filter>
+            <span style="color:#64748b;">重置筛选条件</span>
+            <i class="fas fa-undo" style="color:#64748b;"></i>
+        </div>
+    </div>
+`;
 
-            drawerContent.querySelectorAll('.drawer-menu-item[data-industry]').forEach(item => {
-                item.addEventListener('click', function() {
-                    const industry = this.dataset.industry;
-                    industryFilterEl.value = industry;
-                    currentPage = 1;
-                    resetMobileLoad();
-                    closeDrawer();
-                    render();
-                });
-            });
+    drawerContent.innerHTML = html;
 
-            drawerContent.querySelector('[data-reset-filter]').addEventListener('click', function() {
-                industryFilterEl.value = '';
-                currentPage = 1;
-                resetMobileLoad();
-                closeDrawer();
-                render();
-            });
-        }
+    drawerContent.querySelectorAll('.drawer-filter-item[data-industry]').forEach(item => {
+        item.addEventListener('click', function(){
+            const industry = this.dataset.industry;
+            industryFilterEl.value = industry;
+            currentPage = 1;
+            resetMobileLoad();
+            closeDrawer();
+            render();
+        });
+    });
+
+    drawerContent.querySelector('[data-reset-filter]').addEventListener('click', function(){
+        industryFilterEl.value = '';
+        currentPage = 1;
+        resetMobileLoad();
+        closeDrawer();
+        render();
+    });
+}
 
         // ===================== 分组抽屉：仅切换展会 =====================
-       function renderGroupDrawer() {
-    // 确保展会列表已加载
+      function renderGroupDrawer() {
     if (!exhibitionList || exhibitionList.length === 0) {
         drawerContent.innerHTML = `
             <div style="padding:4px 0;">
-                <div style="font-size:18px;font-weight:700;margin-bottom:16px;">选择展会分组</div>
+                <div style="font-size:18px;font-weight:700;margin-bottom:16px;">分组 - 展会</div>
                 <div style="color:#94a3b8;padding:12px;text-align:center;">暂无展会分类，请先添加</div>
             </div>
         `;
         return;
     }
-
+    const currentSelect = exhibitionFilterEl.value;
     let html = `
-        <div style="padding:4px 0;">
-            <div style="font-size:18px;font-weight:700;margin-bottom:16px;">选择展会分组</div>
-            <div class="drawer-menu-item" data-exhibition="__all__">
-                <i class="fas fa-check-circle" style="color:#2563eb;"></i>
-                <span>全部展会</span>
-            </div>
-            ${exhibitionList.map(name => `
-                <div class="drawer-menu-item" data-exhibition="${escapeHtml(name)}">
-                    <i class="fas fa-circle" style="color:#d1d5db;"></i>
-                    <span>${escapeHtml(name)}</span>
-                </div>
-            `).join('')}
+    <div style="padding:4px 0;">
+        <div style="font-size:18px;font-weight:700;margin-bottom:16px;">分组 - 展会</div>
+
+        <div class="manage-item-row drawer-filter-item" data-exhibition="__all__">
+            <span>全部展会</span>
+            ${currentSelect === '' ? '<i class="fas fa-check" style="color:#2563eb;"></i>' : ''}
         </div>
-    `;
+        ${exhibitionList.map(name => `
+            <div class="manage-item-row drawer-filter-item" data-exhibition="${escapeHtml(name)}">
+                <span>${escapeHtml(name)}</span>
+                ${currentSelect === name ? '<i class="fas fa-check" style="color:#2563eb;"></i>' : ''}
+            </div>
+        `).join('')}
+    </div>
+`;
 
     drawerContent.innerHTML = html;
 
-    // 点击事件
-    drawerContent.querySelectorAll('.drawer-menu-item[data-exhibition]').forEach(item => {
+    drawerContent.querySelectorAll('.drawer-filter-item[data-exhibition]').forEach(item => {
         item.addEventListener('click', function() {
             const exhibition = this.dataset.exhibition;
             if (exhibition === '__all__') {
@@ -1646,7 +1654,7 @@
                 exhibitionFilterEl.value = exhibition;
             }
             currentPage = 1;
-            resetMobileLoad();  // 如果有移动端无限加载，需重置
+            resetMobileLoad();
             closeDrawer();
             render();
         });
@@ -1762,83 +1770,92 @@
     drawerContent.innerHTML = html;
 }
         // ===================== 设置抽屉：顺序严格定稿 =====================
-        function renderSettingDrawer() {
-            let html = `
-            <div style="padding:4px 0;">
-                <div style="font-size:18px;font-weight:700;margin-bottom:16px;">设置</div>
+function renderSettingDrawer() {
+    let html = `
+    <div style="padding:4px 0;">
+        <div style="font-size:18px;font-weight:700;margin-bottom:16px;">设置</div>
 
-                <div class="drawer-menu-item" data-setting="exhibition-manage">
-                    <i class="fas fa-building" style="color:#2563eb;"></i>
-                    <span>展会分类管理</span>
-                    <i class="fas fa-chevron-right" style="margin-left:auto;color:#d1d5db;"></i>
-                </div>
+        <div class="drawer-menu-item" data-setting="exhibition-manage">
+            <i class="fas fa-building" style="color:#2563eb;"></i>
+            <span>展会分类管理</span>
+            <i class="fas fa-chevron-right" style="margin-left:auto;color:#d1d5db;"></i>
+        </div>
 
-                <div class="drawer-menu-item" data-setting="industry-manage">
-                    <i class="fas fa-tags" style="color:#2563eb;"></i>
-                    <span>行业分类管理</span>
-                    <i class="fas fa-chevron-right" style="margin-left:auto;color:#d1d5db;"></i>
-                </div>
+        <div class="drawer-menu-item" data-setting="industry-manage">
+            <i class="fas fa-tags" style="color:#2563eb;"></i>
+            <span>行业分类管理</span>
+            <i class="fas fa-chevron-right" style="margin-left:auto;color:#d1d5db;"></i>
+        </div>
 
-                <div class="drawer-menu-item" data-setting="import-export">
-                    <i class="fas fa-exchange-alt" style="color:#2563eb;"></i>
-                    <span>导入导出数据</span>
-                    <i class="fas fa-chevron-right" style="margin-left:auto;color:#d1d5db;"></i>
-                </div>
+        <div class="drawer-menu-item" data-setting="import-export">
+            <i class="fas fa-upload" style="color:#059669;"></i>
+            <span>导入备份数据</span>
+            <i class="fas fa-chevron-right" style="margin-left:auto;color:#d1d5db;"></i>
+        </div>
+        
+        <div class="drawer-menu-item" data-setting="export-backup">
+            <i class="fas fa-download" style="color:#059669;"></i>
+            <span>导出备份数据</span>
+            <i class="fas fa-chevron-right" style="margin-left:auto;color:#d1d5db;"></i>
+        </div>
 
-                <div class="drawer-menu-item" data-setting="clear-all">
-                    <i class="fas fa-trash-alt" style="color:#ef4444;"></i>
-                    <span style="color:#ef4444;">清空全部数据</span>
-                    <i class="fas fa-chevron-right" style="margin-left:auto;color:#d1d5db;"></i>
-                </div>
+        <div class="drawer-menu-item" data-setting="clear-all">
+            <i class="fas fa-trash-alt" style="color:#ef4444;"></i>
+            <span style="color:#ef4444;">清空全部数据</span>
+            <i class="fas fa-chevron-right" style="margin-left:auto;color:#d1d5db;"></i>
+        </div>
 
-                <div class="drawer-menu-item" data-setting="password">
-                    <i class="fas fa-key" style="color:#64748b;"></i>
-                    <span>修改登录密码</span>
-                    <i class="fas fa-chevron-right" style="margin-left:auto;color:#d1d5db;"></i>
-                </div>
+        <div class="drawer-menu-item" data-setting="password">
+            <i class="fas fa-key" style="color:#64748b;"></i>
+            <span>修改登录密码</span>
+            <i class="fas fa-chevron-right" style="margin-left:auto;color:#d1d5db;"></i>
+        </div>
 
-                <div class="drawer-menu-item" data-setting="about">
-                    <i class="fas fa-info-circle" style="color:#64748b;"></i>
-                    <span>关于系统信息</span>
-                    <i class="fas fa-chevron-right" style="margin-left:auto;color:#d1d5db;"></i>
-                </div>
-            </div>
-        `;
+        <div class="drawer-menu-item" data-setting="about">
+            <i class="fas fa-info-circle" style="color:#64748b;"></i>
+            <span>关于系统信息</span>
+            <i class="fas fa-chevron-right" style="margin-left:auto;color:#d1d5db;"></i>
+        </div>
+    </div>
+`;
 
-            drawerContent.innerHTML = html;
+    drawerContent.innerHTML = html;
 
-            drawerContent.querySelectorAll('.drawer-menu-item[data-setting]').forEach(item => {
-                item.addEventListener('click', function() {
-                    const action = this.dataset.setting;
-                    closeDrawer();
+    drawerContent.querySelectorAll('.drawer-menu-item[data-setting]').forEach(item => {
+        item.addEventListener('click', function() {
+            const action = this.dataset.setting;
+            closeDrawer();
 
-                    if (action === 'exhibition-manage') {
-                        openExhibitionManageModal();
-                    }
+            if (action === 'exhibition-manage') {
+                openExhibitionManageModal();
+            }
 
-                    if (action === 'industry-manage') {
-                        openIndustryManageModal();
-                    }
+            if (action === 'industry-manage') {
+                openIndustryManageModal();
+            }
 
-                    if (action === 'import-export') {
-                        document.getElementById('importBtn').click();
-                    }
+            if (action === 'import-export') {
+                document.getElementById('importBtn').click();
+            }
+            
+            if (action === 'export-backup') {
+                exportData();
+            }
 
-                    if (action === 'clear-all') {
-                        resetAllData();
-                    }
+            if (action === 'clear-all') {
+                resetAllData();
+            }
 
-                    if (action === 'password') {
-                        alert('请先退出登录后再修改密码');
-                    }
+            if (action === 'password') {
+                alert('请先退出登录后再修改密码');
+            }
 
-                    if (action === 'about') {
-                        openCopyrightModal();
-                    }
-                });
-            });
-        }
-
+            if (action === 'about') {
+                openCopyrightModal();
+            }
+        });
+    });
+}
         // ===================== 客户详情抽屉 =====================
         function openCustomerDetailDrawer(customerId) {
             const customer = contacts.find(c => c.id === customerId);
@@ -1997,9 +2014,9 @@
             toolbarBottom = rect.bottom;
         }
 
-        const handleScroll = throttle(function() {
-            // 移动端：使用 .app-container 的滚动
-            if (isMobileDevice && appContainer) {
+      const handleScroll = throttle(function() {
+    const nowMobile = window.innerWidth <= 640;
+    if (nowMobile && appContainer) {
                 const scrollTop = appContainer.scrollTop;
                 // 触底加载更多
                 if (appContainer.scrollTop + appContainer.clientHeight >= appContainer.scrollHeight - 300) {
@@ -2036,12 +2053,9 @@
         }
 
         // ★ 修复5：根据设备绑定滚动事件
-        if (isMobileDevice && appContainer) {
-            appContainer.addEventListener('scroll', handleScroll, { passive: true });
-        } else {
-            window.addEventListener('scroll', handleScroll, { passive: true });
-        }
-
+        // 统一绑定窗口滚动，运行时动态判断宽度
+window.addEventListener('scroll', handleScroll, { passive: true });
+appContainer.addEventListener('scroll', handleScroll, { passive: true });
         window.addEventListener('resize', recalcLayout);
         window.addEventListener('load', recalcLayout);
 
@@ -2447,12 +2461,15 @@
                 card.dataset.cid = c.id;
 
                 card.innerHTML = `
-                <div class="card-header">
-                    <div>
-                        <div class="card-name">${escapeHtml(c.name)}</div>
-                        <div class="card-company">${escapeHtml(c.company) || '未登记公司'}</div>
-                    </div>
-                </div>
+<div class="card-header">
+    <div style="display:flex;align-items:center;gap:10px;">
+        <i class="fas fa-user-circle" style="font-size:22px;color:#64748b;"></i>
+        <div>
+            <div class="card-name">${escapeHtml(c.name)}</div>
+            <div class="card-company">${escapeHtml(c.company) || '未登记公司'}</div>
+        </div>
+    </div>
+</div>
                 <div class="card-phone-row">
                     <i class="fas fa-phone" style="color:#64748b;"></i>
                     <a href="tel:${escapeHtml(c.phone)}">${escapeHtml(c.phone)}</a>
@@ -2984,11 +3001,17 @@
                 }
             });
 
-            // ★ 修复6：移动端加载完成后默认显示悬浮搜索栏（CSS已默认可见，但确保兼容）
-            if (isMobileDevice) {
-                floatSearchBar.classList.add('show');
-            }
-        });
+// =====================【粘贴在这里！！！】=====================
+    // 窗口尺寸变化自动重渲染，解决缩放需要刷新BUG
+    window.addEventListener('resize', () => {
+        currentPage = 1;
+        resetMobileLoad();
+        render();
+    });
+// ==========================================================
+
+});
+     
 
         function checkTitleOverflow(el) {
             if (el.scrollWidth > el.clientWidth) {
@@ -3004,6 +3027,12 @@
                 setTimeout(() => checkTitleOverflow(titleEl), 20);
             });
         }
+// 窗口尺寸变化自动重渲染，解决缩放需要刷新BUG
+window.addEventListener('resize', () => {
+    currentPage = 1;
+    resetMobileLoad();
+    render();
+});
     </script>
 
     <!-- 登录逻辑完整JS -->
