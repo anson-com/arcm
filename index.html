@@ -1147,6 +1147,65 @@ gap:0px !important;
                 width: 100%;
                 max-width: 100%;
             }
+    /* ========== 移动端：添加/编辑客户弹窗 改造底部抽屉风格 ========== */
+    .modal-overlay {
+        align-items: flex-end;
+        padding: 0;
+    }
+    .modal-overlay.active .modal {
+        max-width: unset;
+        width: calc(100% - 24px);
+        max-height: 72vh;
+        border-radius: 29px 29px 0 0;
+        padding: 12px 16px calc(16px + var(--safe-bottom));
+        margin-bottom: calc(var(--safe-bottom) + 12px);
+        animation: slideUp 0.24s ease;
+        overflow-y: auto;
+    }
+    /* 抽屉顶部横线把手 */
+    .modal-overlay.active .modal::before {
+        content: "";
+        display: block;
+        width: 40px;
+        height: 4px;
+        background: #d1d5db;
+        border-radius: 4px;
+        margin: -4px auto 12px;
+    }
+    .modal h2 {
+        font-size: 18px;
+        margin-bottom: 16px;
+    }
+    .form-group label {
+        font-size: 14px;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 11px 14px;
+        border-radius: 14px;
+        font-size: 15px;
+    }
+    .form-row {
+        gap: 8px;
+    }
+    .modal-actions {
+        margin-top: 18px;
+        gap: 8px;
+    }
+    .modal-actions .btn {
+        flex: 1;
+        padding: 11px 0;
+    }
+    @keyframes slideUp {
+        from {
+            transform: translateY(110%);
+        }
+        to {
+            transform: translateY(0);
+        }
+    }
+
         }
         .select-group {
             display: contents;
