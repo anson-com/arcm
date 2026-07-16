@@ -1113,30 +1113,32 @@ body::after {
     position: absolute;
     top: 0;
     left: 0;
- /* width: 3px; 偏细方案 */
     width: 3px;
     height: 100%;
     border-top-left-radius: 12px;
     border-bottom-left-radius: 12px;
-    display: none;
+    display: block;
     pointer-events: none;
     z-index: 2;
 }
+/* 无 - 默认灰色 */
+.contact-card[data-mark="none"]::before {
+    background-color: rgba(100, 116, 139, 0.65);
+}
 /* 已联系 绿色 */
 .contact-card[data-mark="contacted"]::before {
-    display: block;
     background-color: rgba(5, 150, 105, 0.75);
 }
-/* 待跟踪 蓝色 */
+/* 待跟踪 橙黄色（沿用你原本配置不调换） */
 .contact-card[data-mark="pending"]::before {
-    display: block;
     background-color: rgba(217, 119, 6, 0.75);
 }
-/* 放弃 琥珀橙 */
+/* 放弃 蓝色（沿用你原本配置不调换） */
 .contact-card[data-mark="abandon"]::before {
-    display: block;
     background-color: rgba(37, 99, 235, 0.75);
 }
+
+/* ========= 移动端名片【左侧竖边标记｜复刻统计卡片完整样式｜保留原有配色顺序，新增none灰色】 ========= */
             .group-card-wrap {
                 grid-template-columns: 1fr;
 gap:0px !important;
@@ -2164,13 +2166,13 @@ function openCustomerDetailDrawer(customerId) {
             <input type="radio" name="markStatus" value="none"> 无
         </label>
         <label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer;background:#f1f5f9;padding:5px 9px;border-radius:12px;margin:0;">
-            <input type="radio" name="markStatus" value="contacted">✔ 已联系
+            <input type="radio" name="markStatus" value="contacted"><span style="color:#059669;">✔</span> 已联系
         </label>
         <label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer;background:#f1f5f9;padding:5px 9px;border-radius:12px;margin:0;">
-            <input type="radio" name="markStatus" value="pending">㊣ 待跟踪
+            <input type="radio" name="markStatus" value="pending"><span style="color:#d97706;">㊣</span> 待跟踪
         </label>
         <label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer;background:#f1f5f9;padding:5px 9px;border-radius:12px;margin:0;">
-            <input type="radio" name="markStatus" value="abandon">✘ PUSS
+            <input type="radio" name="markStatus" value="abandon"><span style="color:#2563eb;">✘</span> PUSS
         </label>
     </div>
 </div>
@@ -2734,7 +2736,7 @@ list.forEach(c => {
     card.innerHTML = `
 <div class="card-header" style="margin-bottom:0px;">
     <div style="display:flex;align-items:center;gap:10px;">
-        <i class="fas fa-user-circle" style="font-size:22px;color:#64748b;"></i>
+        <i class="fas fa-user-circle" style="font-size:22px;color:#94a3b8;"></i>
         <div style="flex:1;">
             <div class="card-name" style="font-size:16px;line-height:1.2;">${escapeHtml(c.name)}</div>
             <div class="card-company" style="font-size:13px;color:#64748b;margin-top:2px;line-height:1.2;">${escapeHtml(c.company) || '未登记公司'}</div>
