@@ -1103,41 +1103,40 @@ body::after {
     
         @media (max-width:640px) {
 
-
-/* ========= 移动端名片左上角弧形标记【方案A】 ========= */
-    .contact-card {
-        position: relative;
-        overflow: hidden !important;
-    }
-    .contact-card::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 32px;
-        height: 32px;
-        border-top: 3px solid transparent;
-        border-left: 3px solid transparent;
-        border-top-left-radius: 12px;
-        display: none;
-        pointer-events: none;
-        z-index: 2;
-    }
-    .contact-card[data-mark="contacted"]::before {
-        display: block;
-        border-top-color: #059669;
-        border-left-color: #059669;
-    }
-    .contact-card[data-mark="pending"]::before {
-        display: block;
-        border-top-color: #2563eb;
-        border-left-color: #2563eb;
-    }
-    .contact-card[data-mark="abandon"]::before {
-        display: block;
-        border-top-color: #d97706;
-        border-left-color: #d97706;
-    }
+/* ========= 移动端名片【左侧竖边标记｜复刻统计卡片完整样式】 ========= */
+.contact-card {
+    position: relative;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.10);
+}
+.contact-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+ /* width: 3px; 偏细方案 */
+    width: 3px;
+    height: 100%;
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+    display: none;
+    pointer-events: none;
+    z-index: 2;
+}
+/* 已联系 绿色 */
+.contact-card[data-mark="contacted"]::before {
+    display: block;
+    background-color: rgba(5, 150, 105, 0.75);
+}
+/* 待跟踪 蓝色 */
+.contact-card[data-mark="pending"]::before {
+    display: block;
+    background-color: rgba(37, 99, 235, 0.75);
+}
+/* 放弃 琥珀橙 */
+.contact-card[data-mark="abandon"]::before {
+    display: block;
+    background-color: rgba(217, 119, 6, 0.75);
+}
             .group-card-wrap {
                 grid-template-columns: 1fr;
 gap:0px !important;
@@ -2122,27 +2121,12 @@ function openCustomerDetailDrawer(customerId) {
 
         ${customer.notes ? `<div class="card-notes"><i class="fas fa-pencil-alt" style="margin-right:6px;color:#64748b;"></i>${escapeHtml(customer.notes)}</div>` : ''}
 
-        <div style="display:flex;justify-content:space-between;align-items:center;margin:0px 0 6px;gap:8px;flex-wrap:wrap;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin:0px 0 6px;">
     <span style="white-space:nowrap;font-size:12px;font-weight:600;text-transform:uppercase;color:#94a3b8;letter-spacing:0.4px;">
-        <i class="fas fa-clock"></i> 互动
+        <i class="fas fa-clock"></i> 最近互动
         <span style="display:inline-block;background:#dbeafe;color:#1d4ed8;font-size:10px;padding:1px 6px;border-radius:10px;margin-left:6px;font-weight:500;">共${interactions.length}条</span>
     </span>
-    <div class="radio-group" style="display:flex;flex-wrap:wrap;gap:4px;">
-        <label style="display:flex;align-items:center;gap:3px;font-size:11px;cursor:pointer;background:#f1f5f9;padding:4px 7px;border-radius:10px;margin:0;">
-            <input type="radio" name="markStatus" value="none"> 无
-        </label>
-        <label style="display:flex;align-items:center;gap:3px;font-size:11px;cursor:pointer;background:#f1f5f9;padding:4px 7px;border-radius:10px;margin:0;">
-            <input type="radio" name="markStatus" value="contacted">✔ 已联
-        </label>
-        <label style="display:flex;align-items:center;gap:3px;font-size:11px;cursor:pointer;background:#f1f5f9;padding:4px 7px;border-radius:10px;margin:0;">
-            <input type="radio" name="markStatus" value="pending">㊣ 待跟
-        </label>
-        <label style="display:flex;align-items:center;gap:3px;font-size:11px;cursor:pointer;background:#f1f5f9;padding:4px 7px;border-radius:10px;margin:0;">
-            <input type="radio" name="markStatus" value="abandon">✘PUSS
-        </label>
-    </div>
 </div>
-<!-- ========================================================== -->
 
         <div class="interactions-section" style="margin-top:0;padding-top:0;">
             ${interactions.length === 0 ? `
@@ -2173,12 +2157,33 @@ function openCustomerDetailDrawer(customerId) {
         </div>
     </div>
 
-    <div style="height:1px;background:#e5e7eb;margin:18px 0 10px;"></div>
-    <div class="modal-actions" style="justify-content:flex-end;">
-        <button class="btn btn-icon btn-sm btn-primary" onclick="closeDrawer()" title="关闭抽屉" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;">
-            <i class="fas fa-times"></i>
-        </button>
+<!-- ===================== 三色按钮【分割线上方，卡片外部】 ===================== -->
+<div style="margin-top:12px;">
+    <div class="radio-group" style="display:flex;flex-wrap:wrap;gap:6px;">
+        <label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer;background:#f1f5f9;padding:5px 9px;border-radius:12px;margin:0;">
+            <input type="radio" name="markStatus" value="none"> 无
+        </label>
+        <label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer;background:#f1f5f9;padding:5px 9px;border-radius:12px;margin:0;">
+            <input type="radio" name="markStatus" value="contacted">✔ 已联系
+        </label>
+        <label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer;background:#f1f5f9;padding:5px 9px;border-radius:12px;margin:0;">
+            <input type="radio" name="markStatus" value="pending">㊣ 待跟踪
+        </label>
+        <label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer;background:#f1f5f9;padding:5px 9px;border-radius:12px;margin:0;">
+            <input type="radio" name="markStatus" value="abandon">✘ PUSS
+        </label>
     </div>
+</div>
+
+<!-- 分割线【三色按钮下方】 -->
+<div style="height:1px;background:#e5e7eb;margin:18px 0 10px;"></div>
+
+<!-- 关闭按钮 -->
+<div class="modal-actions" style="justify-content:flex-end;">
+    <button class="btn btn-icon btn-sm btn-primary" onclick="closeDrawer()" title="关闭抽屉" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;">
+        <i class="fas fa-times"></i>
+    </button>
+</div>
 </div>
 `;
     drawerContent.innerHTML = html;
@@ -2191,7 +2196,7 @@ function openCustomerDetailDrawer(customerId) {
         radio.onchange = function () {
             customer.markStatus = this.value;
             saveContactStorage();
-            render();
+            render(false);
         }
     })
 
@@ -2844,7 +2849,7 @@ list.forEach(c => {
                     ${c.notes ? `<div class="card-notes"><i class="fas fa-pencil-alt" style="margin-right:6px;color:#64748b;"></i>${escapeHtml(c.notes)}</div>` : ''}
                     <div class="interactions-section">
                         <div class="interactions-header">
-                            <span><i class="fas fa-clock"></i> 互动</span>
+                            <span><i class="fas fa-clock"></i> 最近互动</span>
                             <button class="btn btn-primary btn-sm interaction-add-btn" data-id="${c.id}"><i class="fas fa-plus"></i> 记录</button>
                         </div>
                         ${interactions.length === 0 ? '<div style="font-size:12px;color:#94a3b8;padding:4px 0;">暂无互动记录</div>' :
