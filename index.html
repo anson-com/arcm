@@ -50,18 +50,29 @@
             --fade-width: 50px;
             --fade-bg: #f6f9fc;
         }
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var(--safe-top);
+    background: #f6f9fc;
+    z-index: 998;
+    pointer-events: none;
+}
 
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: var(--safe-top);
-            background: #ffffff;
-            z-index: 998;
-            pointer-events: none;
-        }
+body::after {
+    content: "";
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--safe-bottom);
+    background: #ffffff;
+    z-index: 996;
+    pointer-events: none;
+}
         * {
             margin: 0;
             padding: 0;
