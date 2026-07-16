@@ -914,8 +914,8 @@ body::after {
 }
 /* 中间新增按钮：浅灰色空心圆环 + 浅灰加号，无填充底色 */
 .tab-add-btn {
-    width: 36px;
-    height: 36px;
+    width: 50px;   /* ✅ 圆圈宽度 */
+    height: 50px;  /* ✅ 圆圈高度 */
     background: transparent;
     border: 1.4px solid #94a3b8;
     border-radius: 50%;
@@ -923,7 +923,7 @@ body::after {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
+    font-size: 18px; /* ✅ 内部加号图标大小 */
     box-shadow: none;
     cursor: pointer;
     transition: 0.18s;
@@ -1099,10 +1099,48 @@ body::after {
             word-break: break-all !important;
             overflow-wrap: anywhere !important;
         }
+
+    
         @media (max-width:640px) {
+
+
+/* ========= 移动端名片左上角弧形标记【方案A】 ========= */
+    .contact-card {
+        position: relative;
+        overflow: hidden !important;
+    }
+    .contact-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 32px;
+        height: 32px;
+        border-top: 3px solid transparent;
+        border-left: 3px solid transparent;
+        border-top-left-radius: 12px;
+        display: none;
+        pointer-events: none;
+        z-index: 2;
+    }
+    .contact-card[data-mark="contacted"]::before {
+        display: block;
+        border-top-color: #059669;
+        border-left-color: #059669;
+    }
+    .contact-card[data-mark="pending"]::before {
+        display: block;
+        border-top-color: #2563eb;
+        border-left-color: #2563eb;
+    }
+    .contact-card[data-mark="abandon"]::before {
+        display: block;
+        border-top-color: #d97706;
+        border-left-color: #d97706;
+    }
             .group-card-wrap {
                 grid-template-columns: 1fr;
-gap:6px !important;
+gap:0px !important;
             }
             .group-card-wrap:has(.contact-card:only-child) .contact-card {
                 width: 100%;
@@ -2084,15 +2122,28 @@ function openCustomerDetailDrawer(customerId) {
 
         ${customer.notes ? `<div class="card-notes"><i class="fas fa-pencil-alt" style="margin-right:6px;color:#64748b;"></i>${escapeHtml(customer.notes)}</div>` : ''}
 
-        <!-- 标题已经彻底移出 interactions-section 外部！！ -->
-        <div style="display:flex;justify-content:space-between;align-items:center;margin:0px 0 4px;">
-            <span style="white-space:nowrap;font-size:12px;font-weight:600;text-transform:uppercase;color:#94a3b8;letter-spacing:0.4px;">
-                <i class="fas fa-clock"></i> 最近互动
-                <span style="display:inline-block;background:#dbeafe;color:#1d4ed8;font-size:10px;padding:1px 6px;border-radius:10px;margin-left:6px;font-weight:500;">共${interactions.length}条</span>
-            </span>
-        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin:0px 0 6px;gap:8px;flex-wrap:wrap;">
+    <span style="white-space:nowrap;font-size:12px;font-weight:600;text-transform:uppercase;color:#94a3b8;letter-spacing:0.4px;">
+        <i class="fas fa-clock"></i> 最近互动
+        <span style="display:inline-block;background:#dbeafe;color:#1d4ed8;font-size:10px;padding:1px 6px;border-radius:10px;margin-left:6px;font-weight:500;">共${interactions.length}条</span>
+    </span>
+    <div class="radio-group" style="display:flex;flex-wrap:wrap;gap:4px;">
+        <label style="display:flex;align-items:center;gap:3px;font-size:11px;cursor:pointer;background:#f1f5f9;padding:4px 7px;border-radius:10px;margin:0;">
+            <input type="radio" name="markStatus" value="none"> 无
+        </label>
+        <label style="display:flex;align-items:center;gap:3px;font-size:11px;cursor:pointer;background:#f1f5f9;padding:4px 7px;border-radius:10px;margin:0;">
+            <input type="radio" name="markStatus" value="contacted">✔ 已联
+        </label>
+        <label style="display:flex;align-items:center;gap:3px;font-size:11px;cursor:pointer;background:#f1f5f9;padding:4px 7px;border-radius:10px;margin:0;">
+            <input type="radio" name="markStatus" value="pending">㊣ 待跟
+        </label>
+        <label style="display:flex;align-items:center;gap:3px;font-size:11px;cursor:pointer;background:#f1f5f9;padding:4px 7px;border-radius:10px;margin:0;">
+            <input type="radio" name="markStatus" value="abandon">✘PUSS
+        </label>
+    </div>
+</div>
+<!-- ========================================================== -->
 
-        <!-- 行内样式覆盖原生margin-top: auto 和 padding-top -->
         <div class="interactions-section" style="margin-top:0;padding-top:0;">
             ${interactions.length === 0 ? `
                 <div style="font-size:12px;color:#94a3b8;padding:4px 0;">暂无互动记录</div>
@@ -2122,13 +2173,27 @@ function openCustomerDetailDrawer(customerId) {
         </div>
     </div>
 
-    <div class="modal-actions" style="margin-top:20px;justify-content:flex-end;">
+    <div style="height:1px;background:#e5e7eb;margin:18px 0 10px;"></div>
+    <div class="modal-actions" style="justify-content:flex-end;">
         <button class="btn btn-icon btn-sm btn-primary" onclick="closeDrawer()" title="关闭抽屉" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;">
             <i class="fas fa-times"></i>
         </button>
     </div>
+</div>
 `;
     drawerContent.innerHTML = html;
+
+    // 跟进标记选中回填 + 保存
+    drawerContent.querySelectorAll('input[name="markStatus"]').forEach(radio => {
+        if (radio.value === customer.markStatus) {
+            radio.checked = true;
+        }
+        radio.onchange = function () {
+            customer.markStatus = this.value;
+            saveContactStorage();
+            render();
+        }
+    })
 
     drawerContent.querySelector('.interaction-add-btn').addEventListener('click', function() {
         const id = this.dataset.id;
@@ -2314,14 +2379,15 @@ appContainer.addEventListener('scroll', handleScroll, { passive: true });
                 const rawContact = localStorage.getItem('crm_contacts');
                 if (rawContact) {
                     contacts = JSON.parse(rawContact);
-                    contacts = contacts.map(c => ({
-                        ...c,
-                        industry: c.industry || DEFAULT_INDUSTRY,
-                        exhibition: c.exhibition || DEFAULT_EXHIBITION,
-                        interactions: c.interactions || [],
-                        website: c.website || '',
-                        product: c.product || ''
-                    }));
+                                   contacts = contacts.map(c => ({
+                    ...c,
+                    industry: c.industry || DEFAULT_INDUSTRY,
+                    exhibition: c.exhibition || DEFAULT_EXHIBITION,
+                    interactions: c.interactions || [],
+                    website: c.website || '',
+                    product: c.product || '',
+                    markStatus: c.markStatus || "none"
+                }));
                 } else {
                     contacts = [{
                         id: '1',
@@ -2655,9 +2721,10 @@ function renderMobileList(list, append = false) {
     }
     // ==========【手机主页名片】==========
 list.forEach(c => {
-    const card = document.createElement('div');
+        const card = document.createElement('div');
     card.className = 'contact-card';
     card.dataset.cid = c.id;
+    card.dataset.mark = c.markStatus || "none";
 
     card.innerHTML = `
 <div class="card-header" style="margin-bottom:0px;">
@@ -2893,19 +2960,20 @@ list.forEach(c => {
                         };
                     }
                 } else {
-                    contacts.push({
-                        id: Date.now() + '-' + Math.random().toString(36).substr(2, 6),
-                        name,
-                        company,
-                        phone,
-                        email,
-                        industry,
-                        exhibition,
-                        website: websiteFinal,
-                        product,
-                        notes,
-                        interactions: []
-                    });
+                                    contacts.push({
+                    id: Date.now() + '-' + Math.random().toString(36).substr(2, 6),
+                    name,
+                    company,
+                    phone,
+                    email,
+                    industry,
+                    exhibition,
+                    website: websiteFinal,
+                    product,
+                    notes,
+                    interactions: [],
+                    markStatus: "none"
+                });
                 }
                 saveContactStorage();
                 render();
