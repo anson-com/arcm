@@ -869,12 +869,12 @@
             /* =========== 底部常驻Tab导航栏 =========== */
             .mobile-bottom-tab {
                 position: fixed;
-                left: 12px;
-                right: 12px;
-                bottom: calc(var(--safe-bottom) + 8px);
+                left: 0px;
+                right: 0px;
+                bottom: calc(var(--safe-bottom) + 0px);
                 height: 54px;
                 background: #fff;
-                border-radius: 16px;
+                border-radius: 0px;
                 box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
                 display: grid;
                 grid-template-columns: 1fr 1fr auto 1fr 1fr;
@@ -1579,7 +1579,7 @@ gap:6px !important;
             <div class="drawer-filter-item" data-industry="" style="display:flex;justify-content:space-between;align-items:center;padding:4px 10px;background:#f1f3f5;border-radius:12px;cursor:pointer;transition:0.18s;">
                 <div style="display:flex;align-items:center;gap:10px;">
                     <i class="fas fa-th" style="color:#64748b;font-size:13px;width:16px;text-align:center;"></i>
-                    <span style="font-size:12px;">全部行业</span>
+                    <span style="font-size:14px;">全部行业</span>
                 </div>
                 ${currentSelect === '' ? '<i class="fas fa-check" style="color:#2563eb;font-size:12px;"></i>' : ''}
             </div>
@@ -1587,7 +1587,7 @@ gap:6px !important;
             <div class="drawer-filter-item" data-industry="${escapeHtml(name)}" style="display:flex;justify-content:space-between;align-items:center;padding:4px 10px;background:#f1f3f5;border-radius:12px;cursor:pointer;transition:0.18s;">
                 <div style="display:flex;align-items:center;gap:10px;">
                     <i class="fas fa-tags" style="color:#64748b;font-size:13px;width:16px;text-align:center;"></i>
-                    <span style="font-size:12px;">${escapeHtml(name)}</span>
+                    <span style="font-size:14px;">${escapeHtml(name)}</span>
                 </div>
                 ${currentSelect === name ? '<i class="fas fa-check" style="color:#2563eb;font-size:12px;"></i>' : ''}
             </div>
@@ -1600,7 +1600,7 @@ gap:6px !important;
             <div class="drawer-filter-item" data-reset-filter style="display:flex;justify-content:space-between;align-items:center;padding:4px 10px;background:#f1f3f5;border-radius:12px;cursor:pointer;transition:0.18s;">
                 <div style="display:flex;align-items:center;gap:10px;">
                     <i class="fas fa-undo" style="color:#64748b;font-size:13px;width:16px;text-align:center;"></i>
-                    <span style="font-size:12px;color:#64748b;">重置筛选条件</span>
+                    <span style="font-size:14px;color:#64748b;">重置筛选条件</span>
                 </div>
                 <i class="fas fa-chevron-right" style="color:#94a3b8;font-size:11px;"></i>
             </div>
@@ -1649,7 +1649,6 @@ gap:6px !important;
         render();
     });
 }
-
         // ===================== 分组抽屉：仅切换展会 =====================
       function renderGroupDrawer() {
     if (!exhibitionList || exhibitionList.length === 0) {
@@ -1660,7 +1659,7 @@ gap:6px !important;
                     分组 - 展会
                 </div>
                 <div style="height:1px;background:#e5e7eb;margin:12px 0;"></div>
-                <div style="color:#94a3b8;padding:12px;text-align:center;font-size:12px;">暂无展会分类，请先添加</div>
+                <div style="color:#94a3b8;padding:12px;text-align:center;font-size:14px;">暂无展会分类，请先添加</div>
             </div>
         `;
         return;
@@ -1678,7 +1677,7 @@ gap:6px !important;
             <div class="drawer-filter-item" data-exhibition="__all__" style="display:flex;justify-content:space-between;align-items:center;padding:4px 10px;background:#f1f3f5;border-radius:12px;cursor:pointer;transition:0.18s;">
                 <div style="display:flex;align-items:center;gap:10px;">
                     <i class="fas fa-th" style="color:#64748b;font-size:13px;width:16px;text-align:center;"></i>
-                    <span style="font-size:12px;">全部展会</span>
+                    <span style="font-size:14px;">全部展会</span>
                 </div>
                 ${currentSelect === '' ? '<i class="fas fa-check" style="color:#2563eb;font-size:12px;"></i>' : ''}
             </div>
@@ -1686,7 +1685,7 @@ gap:6px !important;
             <div class="drawer-filter-item" data-exhibition="${escapeHtml(name)}" style="display:flex;justify-content:space-between;align-items:center;padding:4px 10px;background:#f1f3f5;border-radius:12px;cursor:pointer;transition:0.18s;">
                 <div style="display:flex;align-items:center;gap:10px;">
                     <i class="fas fa-building" style="color:#64748b;font-size:13px;width:16px;text-align:center;"></i>
-                    <span style="font-size:12px;">${escapeHtml(name)}</span>
+                    <span style="font-size:14px;">${escapeHtml(name)}</span>
                 </div>
                 ${currentSelect === name ? '<i class="fas fa-check" style="color:#2563eb;font-size:12px;"></i>' : ''}
             </div>
@@ -1788,40 +1787,40 @@ function renderStatDrawer() {
     // ========== 条目HTML生成（紧凑条目配置） ==========
     let industryHtml = '';
     if (industryArr.length === 0) {
-        industryHtml = `<div style="grid-column:1/-1;color:#94a3b8;font-size:12px;padding:8px 12px;text-align:center;">暂无数据</div>`;
+        industryHtml = `<div style="grid-column:1/-1;color:#94a3b8;font-size:14px;padding:8px 12px;text-align:center;">暂无数据</div>`;
     } else {
         industryArr.forEach(([key, count]) => {
             const textColor = key === DEFAULT_INDUSTRY ? '#64748b' : '#1e293b';
             industryHtml += `
             <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 10px;background:#f3f4f6;border-radius:12px;" title="${escapeHtml(key)}">
-                <span style="font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:${textColor};">${escapeHtml(key)}</span>
-                <span style="font-weight:600;color:#2563eb;font-size:12px;">${count}</span>
+                <span style="font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:${textColor};">${escapeHtml(key)}</span>
+                <span style="font-weight:600;color:#2563eb;font-size:14px;">${count}</span>
             </div>`;
         })
     }
 
     let exhibitionHtml = '';
     if (exhibitionArr.length === 0) {
-        exhibitionHtml = `<div style="grid-column:1/-1;color:#94a3b8;font-size:12px;padding:8px 12px;text-align:center;">暂无数据</div>`;
+        exhibitionHtml = `<div style="grid-column:1/-1;color:#94a3b8;font-size:14px;padding:8px 12px;text-align:center;">暂无数据</div>`;
     } else {
         exhibitionArr.forEach(([key, count]) => {
             exhibitionHtml += `
             <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 10px;background:#f3f4f6;border-radius:12px;" title="${escapeHtml(key)}">
-                <span style="font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(key)}</span>
-                <span style="font-weight:600;color:#2563eb;font-size:12px;">${count}</span>
+                <span style="font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(key)}</span>
+                <span style="font-weight:600;color:#2563eb;font-size:14px;">${count}</span>
             </div>`;
         })
     }
 
     let interHtml = '';
     if (interArr.length === 0) {
-        interHtml = `<div style="color:#94a3b8;font-size:12px;padding:8px 12px;text-align:center;">暂无互动记录</div>`;
+        interHtml = `<div style="color:#94a3b8;font-size:14px;padding:8px 12px;text-align:center;">暂无互动记录</div>`;
     } else {
         interArr.forEach(([key, count]) => {
             interHtml += `
             <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 10px;background:#f3f4f6;border-radius:12px;" title="${escapeHtml(key)}">
-                <span style="font-size:12px;">${escapeHtml(key)}</span>
-                <span style="font-weight:600;color:#2563eb;font-size:12px;">${count} 次</span>
+                <span style="font-size:14px;">${escapeHtml(key)}</span>
+                <span style="font-weight:600;color:#2563eb;font-size:14px;">${count} 次</span>
             </div>`;
         })
     }
@@ -1914,14 +1913,14 @@ function renderSettingDrawer() {
             <div class="drawer-menu-item" data-setting="exhibition-manage" style="display:flex;justify-content:space-between;align-items:center;padding:4px 10px;background:#f1f3f5;border-radius:12px;cursor:pointer;transition:0.18s;">
                 <div style="display:flex;align-items:center;gap:10px;">
                     <i class="fas fa-building" style="color:#2563eb;font-size:13px;width:16px;text-align:center;"></i>
-                    <span style="font-size:12px;">展会分类管理</span>
+                    <span style="font-size:14px;">展会分类管理</span>
                 </div>
                 <i class="fas fa-chevron-right" style="color:#94a3b8;font-size:11px;"></i>
             </div>
             <div class="drawer-menu-item" data-setting="industry-manage" style="display:flex;justify-content:space-between;align-items:center;padding:4px 10px;background:#f1f3f5;border-radius:12px;cursor:pointer;transition:0.18s;">
                 <div style="display:flex;align-items:center;gap:10px;">
                     <i class="fas fa-tags" style="color:#2563eb;font-size:13px;width:16px;text-align:center;"></i>
-                    <span style="font-size:12px;">行业分类管理</span>
+                    <span style="font-size:14px;">行业分类管理</span>
                 </div>
                 <i class="fas fa-chevron-right" style="color:#94a3b8;font-size:11px;"></i>
             </div>
@@ -1938,14 +1937,14 @@ function renderSettingDrawer() {
             <div class="drawer-menu-item" data-setting="import-export" style="display:flex;justify-content:space-between;align-items:center;padding:4px 10px;background:#f1f3f5;border-radius:12px;cursor:pointer;transition:0.18s;">
                 <div style="display:flex;align-items:center;gap:10px;">
                     <i class="fas fa-upload" style="color:#059669;font-size:13px;width:16px;text-align:center;"></i>
-                    <span style="font-size:12px;">导入备份数据</span>
+                    <span style="font-size:14px;">导入备份数据</span>
                 </div>
                 <i class="fas fa-chevron-right" style="color:#94a3b8;font-size:11px;"></i>
             </div>
             <div class="drawer-menu-item" data-setting="export-backup" style="display:flex;justify-content:space-between;align-items:center;padding:4px 10px;background:#f1f3f5;border-radius:12px;cursor:pointer;transition:0.18s;">
                 <div style="display:flex;align-items:center;gap:10px;">
                     <i class="fas fa-download" style="color:#059669;font-size:13px;width:16px;text-align:center;"></i>
-                    <span style="font-size:12px;">导出备份数据</span>
+                    <span style="font-size:14px;">导出备份数据</span>
                 </div>
                 <i class="fas fa-chevron-right" style="color:#94a3b8;font-size:11px;"></i>
             </div>
@@ -1962,21 +1961,21 @@ function renderSettingDrawer() {
             <div class="drawer-menu-item" data-setting="clear-all" style="display:flex;justify-content:space-between;align-items:center;padding:4px 10px;background:#f1f3f5;border-radius:12px;cursor:pointer;transition:0.18s;">
                 <div style="display:flex;align-items:center;gap:10px;">
                     <i class="fas fa-trash-alt" style="color:#ef4444;font-size:13px;width:16px;text-align:center;"></i>
-                    <span style="font-size:12px;color:#ef4444;">清空全部数据</span>
+                    <span style="font-size:14px;color:#ef4444;">清空全部数据</span>
                 </div>
                 <i class="fas fa-chevron-right" style="color:#94a3b8;font-size:11px;"></i>
             </div>
             <div class="drawer-menu-item" data-setting="password" style="display:flex;justify-content:space-between;align-items:center;padding:4px 10px;background:#f1f3f5;border-radius:12px;cursor:pointer;transition:0.18s;">
                 <div style="display:flex;align-items:center;gap:10px;">
                     <i class="fas fa-key" style="color:#64748b;font-size:13px;width:16px;text-align:center;"></i>
-                    <span style="font-size:12px;">修改登录密码</span>
+                    <span style="font-size:14px;">修改登录密码</span>
                 </div>
                 <i class="fas fa-chevron-right" style="color:#94a3b8;font-size:11px;"></i>
             </div>
             <div class="drawer-menu-item" data-setting="about" style="display:flex;justify-content:space-between;align-items:center;padding:4px 10px;background:#f1f3f5;border-radius:12px;cursor:pointer;transition:0.18s;">
                 <div style="display:flex;align-items:center;gap:10px;">
                     <i class="fas fa-info-circle" style="color:#64748b;font-size:13px;width:16px;text-align:center;"></i>
-                    <span style="font-size:12px;">关于系统信息</span>
+                    <span style="font-size:14px;">关于系统信息</span>
                 </div>
                 <i class="fas fa-chevron-right" style="color:#94a3b8;font-size:11px;"></i>
             </div>
@@ -2657,7 +2656,7 @@ list.forEach(c => {
 <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:0px;padding-left:4px;">
     <div class="card-phone-row" style="margin-top:0;display:flex;align-items:center;gap:15px;">
         <i class="fas fa-tty" style="color:#64748b;font-size:13px;"></i>
-        <a href="tel:${escapeHtml(c.phone)}" onclick="event.stopPropagation()" style="font-size:13px;color:#2563eb;text-decoration:none;">${escapeHtml(c.phone)}</a>
+<a href="tel:${escapeHtml(c.phone)}" onclick="event.stopPropagation()" style="font-size:14px;color:#2563eb;text-decoration:none;">${escapeHtml(c.phone)}</a>
     </div>
     <span class="card-industry-tag" style="font-size:11px;padding:2px 7px;">${escapeHtml(c.industry)}</span>
     <span class="card-exhibition-tag" style="font-size:11px;padding:2px 7px;">${escapeHtml(c.exhibition)}</span>
