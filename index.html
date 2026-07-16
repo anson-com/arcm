@@ -858,7 +858,7 @@ body::after {
                 top: var(--floatSearch-height);
                 left: 0;
                 right: 0;
-                bottom: calc(60px + var(--safe-bottom));
+                bottom: calc(50px + var(--safe-bottom));
                 overflow-y: auto;
                 padding: 12px;
                 /* ★ 修复2：滚动容器增加 -webkit-overflow-scrolling 提升手感 */
@@ -893,20 +893,24 @@ body::after {
                 z-index: 997;
                 padding: 0 6px;
             }
-            .tab-item {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                height: 100%;
-                color: #64748b;
-                font-size: 11px;
-                gap: 3px;
-                cursor: pointer;
-            }
-            .tab-item i {
-                font-size: 18px;
-            }
+          .tab-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* 改为靠上，由padding控制位置 */
+    height: 100%;
+    color: #64748b;
+    font-size: 11px;
+    gap: 3px;
+    cursor: pointer;
+
+    /* ========= 核心可调参数 ========= */
+    padding-top: 12px;    /* 图标文字整体距离容器【上边】距离 */
+    padding-bottom: 0px; /* 图标文字整体距离容器【下边】距离 */
+}
+.tab-item i {
+    font-size: 18px;
+}
             /* 中间凸起新增按钮 */
             .tab-add-btn {
                 width: 44px;
