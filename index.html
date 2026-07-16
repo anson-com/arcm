@@ -2736,7 +2736,7 @@ list.forEach(c => {
     card.innerHTML = `
 <div class="card-header" style="margin-bottom:0px;">
     <div style="display:flex;align-items:center;gap:10px;">
-        <i class="fas fa-user-circle" style="font-size:22px;color:#94a3b8;"></i>
+        <i class="fas fa-user-circle" style="font-size:22px;color:#8E8E93;"></i>
         <div style="flex:1;">
             <div class="card-name" style="font-size:16px;line-height:1.2;">${escapeHtml(c.name)}</div>
             <div class="card-company" style="font-size:13px;color:#64748b;margin-top:2px;line-height:1.2;">${escapeHtml(c.company) || '未登记公司'}</div>
@@ -2748,8 +2748,8 @@ list.forEach(c => {
         <i class="fas fa-tty" style="color:#64748b;font-size:13px;"></i>
 <a href="tel:${escapeHtml(c.phone)}" onclick="event.stopPropagation()" style="font-size:14px;color:#2563eb;text-decoration:none;">${escapeHtml(c.phone)}</a>
     </div>
-    <span class="card-industry-tag" style="font-size:11px;padding:2px 7px;">${escapeHtml(c.industry)}</span>
-    <span class="card-exhibition-tag" style="font-size:11px;padding:2px 7px;">${escapeHtml(c.exhibition)}</span>
+   <span class="card-industry-tag" style="font-size:11px;padding:2px 4px;background:transparent;color:#94a3b8;">${escapeHtml(c.industry)}</span>
+<span class="card-exhibition-tag" style="font-size:11px;padding:2px 4px;background:transparent;color:#94a3b8;">${escapeHtml(c.exhibition)}</span>
 </div>
 `;
     // 统一按压交互
