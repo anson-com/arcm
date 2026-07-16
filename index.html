@@ -919,8 +919,10 @@
 
             /* 移动端卡片精简样式（列表仅展示姓名、电话、展会标签） */
             .contact-card {
-                padding: 14px;
-            }
+    padding:10px 12px;
+    border-radius:12px;
+    transition:0.18s ease;
+}
             /* 抽屉内详情卡片展示完整信息；列表卡片隐藏多余模块 */
             .contact-card .card-industry-tag,
             .contact-card .card-details,
@@ -2636,34 +2638,44 @@ function renderMobileList(list, append = false) {
         `<div class="empty-state"><i class="fas fa-search"></i><h3>没有匹配的客户</h3><p>更换搜索关键词、行业或展会分类试试</p></div>`;
         return;
     }
+    // ==========【手机主页名片】==========
+list.forEach(c => {
+    const card = document.createElement('div');
+    card.className = 'contact-card';
+    card.dataset.cid = c.id;
 
-    list.forEach(c => {
-        const card = document.createElement('div');
-        card.className = 'contact-card';
-        card.dataset.cid = c.id;
-
-        card.innerHTML = `
-<div class="card-header">
+    card.innerHTML = `
+<div class="card-header" style="margin-bottom:4px;">
     <div style="display:flex;align-items:center;gap:10px;">
         <i class="fas fa-user-circle" style="font-size:22px;color:#64748b;"></i>
         <div>
-            <div class="card-name">${escapeHtml(c.name)}</div>
-            <div class="card-company">${escapeHtml(c.company) || '未登记公司'}</div>
+            <div class="card-name" style="font-size:16px;line-height:1.2;">${escapeHtml(c.name)}</div>
+            <div class="card-company" style="font-size:11px;color:#64748b;margin-top:2px;line-height:1.2;">${escapeHtml(c.company) || '未登记公司'}</div>
         </div>
     </div>
 </div>
-                <div class="card-phone-row">
-                    <i class="fas fa-phone" style="color:#64748b;"></i>
-                    <a href="tel:${escapeHtml(c.phone)}" onclick="event.stopPropagation()">${escapeHtml(c.phone)}</a>
-                </div>
-                <div class="tag-row">
-                    <span class="card-exhibition-tag">${escapeHtml(c.exhibition)}</span>
-                </div>
-            `;
-
+<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:0px;">
+    <div class="card-phone-row" style="margin-top:0;display:flex;align-items:center;gap:20px;">
+        <i class="fas fa-phone" style="color:#64748b;font-size:12px;"></i>
+        <a href="tel:${escapeHtml(c.phone)}" onclick="event.stopPropagation()" style="font-size:12px;color:#2563eb;text-decoration:none;">${escapeHtml(c.phone)}</a>
+    </div>
+    <span class="card-industry-tag" style="font-size:11px;padding:2px 7px;">${escapeHtml(c.industry)}</span>
+    <span class="card-exhibition-tag" style="font-size:11px;padding:2px 7px;">${escapeHtml(c.exhibition)}</span>
+</div>
+`;
+    // 统一按压交互
+    card.addEventListener('touchstart', function(){
+        this.style.transform = 'scale(0.98)';
+        this.style.background = '#f8fafc';
+    })
+    card.addEventListener('touchend', function(){
+        this.style.transform = 'scale(1)';
+        this.style.background = '#ffffff';
+    })
                
-        grid.appendChild(card);
-    });
+    grid.appendChild(card);
+});
+ // ==========【手机主页名片结束】==========
 
     if (mobileAllLoaded && mobileFilterCache.length > 0) {
         const tip = document.createElement('div');
