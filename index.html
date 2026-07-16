@@ -1567,24 +1567,41 @@ gap:6px !important;
     const currentSelect = industryFilterEl.value;
     let html = `
     <div style="padding:4px 0;">
-        <div style="font-size:18px;font-weight:700;margin-bottom:16px;">筛选客户 - 行业</div>
-        
-        <div class="manage-item-row drawer-filter-item" data-industry="">
-            <span>全部行业</span>
-            ${currentSelect === '' ? '<i class="fas fa-check" style="color:#2563eb;"></i>' : ''}
+        <div style="font-size:16px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px;">
+            <i class="fas fa-filter" style="color:#2563eb;font-size:18px;"></i>
+            筛选 - 行业
         </div>
-        ${industryList.map(name=>`
-            <div class="manage-item-row drawer-filter-item" data-industry="${escapeHtml(name)}">
-                <span>${escapeHtml(name)}</span>
-                ${currentSelect === name ? '<i class="fas fa-check" style="color:#2563eb;"></i>' : ''}
-            </div>
-        `).join('')}
+        <div style="height:1px;background:#e5e7eb;margin:12px 0;"></div>
 
-        <div class="drawer-divider"></div>
-        
-        <div class="manage-item-row drawer-filter-item" data-reset-filter>
-            <span style="color:#64748b;">重置筛选条件</span>
-            <i class="fas fa-undo" style="color:#64748b;"></i>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+            <div class="drawer-filter-item" data-industry="" style="display:flex;justify-content:space-between;align-items:center;padding:4px 10px;background:#f1f3f5;border-radius:12px;cursor:pointer;transition:0.18s;">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <i class="fas fa-th" style="color:#64748b;font-size:13px;width:16px;text-align:center;"></i>
+                    <span style="font-size:12px;">全部行业</span>
+                </div>
+                ${currentSelect === '' ? '<i class="fas fa-check" style="color:#2563eb;font-size:12px;"></i>' : ''}
+            </div>
+            ${industryList.map(name=>`
+            <div class="drawer-filter-item" data-industry="${escapeHtml(name)}" style="display:flex;justify-content:space-between;align-items:center;padding:4px 10px;background:#f1f3f5;border-radius:12px;cursor:pointer;transition:0.18s;">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <i class="fas fa-tags" style="color:#64748b;font-size:13px;width:16px;text-align:center;"></i>
+                    <span style="font-size:12px;">${escapeHtml(name)}</span>
+                </div>
+                ${currentSelect === name ? '<i class="fas fa-check" style="color:#2563eb;font-size:12px;"></i>' : ''}
+            </div>
+            `).join('')}
+        </div>
+
+        <div style="height:1px;background:#e5e7eb;margin:12px 0;"></div>
+
+        <div style="display:flex;flex-direction:column;gap:8px;">
+            <div class="drawer-filter-item" data-reset-filter style="display:flex;justify-content:space-between;align-items:center;padding:4px 10px;background:#f1f3f5;border-radius:12px;cursor:pointer;transition:0.18s;">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <i class="fas fa-undo" style="color:#64748b;font-size:13px;width:16px;text-align:center;"></i>
+                    <span style="font-size:12px;color:#64748b;">重置筛选条件</span>
+                </div>
+                <i class="fas fa-chevron-right" style="color:#94a3b8;font-size:11px;"></i>
+            </div>
         </div>
     </div>
 `;
@@ -1592,6 +1609,16 @@ gap:6px !important;
     drawerContent.innerHTML = html;
 
     drawerContent.querySelectorAll('.drawer-filter-item[data-industry]').forEach(item => {
+        // 按压交互
+        item.addEventListener('touchstart', function(){
+            this.style.transform = 'scale(0.98)';
+            this.style.background = '#dbeafe';
+        })
+        item.addEventListener('touchend', function(){
+            this.style.transform = 'scale(1)';
+            this.style.background = '#f1f3f5';
+        })
+
         item.addEventListener('click', function(){
             const industry = this.dataset.industry;
             industryFilterEl.value = industry;
@@ -1602,7 +1629,17 @@ gap:6px !important;
         });
     });
 
-    drawerContent.querySelector('[data-reset-filter]').addEventListener('click', function(){
+    // 重置筛选按钮交互
+    const resetItem = drawerContent.querySelector('[data-reset-filter]');
+    resetItem.addEventListener('touchstart', function(){
+        this.style.transform = 'scale(0.98)';
+        this.style.background = '#dbeafe';
+    })
+    resetItem.addEventListener('touchend', function(){
+        this.style.transform = 'scale(1)';
+        this.style.background = '#f1f3f5';
+    })
+    resetItem.addEventListener('click', function(){
         industryFilterEl.value = '';
         currentPage = 1;
         resetMobileLoad();
@@ -1616,8 +1653,12 @@ gap:6px !important;
     if (!exhibitionList || exhibitionList.length === 0) {
         drawerContent.innerHTML = `
             <div style="padding:4px 0;">
-                <div style="font-size:18px;font-weight:700;margin-bottom:16px;">分组 - 展会</div>
-                <div style="color:#94a3b8;padding:12px;text-align:center;">暂无展会分类，请先添加</div>
+                <div style="font-size:16px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px;">
+                    <i class="fas fa-list" style="color:#2563eb;font-size:18px;"></i>
+                    分组 - 展会
+                </div>
+                <div style="height:1px;background:#e5e7eb;margin:12px 0;"></div>
+                <div style="color:#94a3b8;padding:12px;text-align:center;font-size:12px;">暂无展会分类，请先添加</div>
             </div>
         `;
         return;
@@ -1625,24 +1666,46 @@ gap:6px !important;
     const currentSelect = exhibitionFilterEl.value;
     let html = `
     <div style="padding:4px 0;">
-        <div style="font-size:18px;font-weight:700;margin-bottom:16px;">分组 - 展会</div>
-
-        <div class="manage-item-row drawer-filter-item" data-exhibition="__all__">
-            <span>全部展会</span>
-            ${currentSelect === '' ? '<i class="fas fa-check" style="color:#2563eb;"></i>' : ''}
+        <div style="font-size:16px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px;">
+            <i class="fas fa-list" style="color:#2563eb;font-size:18px;"></i>
+            分组 - 展会
         </div>
-        ${exhibitionList.map(name => `
-            <div class="manage-item-row drawer-filter-item" data-exhibition="${escapeHtml(name)}">
-                <span>${escapeHtml(name)}</span>
-                ${currentSelect === name ? '<i class="fas fa-check" style="color:#2563eb;"></i>' : ''}
+        <div style="height:1px;background:#e5e7eb;margin:12px 0;"></div>
+
+        <div style="display:flex;flex-direction:column;gap:8px;">
+            <div class="drawer-filter-item" data-exhibition="__all__" style="display:flex;justify-content:space-between;align-items:center;padding:4px 10px;background:#f1f3f5;border-radius:12px;cursor:pointer;transition:0.18s;">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <i class="fas fa-th" style="color:#64748b;font-size:13px;width:16px;text-align:center;"></i>
+                    <span style="font-size:12px;">全部展会</span>
+                </div>
+                ${currentSelect === '' ? '<i class="fas fa-check" style="color:#2563eb;font-size:12px;"></i>' : ''}
             </div>
-        `).join('')}
+            ${exhibitionList.map(name => `
+            <div class="drawer-filter-item" data-exhibition="${escapeHtml(name)}" style="display:flex;justify-content:space-between;align-items:center;padding:4px 10px;background:#f1f3f5;border-radius:12px;cursor:pointer;transition:0.18s;">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <i class="fas fa-building" style="color:#64748b;font-size:13px;width:16px;text-align:center;"></i>
+                    <span style="font-size:12px;">${escapeHtml(name)}</span>
+                </div>
+                ${currentSelect === name ? '<i class="fas fa-check" style="color:#2563eb;font-size:12px;"></i>' : ''}
+            </div>
+            `).join('')}
+        </div>
     </div>
 `;
 
     drawerContent.innerHTML = html;
 
     drawerContent.querySelectorAll('.drawer-filter-item[data-exhibition]').forEach(item => {
+        // 移动端按压反馈
+        item.addEventListener('touchstart', function(){
+            this.style.transform = 'scale(0.98)';
+            this.style.background = '#dbeafe';
+        })
+        item.addEventListener('touchend', function(){
+            this.style.transform = 'scale(1)';
+            this.style.background = '#f1f3f5';
+        })
+        
         item.addEventListener('click', function() {
             const exhibition = this.dataset.exhibition;
             if (exhibition === '__all__') {
@@ -1659,7 +1722,7 @@ gap:6px !important;
 }
 
         // ===================== 统计抽屉 =====================
-     function renderStatDrawer() {
+function renderStatDrawer() {
     // 获取当前筛选条件
     const keyword = originSearchInput.value.toLowerCase().trim();
     const selectIndustry = industryFilterEl.value;
@@ -1685,19 +1748,30 @@ gap:6px !important;
     const interacted = filtered.filter(c => c.interactions && c.interactions.length > 0).length;
     const noInteraction = total - interacted;
 
-    // ---- 行业分布 ----
+    // ---- 行业统计 & 排序逻辑 ----
     const industryCount = {};
     filtered.forEach(c => {
         industryCount[c.industry] = (industryCount[c.industry] || 0) + 1;
     });
+    let otherItem = null;
+    let industryArr = Object.entries(industryCount).filter(([key]) => {
+        if (key === DEFAULT_INDUSTRY) {
+            otherItem = [key, industryCount[key]];
+            return false;
+        }
+        return true;
+    });
+    industryArr.sort((a, b) => b[1] - a[1]);
+    if (otherItem) industryArr.push(otherItem);
 
-    // ---- 展会分布 ----
+    // ---- 展会统计排序 ----
     const exhibitionCount = {};
     filtered.forEach(c => {
         exhibitionCount[c.exhibition] = (exhibitionCount[c.exhibition] || 0) + 1;
     });
+    let exhibitionArr = Object.entries(exhibitionCount).sort((a, b) => b[1] - a[1]);
 
-    // ---- 互动类型分布 ----
+    // ---- 互动类型排序 ----
     const interactionTypeCount = {};
     filtered.forEach(c => {
         if (c.interactions) {
@@ -1707,154 +1781,220 @@ gap:6px !important;
             });
         }
     });
+    let interArr = Object.entries(interactionTypeCount).sort((a, b) => b[1] - a[1]);
 
-    // 行业条目html
+    // ========== 条目HTML生成（紧凑条目配置） ==========
     let industryHtml = '';
-    if(Object.keys(industryCount).length === 0){
-        industryHtml = `<div style="grid-column:1/-1;color:#94a3b8;font-size:14px;padding:8px 10px;text-align:center;">暂无数据</div>`;
-    }else{
-        Object.keys(industryCount).forEach(key=>{
+    if (industryArr.length === 0) {
+        industryHtml = `<div style="grid-column:1/-1;color:#94a3b8;font-size:12px;padding:8px 12px;text-align:center;">暂无数据</div>`;
+    } else {
+        industryArr.forEach(([key, count]) => {
+            const textColor = key === DEFAULT_INDUSTRY ? '#64748b' : '#1e293b';
             industryHtml += `
-                <div style="display:flex;justify-content:space-between;padding:8px 10px;background:#f8fafc;border-radius:12px;">
-                    <span style="font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(key)}</span>
-                    <span style="font-weight:600;color:#2563eb;margin-left:6px;">${industryCount[key]}</span>
-                </div>
-            `;
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 10px;background:#f3f4f6;border-radius:12px;" title="${escapeHtml(key)}">
+                <span style="font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:${textColor};">${escapeHtml(key)}</span>
+                <span style="font-weight:600;color:#2563eb;font-size:12px;">${count}</span>
+            </div>`;
         })
     }
 
-    // 展会条目html
     let exhibitionHtml = '';
-    if(Object.keys(exhibitionCount).length === 0){
-        exhibitionHtml = `<div style="grid-column:1/-1;color:#94a3b8;font-size:14px;padding:8px 10px;text-align:center;">暂无数据</div>`;
-    }else{
-        Object.keys(exhibitionCount).forEach(key=>{
+    if (exhibitionArr.length === 0) {
+        exhibitionHtml = `<div style="grid-column:1/-1;color:#94a3b8;font-size:12px;padding:8px 12px;text-align:center;">暂无数据</div>`;
+    } else {
+        exhibitionArr.forEach(([key, count]) => {
             exhibitionHtml += `
-                <div style="display:flex;justify-content:space-between;padding:8px 10px;background:#f8fafc;border-radius:12px;">
-                    <span style="font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(key)}</span>
-                    <span style="font-weight:600;color:#2563eb;margin-left:6px;">${exhibitionCount[key]}</span>
-                </div>
-            `;
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 10px;background:#f3f4f6;border-radius:12px;" title="${escapeHtml(key)}">
+                <span style="font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(key)}</span>
+                <span style="font-weight:600;color:#2563eb;font-size:12px;">${count}</span>
+            </div>`;
         })
     }
 
-    // 互动类型条目（单列）
     let interHtml = '';
-    if(Object.keys(interactionTypeCount).length === 0){
-        interHtml = `<div style="color:#94a3b8;font-size:14px;padding:8px 10px;text-align:center;">暂无互动记录</div>`;
-    }else{
-        Object.keys(interactionTypeCount).forEach(key => {
+    if (interArr.length === 0) {
+        interHtml = `<div style="color:#94a3b8;font-size:12px;padding:8px 12px;text-align:center;">暂无互动记录</div>`;
+    } else {
+        interArr.forEach(([key, count]) => {
             interHtml += `
-                <div style="display:flex;justify-content:space-between;padding:8px 10px;background:#f8fafc;border-radius:12px;">
-                    <span style="font-size:14px;">${escapeHtml(key)}</span>
-                    <span style="font-weight:600;color:#2563eb;">${interactionTypeCount[key]} 次</span>
-                </div>
-            `
-        });
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 10px;background:#f3f4f6;border-radius:12px;" title="${escapeHtml(key)}">
+                <span style="font-size:12px;">${escapeHtml(key)}</span>
+                <span style="font-weight:600;color:#2563eb;font-size:12px;">${count} 次</span>
+            </div>`;
+        })
     }
 
     let html = `
-        <div style="padding:4px 0;">
-            <div style="font-size:18px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px;">
-                <i class="fas fa-chart-pie" style="color:#2563eb;font-size:20px;"></i>
-                数据统计
-            </div>
+    <div style="padding:4px 0;">
+        <div style="font-size:16px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px;">
+            <i class="fas fa-chart-pie" style="color:#2563eb;font-size:18px;"></i>
+            数据统计
+        </div>
+<div style="height:1px;background:#e5e7eb;margin:12px 0;"></div>
 
-            <!-- 核心指标三卡片 -->
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px;">
-                <div style="background:#eff6ff;border-radius:16px;padding:14px 8px;text-align:center;">
-                    <div style="font-size:22px;font-weight:700;color:#2563eb;">${total}</div>
-                    <div style="font-size:12px;color:#64748b;margin-top:4px;">客户总数</div>
+        <!-- ==========【全新顶部：三栏商务指标卡片】========== -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;">
+            <!-- 客户总数 -->
+            <div style="background:#ffffff;padding:10px 8px;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,0.10);border-left:3px solid #2563eb;">
+                <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+                    <i class="fas fa-users" style="color:#2563eb;font-size:14px;"></i>
+                    <span style="font-size:11px;color:#64748b;">客户总数</span>
                 </div>
-                <div style="background:#f0fdf4;border-radius:16px;padding:14px 8px;text-align:center;">
-                    <div style="font-size:22px;font-weight:700;color:#059669;">${interacted}</div>
-                    <div style="font-size:12px;color:#64748b;margin-top:4px;">有互动</div>
+                <div style="font-size:17px;font-weight:700;color:#1e293b;">${total}</div>
+            </div>
+            <!-- 有互动 -->
+            <div style="background:#ffffff;padding:10px 8px;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,0.10);border-left:3px solid #059669;">
+                <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+                    <i class="fas fa-comments" style="color:#059669;font-size:14px;"></i>
+                    <span style="font-size:11px;color:#64748b;">有互动</span>
                 </div>
-                <div style="background:#fffbeb;border-radius:16px;padding:14px 8px;text-align:center;">
-                    <div style="font-size:22px;font-weight:700;color:#b45309;">${noInteraction}</div>
-                    <div style="font-size:12px;color:#64748b;margin-top:4px;">无互动</div>
+                <div style="font-size:17px;font-weight:700;color:#1e293b;">${interacted}</div>
+            </div>
+            <!-- 无互动 -->
+            <div style="background:#ffffff;padding:10px 8px;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,0.10);border-left:3px solid #b45309;">
+                <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+                    <i class="fas fa-comment-slash" style="color:#b45309;font-size:14px;"></i>
+                    <span style="font-size:11px;color:#64748b;">无互动</span>
                 </div>
-            </div>
-
-            <!-- 行业分布 双栏网格 -->
-            <div style="font-size:16px;font-weight:600;margin:0 0 8px 0;color:#334155;">🏷️ 行业分布</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
-                ${industryHtml}
-            </div>
-
-            <div style="height:1px;background:#e5e7eb;margin:14px 0;"></div>
-
-            <!-- 展会分布 双栏网格 -->
-            <div style="font-size:16px;font-weight:600;margin:0 0 8px 0;color:#334155;">🏢 展会分布</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
-                ${exhibitionHtml}
-            </div>
-
-            <div style="height:1px;background:#e5e7eb;margin:14px 0;"></div>
-
-            <!-- 互动类型分布（单列） -->
-            <div style="font-size:16px;font-weight:600;margin:0 0 8px 0;color:#334155;">💬 互动分布</div>
-            <div style="display:flex;flex-direction:column;gap:8px;">
-                ${interHtml}
+                <div style="font-size:17px;font-weight:700;color:#1e293b;">${noInteraction}</div>
             </div>
         </div>
-    `;
 
+        <!-- 行业分布 -->
+        <div style="font-size:15px;font-weight:600;margin:0 0 8px 0;color:#334155;display:flex;align-items:center;gap:6px;">
+            <i class="fas fa-tags" style="color:#64748b;"></i>
+            行业分布
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
+            ${industryHtml}
+        </div>
+
+        <div style="height:1px;background:#e5e7eb;margin:12px 0;"></div>
+
+        <!-- 展会分布 -->
+        <div style="font-size:15px;font-weight:600;margin:0 0 8px 0;color:#334155;display:flex;align-items:center;gap:6px;">
+            <i class="fas fa-building" style="color:#64748b;"></i>
+            展会分布
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
+            ${exhibitionHtml}
+        </div>
+
+        <div style="height:1px;background:#e5e7eb;margin:12px 0;"></div>
+
+        <!-- 互动类型分布 -->
+        <div style="font-size:15px;font-weight:600;margin:0 0 8px 0;color:#334155;display:flex;align-items:center;gap:6px;">
+            <i class="fas fa-comments" style="color:#64748b;"></i>互动分布
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+            ${interHtml}
+        </div>
+    </div>
+    `;
     drawerContent.innerHTML = html;
 }
         // ===================== 设置抽屉：顺序严格定稿 =====================
 function renderSettingDrawer() {
     let html = `
     <div style="padding:4px 0;">
-        <div style="font-size:18px;font-weight:700;margin-bottom:16px;">设置</div>
+        <div style="font-size:16px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px;">
+            <i class="fas fa-cog" style="color:#2563eb;font-size:18px;"></i>
+            设置
+        </div>
+<div style="height:1px;background:#e5e7eb;margin:12px 0;"></div>
 
-        <div class="drawer-menu-item" data-setting="exhibition-manage">
-            <i class="fas fa-building" style="color:#2563eb;"></i>
-            <span>展会分类管理</span>
-            <i class="fas fa-chevron-right" style="margin-left:auto;color:#d1d5db;"></i>
+        <!-- 分类管理组 -->
+        <div style="font-size:14px;font-weight:600;margin:0 0 8px 0;color:#334155;display:flex;align-items:center;gap:6px;">
+            <i class="fas fa-tags" style="color:#64748b;font-size:13px;"></i>
+            分类管理
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px;">
+            <div class="drawer-menu-item" data-setting="exhibition-manage" style="display:flex;justify-content:space-between;align-items:center;padding:4px 10px;background:#f1f3f5;border-radius:12px;cursor:pointer;transition:0.18s;">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <i class="fas fa-building" style="color:#2563eb;font-size:13px;width:16px;text-align:center;"></i>
+                    <span style="font-size:12px;">展会分类管理</span>
+                </div>
+                <i class="fas fa-chevron-right" style="color:#94a3b8;font-size:11px;"></i>
+            </div>
+            <div class="drawer-menu-item" data-setting="industry-manage" style="display:flex;justify-content:space-between;align-items:center;padding:4px 10px;background:#f1f3f5;border-radius:12px;cursor:pointer;transition:0.18s;">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <i class="fas fa-tags" style="color:#2563eb;font-size:13px;width:16px;text-align:center;"></i>
+                    <span style="font-size:12px;">行业分类管理</span>
+                </div>
+                <i class="fas fa-chevron-right" style="color:#94a3b8;font-size:11px;"></i>
+            </div>
         </div>
 
-        <div class="drawer-menu-item" data-setting="industry-manage">
-            <i class="fas fa-tags" style="color:#2563eb;"></i>
-            <span>行业分类管理</span>
-            <i class="fas fa-chevron-right" style="margin-left:auto;color:#d1d5db;"></i>
+        <div style="height:1px;background:#e5e7eb;margin:12px 0;"></div>
+
+        <!-- 数据备份组 -->
+        <div style="font-size:14px;font-weight:600;margin:0 0 8px 0;color:#334155;display:flex;align-items:center;gap:6px;">
+            <i class="fas fa-database" style="color:#64748b;font-size:13px;"></i>
+            数据备份
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px;">
+            <div class="drawer-menu-item" data-setting="import-export" style="display:flex;justify-content:space-between;align-items:center;padding:4px 10px;background:#f1f3f5;border-radius:12px;cursor:pointer;transition:0.18s;">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <i class="fas fa-upload" style="color:#059669;font-size:13px;width:16px;text-align:center;"></i>
+                    <span style="font-size:12px;">导入备份数据</span>
+                </div>
+                <i class="fas fa-chevron-right" style="color:#94a3b8;font-size:11px;"></i>
+            </div>
+            <div class="drawer-menu-item" data-setting="export-backup" style="display:flex;justify-content:space-between;align-items:center;padding:4px 10px;background:#f1f3f5;border-radius:12px;cursor:pointer;transition:0.18s;">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <i class="fas fa-download" style="color:#059669;font-size:13px;width:16px;text-align:center;"></i>
+                    <span style="font-size:12px;">导出备份数据</span>
+                </div>
+                <i class="fas fa-chevron-right" style="color:#94a3b8;font-size:11px;"></i>
+            </div>
         </div>
 
-        <div class="drawer-menu-item" data-setting="import-export">
-            <i class="fas fa-upload" style="color:#059669;"></i>
-            <span>导入备份数据</span>
-            <i class="fas fa-chevron-right" style="margin-left:auto;color:#d1d5db;"></i>
-        </div>
-        
-        <div class="drawer-menu-item" data-setting="export-backup">
-            <i class="fas fa-download" style="color:#059669;"></i>
-            <span>导出备份数据</span>
-            <i class="fas fa-chevron-right" style="margin-left:auto;color:#d1d5db;"></i>
-        </div>
+        <div style="height:1px;background:#e5e7eb;margin:12px 0;"></div>
 
-        <div class="drawer-menu-item" data-setting="clear-all">
-            <i class="fas fa-trash-alt" style="color:#ef4444;"></i>
-            <span style="color:#ef4444;">清空全部数据</span>
-            <i class="fas fa-chevron-right" style="margin-left:auto;color:#d1d5db;"></i>
+        <!-- 安全设置组 -->
+        <div style="font-size:14px;font-weight:600;margin:0 0 8px 0;color:#334155;display:flex;align-items:center;gap:6px;">
+            <i class="fas fa-shield-alt" style="color:#64748b;font-size:13px;"></i>
+            安全与系统
         </div>
-
-        <div class="drawer-menu-item" data-setting="password">
-            <i class="fas fa-key" style="color:#64748b;"></i>
-            <span>修改登录密码</span>
-            <i class="fas fa-chevron-right" style="margin-left:auto;color:#d1d5db;"></i>
-        </div>
-
-        <div class="drawer-menu-item" data-setting="about">
-            <i class="fas fa-info-circle" style="color:#64748b;"></i>
-            <span>关于系统信息</span>
-            <i class="fas fa-chevron-right" style="margin-left:auto;color:#d1d5db;"></i>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px;">
+            <div class="drawer-menu-item" data-setting="clear-all" style="display:flex;justify-content:space-between;align-items:center;padding:4px 10px;background:#f1f3f5;border-radius:12px;cursor:pointer;transition:0.18s;">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <i class="fas fa-trash-alt" style="color:#ef4444;font-size:13px;width:16px;text-align:center;"></i>
+                    <span style="font-size:12px;color:#ef4444;">清空全部数据</span>
+                </div>
+                <i class="fas fa-chevron-right" style="color:#94a3b8;font-size:11px;"></i>
+            </div>
+            <div class="drawer-menu-item" data-setting="password" style="display:flex;justify-content:space-between;align-items:center;padding:4px 10px;background:#f1f3f5;border-radius:12px;cursor:pointer;transition:0.18s;">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <i class="fas fa-key" style="color:#64748b;font-size:13px;width:16px;text-align:center;"></i>
+                    <span style="font-size:12px;">修改登录密码</span>
+                </div>
+                <i class="fas fa-chevron-right" style="color:#94a3b8;font-size:11px;"></i>
+            </div>
+            <div class="drawer-menu-item" data-setting="about" style="display:flex;justify-content:space-between;align-items:center;padding:4px 10px;background:#f1f3f5;border-radius:12px;cursor:pointer;transition:0.18s;">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <i class="fas fa-info-circle" style="color:#64748b;font-size:13px;width:16px;text-align:center;"></i>
+                    <span style="font-size:12px;">关于系统信息</span>
+                </div>
+                <i class="fas fa-chevron-right" style="color:#94a3b8;font-size:11px;"></i>
+            </div>
         </div>
     </div>
 `;
 
     drawerContent.innerHTML = html;
 
+    // 点击交互事件绑定保持不变
     drawerContent.querySelectorAll('.drawer-menu-item[data-setting]').forEach(item => {
+        // 增加按压交互效果
+        item.addEventListener('touchstart', function(){
+            this.style.transform = 'scale(0.98)';
+            this.style.background = '#dbeafe';
+        })
+        item.addEventListener('touchend', function(){
+            this.style.transform = 'scale(1)';
+            this.style.background = '#f1f3f5';
+        })
         item.addEventListener('click', function() {
             const action = this.dataset.setting;
             closeDrawer();
@@ -1862,27 +2002,21 @@ function renderSettingDrawer() {
             if (action === 'exhibition-manage') {
                 openExhibitionManageModal();
             }
-
             if (action === 'industry-manage') {
                 openIndustryManageModal();
             }
-
             if (action === 'import-export') {
                 document.getElementById('importBtn').click();
             }
-            
             if (action === 'export-backup') {
                 exportData();
             }
-
             if (action === 'clear-all') {
                 resetAllData();
             }
-
             if (action === 'password') {
                 alert('请先退出登录后再修改密码');
             }
-
             if (action === 'about') {
                 openCopyrightModal();
             }
