@@ -310,9 +310,19 @@
             .contact-card.mobile-full-card .card-notes,
             .contact-card.mobile-full-card .interactions-section,
             .contact-card.mobile-full-card .card-actions { display: flex !important; }
-            .contact-card .card-header { margin-bottom: 4px !important; }
-            .contact-card .tag-row { margin: 4px 0 0 !important; }
-            .card-phone-row { display: flex !important; align-items: center !important; gap: 8px !important; margin-top: 6px !important; font-size: 15px !important; }
+            .contact-card .card-header { margin-bottom: 2px !important; }
+            .contact-card .tag-row {
+    margin: 0 !important;
+    line-height: 1 !important;
+}
+           .card-phone-row {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0px !important; /* 统一间距关掉，全部交给margin单独控制 */
+    margin-top: 0px !important;
+    font-size: 15px !important;
+    line-height: 1 !important;
+}
             .card-phone-row a { color: #2563eb !important; text-decoration: none !important; pointer-events: auto !important; }
             .contact-card { cursor: pointer !important; -webkit-tap-highlight-color: transparent !important; }
 
@@ -1590,24 +1600,25 @@
                 card.dataset.cid = c.id;
                 card.dataset.mark = c.markStatus || "none";
                 card.innerHTML = `
-                    <div class="card-header" style="margin-bottom:0px;">
-                        <div style="display:flex;align-items:center;gap:10px;">
-                            <i class="fas fa-user-circle" style="font-size:22px;color:#8E8E93;"></i>
-                            <div style="flex:1;">
-                                <div class="card-name" style="font-size:16px;line-height:1.2;">${escapeHtml(c.name)}</div>
-                                <div class="card-company" style="font-size:13px;color:#64748b;margin-top:2px;line-height:1.2;">${escapeHtml(c.company) || '未登记公司'}</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:3px;flex-wrap:wrap;margin-top:0px;padding-left:4px;">
-                        <div class="card-phone-row" style="margin-top:0;display:flex;align-items:center;gap:8px;">
-                            <i class="fas fa-tty" style="color:#64748b;font-size:13px;"></i>
-                            <a href="tel:${escapeHtml(c.phone)}" onclick="event.stopPropagation()" style="font-size:14px;color:#2563eb;text-decoration:none;">${escapeHtml(c.phone)}</a>
-                        </div>
-                        <span class="card-industry-tag" style="font-size:12px;padding:2px 4px;background:transparent;color:#64748b;">${escapeHtml(c.industry)}</span>
-                        <span class="card-exhibition-tag" style="font-size:12px;padding:2px 4px;background:transparent;color:#64748b;">${escapeHtml(c.exhibition)}</span>
-                    </div>
-                `;
+    <div class="card-header" style="margin-bottom:0px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+            <i class="fas fa-user-circle" style="font-size:22px;color:#8E8E93;"></i>
+            <div style="flex:1;">
+                <div class="card-name" style="font-size:16px;line-height:1.2;">${escapeHtml(c.name)}</div>
+                <div class="card-company" style="font-size:13px;color:#64748b;margin-top:2px;line-height:1.2;">${escapeHtml(c.company) || '未登记公司'}</div>
+            </div>
+        </div>
+    </div>
+   <div class="card-phone-row" style="margin-top:0;display:flex;align-items:center;gap:0px;flex-wrap:wrap;padding-left:4px;">
+<!-- 图标 ↔ 手机号 -->
+    <i class="fas fa-tty" style="color:#64748b;font-size:13px;margin-right:15px;"></i>
+<!-- 手机号 ↔ 行业标签 -->
+    <a href="tel:${escapeHtml(c.phone)}" onclick="event.stopPropagation()" style="font-size:14px;color:#2563eb;text-decoration:none;margin-right:6px;">${escapeHtml(c.phone)}</a>
+<!-- 行业 ↔ 展会标签 -->
+    <span class="card-industry-tag" style="font-size:12px;padding:2px 4px;background:transparent;color:#64748b;margin-right:2px;">${escapeHtml(c.industry)}</span>
+    <span class="card-exhibition-tag" style="font-size:12px;padding:2px 4px;background:transparent;color:#64748b;">${escapeHtml(c.exhibition)}</span>
+</div>
+`;
                 card.addEventListener('touchstart', function() { this.style.transform = 'scale(0.98)'; this.style.background = '#f8fafc'; });
                 card.addEventListener('touchend', function() { this.style.transform = 'scale(1)'; this.style.background = '#ffffff'; });
                 grid.appendChild(card);
