@@ -311,8 +311,8 @@
             .contact-card.mobile-full-card .interactions-section,
             .contact-card.mobile-full-card .card-actions { display: flex !important; }
             .contact-card .card-header { margin-bottom: 4px !important; }
-            .contact-card .tag-row { margin: 0px 0 0 !important; }
-            .card-phone-row { display: flex !important; align-items: center !important; gap: 8px !important; margin-top: 0px !important; font-size: 15px !important; }
+            .contact-card .tag-row { margin: 4px 0 0 !important; }
+            .card-phone-row { display: flex !important; align-items: center !important; gap: 8px !important; margin-top: 6px !important; font-size: 15px !important; }
             .card-phone-row a { color: #2563eb !important; text-decoration: none !important; pointer-events: auto !important; }
             .contact-card { cursor: pointer !important; -webkit-tap-highlight-color: transparent !important; }
 
@@ -1600,7 +1600,7 @@
                         </div>
                     </div>
                     <div style="display:flex;align-items:center;gap:3px;flex-wrap:wrap;margin-top:0px;padding-left:4px;">
-                        <div class="card-phone-row" style="margin-top:0;display:flex;align-items:center;gap:15px;">
+                        <div class="card-phone-row" style="margin-top:0;display:flex;align-items:center;gap:8px;">
                             <i class="fas fa-tty" style="color:#64748b;font-size:13px;"></i>
                             <a href="tel:${escapeHtml(c.phone)}" onclick="event.stopPropagation()" style="font-size:14px;color:#2563eb;text-decoration:none;">${escapeHtml(c.phone)}</a>
                         </div>
