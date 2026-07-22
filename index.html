@@ -178,8 +178,6 @@
 
         /* ============================================================
            移动端样式（同时适配横屏）
-           关键修改：媒体查询条件增加 (max-height: 640px)
-           并将此块放在样式表末尾，确保覆盖PC样式
            ============================================================ */
         @media (max-width: 640px), (max-height: 640px) {
             ::-webkit-scrollbar { display: none !important; }
@@ -295,8 +293,11 @@
                 cursor: pointer !important;
                 padding-top: 12px !important;
                 padding-bottom: 0px !important;
+                -webkit-tap-highlight-color: transparent !important;
+                user-select: none !important;
             }
-            .tab-item i { font-size: 18px !important; }
+            .tab-item i { font-size: 18px !important; pointer-events: none !important; }
+            .tab-item span { pointer-events: none !important; }
 
             .contact-card { padding: 6px 12px !important; border-radius: 12px !important; transition: 0.18s ease !important; }
             .contact-card .card-details,
@@ -310,10 +311,10 @@
             .contact-card.mobile-full-card .interactions-section,
             .contact-card.mobile-full-card .card-actions { display: flex !important; }
             .contact-card .card-header { margin-bottom: 4px !important; }
-            .contact-card .tag-row { margin: 4px 0 0 !important; }
-            .card-phone-row { display: flex !important; align-items: center !important; gap: 8px !important; margin-top: 6px !important; font-size: 15px !important; }
-            .card-phone-row a { color: #2563eb !important; text-decoration: none !important; }
-            .contact-card { cursor: pointer !important; }
+            .contact-card .tag-row { margin: 0px 0 0 !important; }
+            .card-phone-row { display: flex !important; align-items: center !important; gap: 8px !important; margin-top: 0px !important; font-size: 15px !important; }
+            .card-phone-row a { color: #2563eb !important; text-decoration: none !important; pointer-events: auto !important; }
+            .contact-card { cursor: pointer !important; -webkit-tap-highlight-color: transparent !important; }
 
             .float-bubble-menu {
                 position: fixed !important;
@@ -756,7 +757,9 @@
 
         // ===== 底部Tab点击 =====
         document.querySelectorAll('.mobile-bottom-tab .tab-item').forEach(tab => {
-            tab.addEventListener('click', function() {
+            tab.addEventListener('click', function(e) {
+                e.stopPropagation();
+                e.preventDefault();
                 const drawerType = this.dataset.drawer;
                 openDrawer(drawerType);
             });
@@ -770,10 +773,10 @@
             drawerOverlay.classList.add('active');
             document.body.classList.add('lock-scroll');
             if (type === 'filter') renderFilterDrawer();
-            if (type === 'group') renderGroupDrawer();
-            if (type === 'stat') renderStatDrawer();
-            if (type === 'setting') renderSettingDrawer();
-            if (type === 'addCustomer') { openModal(); closeDrawer(); return; }
+            else if (type === 'group') renderGroupDrawer();
+            else if (type === 'stat') renderStatDrawer();
+            else if (type === 'setting') renderSettingDrawer();
+            else if (type === 'addCustomer') { openModal(); closeDrawer(); return; }
         }
 
         function closeDrawer() {
@@ -923,7 +926,6 @@
             const interacted = filtered.filter(c => c.interactions && c.interactions.length > 0).length;
             const noInteraction = total - interacted;
 
-            // 行业统计
             const industryCount = {};
             filtered.forEach(c => { industryCount[c.industry] = (industryCount[c.industry] || 0) + 1; });
             let otherItem = null;
@@ -934,12 +936,10 @@
             industryArr.sort((a, b) => b[1] - a[1]);
             if (otherItem) industryArr.push(otherItem);
 
-            // 展会统计
             const exhibitionCount = {};
             filtered.forEach(c => { exhibitionCount[c.exhibition] = (exhibitionCount[c.exhibition] || 0) + 1; });
             let exhibitionArr = Object.entries(exhibitionCount).sort((a, b) => b[1] - a[1]);
 
-            // 互动类型统计
             const interactionTypeCount = {};
             filtered.forEach(c => {
                 if (c.interactions) {
@@ -1107,12 +1107,12 @@
                     const action = this.dataset.setting;
                     closeDrawer();
                     if (action === 'exhibition-manage') openExhibitionManageModal();
-                    if (action === 'industry-manage') openIndustryManageModal();
-                    if (action === 'import-export') document.getElementById('importBtn').click();
-                    if (action === 'export-backup') exportData();
-                    if (action === 'clear-all') resetAllData();
-                    if (action === 'password') alert('请先退出登录后再修改密码');
-                    if (action === 'about') openCopyrightModal();
+                    else if (action === 'industry-manage') openIndustryManageModal();
+                    else if (action === 'import-export') document.getElementById('importBtn').click();
+                    else if (action === 'export-backup') exportData();
+                    else if (action === 'clear-all') resetAllData();
+                    else if (action === 'password') alert('请先退出登录后再修改密码');
+                    else if (action === 'about') openCopyrightModal();
                 });
             });
         }
@@ -2146,9 +2146,8 @@
                 tipText.innerText = '密码创建成功，请登录';
                 tipText.style.display = 'block';
                 switchActionBtn.innerText = '重置密码';
-                setTimeout(() => showPanel('login'), 1200);
-            });
-            backFromInitBtn.addEventListener('click', () => showPanel('login'))
+                           });
+            backFromInitBtn.addEventListener('click', () => showPanel('login'));
 
             confirmResetBtn.addEventListener('click', () => {
                 const realPwd = localStorage.getItem('crmLoginPwd');
@@ -2237,24 +2236,6 @@
                 location.reload();
             });
         })(); // 结束登录脚本的 IIFE
-
-        // 注意：以下两个函数已经在主逻辑中定义过了，此处不再重复
-        // 如果您的主逻辑中没有，请取消注释下面的代码
-        /*
-        function checkTitleOverflow(el) {
-            if (el.scrollWidth > el.clientWidth) {
-                el.dataset.overflow = "true";
-            } else {
-                el.dataset.overflow = "";
-            }
-        }
-        function refreshAllTitleOverflow() {
-            const allTitles = document.querySelectorAll(".group-title");
-            allTitles.forEach(titleEl => {
-                setTimeout(() => checkTitleOverflow(titleEl), 20);
-            });
-        }
-        */
     </script>
 </body>
 </html>
