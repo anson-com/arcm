@@ -24,6 +24,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+html {
+    background-color: #f6f9fc;
+}
         /* ===== 全局变量 ===== */
         :root {
             --floatSearch-height: 60px;
@@ -46,8 +49,52 @@
             --fade-width: 50px;
             --fade-bg: #f6f9fc;
         }
-        body::before { content: ""; position: fixed; top: 0; left: 0; width: 100%; height: var(--safe-top); background: #f6f9fc; z-index: 998; pointer-events: none; }
-        body::after { content: ""; position: fixed; bottom: 0; left: 0; right: 0; height: var(--safe-bottom); background: #f6f9fc; z-index: 996; pointer-events: none; }
+        body::before { 
+    content: ""; 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: var(--safe-top); 
+    background: #f6f9fc; 
+    z-index: 998; 
+    pointer-events: none; 
+}
+body::after { 
+    content: ""; 
+    position: fixed; 
+    bottom: 0; 
+    left: 0; 
+    right: 0; 
+    height: var(--safe-bottom); 
+    background: #f6f9fc; 
+    z-index: 996; 
+    pointer-events: none; 
+}
+/* 横屏左侧、右侧刘海/挖孔填充 */
+body {
+    position: relative;
+}
+body .landscape-safe-left {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: env(safe-area-inset-left, 0px);
+    height: 100%;
+    background: #f6f9fc;
+    z-index: 997;
+    pointer-events: none;
+}
+body .landscape-safe-right {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: env(safe-area-inset-right, 0px);
+    height: 100%;
+    background: #f6f9fc;
+    z-index: 997;
+    pointer-events: none;
+}
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Inter', sans-serif; background: #f6f9fc; color: #1e293b; padding: 24px; min-height: 100vh; display: flex; justify-content: center; }
         body.modal-open { overflow: hidden; }
@@ -432,6 +479,8 @@
     </style>
 </head>
 <body>
+ <div class="landscape-safe-left"></div>
+    <div class="landscape-safe-right"></div>
     <!-- ====== 移动端悬浮搜索 ====== -->
     <div class="float-search-bar">
         <div class="float-search-input-wrap">
