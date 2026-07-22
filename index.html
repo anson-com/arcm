@@ -28,6 +28,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         /* ===================== 全局移动端悬浮搜索CSS变量（可统一调整） ===================== */
+               /* ===================== 全局移动端悬浮搜索CSS变量（可统一调整） ===================== */
         :root {
             --floatSearch-height: 60px;
             --floatSearch-radius: 0px;
@@ -912,27 +913,6 @@ body::after {
 .tab-item i {
     font-size: 18px;
 }
-/* 中间新增按钮：浅灰色空心圆环 + 浅灰加号，无填充底色 */
-.tab-add-btn {
-    width: 50px;   /* ✅ 圆圈宽度 */
-    height: 50px;  /* ✅ 圆圈高度 */
-    background: transparent;
-    border: 1.4px solid #94a3b8;
-    border-radius: 50%;
-    color: #94a3b8;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px; /* ✅ 内部加号图标大小 */
-    box-shadow: none;
-    cursor: pointer;
-    transition: 0.18s;
-    margin: 0 auto;
-}
-.tab-add-btn:active {
-    background: rgba(148, 163, 184, 0.12);
-    transform: scale(0.92);
-}
             /* 移动端卡片精简样式（列表仅展示姓名、电话、展会标签） */
             .contact-card {
     padding:6px 12px;
@@ -1103,6 +1083,16 @@ body::after {
     
         @media (max-width:640px) {
 
+.mobile-drawer-overlay.active {
+    touch-action: none;
+}
+.drawer-content {
+    overscroll-behavior: contain;
+}
+.app-container {
+    overscroll-behavior: contain;
+}
+
 /* ========= 移动端名片【左侧竖边标记｜复刻统计卡片完整样式】 ========= */
 .contact-card {
     position: relative;
@@ -1202,7 +1192,7 @@ gap:0px !important;
     <div class="mobile-bottom-tab">
         <div class="tab-item" data-drawer="filter"><i class="fas fa-filter"></i><span>筛选</span></div>
         <div class="tab-item" data-drawer="group"><i class="fas fa-list"></i><span>分组</span></div>
-        <button class="tab-add-btn"><i class="fas fa-plus"></i></button>
+        <div class="tab-item" data-drawer="addCustomer"><i class="fas fa-user-plus"></i><span>新增</span></div>
         <div class="tab-item" data-drawer="stat"><i class="fas fa-chart-pie"></i><span>统计</span></div>
         <div class="tab-item" data-drawer="setting"><i class="fas fa-cog"></i><span>设置</span></div>
     </div>
@@ -1499,6 +1489,7 @@ gap:0px !important;
         let mobileLoadedCount = 0;
         let isMobileLoading = false;
         let mobileAllLoaded = false;
+        let drawerOpening = false;
 
         let contacts = [];
         let industryList = [];
@@ -1577,7 +1568,7 @@ gap:0px !important;
         });
 
         // ===================== 底部Tab：新增客户 =====================
-        floatAddBtn.addEventListener('click', () => openModal());
+       
 
         // ===================== 底部Tab：筛选/分组/统计/设置抽屉 =====================
         document.querySelectorAll('.mobile-bottom-tab .tab-item').forEach(tab => {
@@ -1592,31 +1583,39 @@ gap:0px !important;
         });
 
         function openDrawer(type) {
-            drawerOverlay.classList.add('active');
-            document.body.classList.add('lock-scroll');
+    drawerOverlay.classList.add('active');
+    document.body.classList.add('lock-scroll');
 
-            if (type === 'filter') {
-                renderFilterDrawer();
-            }
+    if (type === 'filter') {
+        renderFilterDrawer();
+    }
+    if (type === 'group') {
+        renderGroupDrawer();
+    }
+    if (type === 'stat') {
+        renderStatDrawer();
+    }
+    if (type === 'setting') {
+        renderSettingDrawer();
+    }
+    // 【修复】新增客户独立分支，不要嵌套在setting内部
+    if (type === 'addCustomer') {
+        openModal();
+        closeDrawer();
+        return;
+    }
+}
 
-            if (type === 'group') {
-                renderGroupDrawer();
-            }
-
-            if (type === 'stat') {
-                renderStatDrawer();
-            }
-
-            if (type === 'setting') {
-                renderSettingDrawer();
-            }
-        }
-
-        function closeDrawer() {
-            drawerOverlay.classList.remove('active');
-            document.body.classList.remove('lock-scroll');
-            drawerContent.innerHTML = '';
-        }
+       function closeDrawer() {
+    drawerOverlay.classList.remove('active');
+    // 多次安全移除，防止残留锁死
+    document.body.classList.remove('lock-scroll');
+    setTimeout(()=>{
+        document.body.classList.remove('lock-scroll');
+        drawerOpening = false; // 关闭抽屉后释放防重复打开锁
+    },50);
+    drawerContent.innerHTML = '';
+}
 
         // ===================== 筛选抽屉：仅行业，单行纵向列表 =====================
         function renderFilterDrawer() {
@@ -2081,6 +2080,8 @@ function renderSettingDrawer() {
 }
         // ===================== 客户详情抽屉 =====================
 function openCustomerDetailDrawer(customerId) {
+if(drawerOpening) return;
+drawerOpening = true;
     const customer = contacts.find(c => c.id === customerId);
     if (!customer) return;
 
@@ -2182,9 +2183,9 @@ function openCustomerDetailDrawer(customerId) {
 
 <!-- 关闭按钮 -->
 <div class="modal-actions" style="justify-content:flex-end;">
-    <button class="btn btn-icon btn-sm btn-primary" onclick="closeDrawer()" title="关闭抽屉" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;">
-        <i class="fas fa-times"></i>
-    </button>
+<button class="btn btn-icon btn-sm btn-primary" onclick="closeDrawer()" title="关闭抽屉" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;">
+    <i class="fas fa-times"></i>
+</button>
 </div>
 </div>
 `;
@@ -2325,8 +2326,18 @@ function openCustomerDetailDrawer(customerId) {
 
         // ★ 修复5：根据设备绑定滚动事件
         // 统一绑定窗口滚动，运行时动态判断宽度
-window.addEventListener('scroll', handleScroll, { passive: true });
-appContainer.addEventListener('scroll', handleScroll, { passive: true });
+function bindScrollEvent() {
+    const isMobile = window.innerWidth <= 640;
+    if(isMobile){
+        window.removeEventListener('scroll', handleScroll);
+        appContainer.addEventListener('scroll', handleScroll, { passive: true });
+    }else{
+        appContainer.removeEventListener('scroll', handleScroll);
+        window.addEventListener('scroll', handleScroll, { passive: true });
+    }
+}
+bindScrollEvent();
+window.addEventListener('resize', bindScrollEvent);
         window.addEventListener('resize', recalcLayout);
         window.addEventListener('load', recalcLayout);
 
@@ -3250,6 +3261,8 @@ list.forEach(c => {
             });
 
         document.getElementById('contactGrid').addEventListener('click', function(e) {
+e.stopPropagation();
+e.preventDefault();
     const editBtn = e.target.closest('.edit-btn');
     if (editBtn) { openModal(editBtn.dataset.id); return; }
     const delBtn = e.target.closest('.delete-btn');
@@ -3315,11 +3328,7 @@ list.forEach(c => {
             });
         }
 // 窗口尺寸变化自动重渲染，解决缩放需要刷新BUG
-window.addEventListener('resize', () => {
-    currentPage = 1;
-    resetMobileLoad();
-    render();
-});
+
     </script>
 
     <!-- 登录逻辑完整JS -->
