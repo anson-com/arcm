@@ -765,7 +765,7 @@ body::after {
         }
 
         /* ===================== 移动端专属样式 max-width:640px ===================== */
-        @media (max-width:640px) {
+        @media (max-width: 640px) {
             /* 全局清除滚动条 */
             ::-webkit-scrollbar {
                 display: none !important;
@@ -982,7 +982,7 @@ body::after {
             }
         }
 
-        @media (min-width:641px) {
+        @media (min-width:961px) and (orientation:portrait), (min-width:961px) {
             /* PC端隐藏移动端DOM */
             .float-search-bar,
             .mobile-bottom-tab,
@@ -991,7 +991,15 @@ body::after {
                 display: none !important;
             }
         }
-
+/* 兜底防闪现：非移动端环境，移动端DOM强制优先隐藏 */
+body:not(.is-mobile) .float-search-bar,
+body:not(.is-mobile) .mobile-bottom-tab,
+body:not(.is-mobile) .mobile-drawer-overlay,
+body:not(.is-mobile) .float-bubble-menu {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
         #loginBox button:active,
         #resetBox button:active,
         #initPwdBox button:active {
@@ -1081,7 +1089,7 @@ body::after {
         }
 
     
-        @media (max-width:640px) {
+        @media (max-width: 640px) {
 
 .mobile-drawer-overlay.active {
     touch-action: none;
@@ -1500,6 +1508,32 @@ gap:0px !important;
         // 当前移动端临时筛选缓存，不影响PC分页
         let mobileFilterCache = [];
 
+
+function checkIsMobileDevice(){
+    const w = window.innerWidth;
+    // UA判断移动设备标识
+    const ua = navigator.userAgent.toLowerCase();
+    const isMobileUA = /android|iphone|ipad|ipod|blackberry|iemobile|opera mini/.test(ua);
+    const touchPoints = navigator.maxTouchPoints || 0;
+
+    // 规则：
+    // 1. 物理手机/平板UA + 触摸点>0 → 无论横竖屏，启用移动端
+    // 2. PC电脑（不含移动UA），只允许宽度≤640px才移动端（PC极小窗口）
+    if(isMobileUA && touchPoints > 0){
+        return true;
+    }
+    return w <= 640;
+}
+
+// 同步body移动端标记
+function setMobileBodyClass(){
+    const isMobile = checkIsMobileDevice();
+    if(isMobile){
+        document.body.classList.add('is-mobile');
+    }else{
+        document.body.classList.remove('is-mobile');
+    }
+}
         // ===================== 移动端DOM引用 =====================
         const floatSearchBar = document.querySelector('.float-search-bar');
         const floatSearchInput = document.querySelector('.float-search-input');
@@ -2287,7 +2321,7 @@ drawerOpening = true;
         }
 
       const handleScroll = throttle(function() {
-    const nowMobile = window.innerWidth <= 640;
+    const nowMobile = checkIsMobileDevice();
     if (nowMobile && appContainer) {
                 const scrollTop = appContainer.scrollTop;
                 // 触底加载更多
@@ -2327,19 +2361,20 @@ drawerOpening = true;
         // ★ 修复5：根据设备绑定滚动事件
         // 统一绑定窗口滚动，运行时动态判断宽度
 function bindScrollEvent() {
-    const isMobile = window.innerWidth <= 640;
+    const isMobile = checkIsMobileDevice();
+    window.removeEventListener('scroll', handleScroll);
+    appContainer.removeEventListener('scroll', handleScroll);
     if(isMobile){
-        window.removeEventListener('scroll', handleScroll);
         appContainer.addEventListener('scroll', handleScroll, { passive: true });
     }else{
-        appContainer.removeEventListener('scroll', handleScroll);
         window.addEventListener('scroll', handleScroll, { passive: true });
     }
 }
 bindScrollEvent();
 window.addEventListener('resize', bindScrollEvent);
-        window.addEventListener('resize', recalcLayout);
-        window.addEventListener('load', recalcLayout);
+window.addEventListener('resize', recalcLayout);
+window.addEventListener('load', recalcLayout);
+setMobileBodyClass();
 
         // ===================== 原有业务逻辑兼容 =====================
         function openExternalUrl(url) {
@@ -2693,7 +2728,7 @@ window.addEventListener('resize', bindScrollEvent);
                     return matchSearch && matchIndustry && matchExhibition;
                 });
 
-                const isMobile = window.innerWidth <= 640;
+                const isMobile = checkIsMobileDevice();
 
                 if (isMobile) {
                     if (!append) {
@@ -3281,7 +3316,7 @@ e.preventDefault();
     // ===== 新增移动端卡片点击打开详情抽屉【关键修复】=====
     const contactCard = e.target.closest('.contact-card');
     // 只在移动端触发卡片点击打开抽屉
-    if (contactCard && window.innerWidth <= 640) {
+    if (contactCard && checkIsMobileDevice()) {
         const cid = contactCard.dataset.cid;
         openCustomerDetailDrawer(cid);
     }
@@ -3300,14 +3335,15 @@ e.preventDefault();
                     checkModalOpen();
                 }
             });
-
 // =====================【粘贴在这里！！！】=====================
-    // 窗口尺寸变化自动重渲染，解决缩放需要刷新BUG
-    window.addEventListener('resize', () => {
+    // 窗口尺寸/横竖屏旋转自动重渲染，防抖处理，解决横屏切PC布局BUG
+        window.addEventListener('resize', throttle(()=>{
+        setMobileBodyClass();
+        bindScrollEvent();
         currentPage = 1;
         resetMobileLoad();
         render();
-    });
+    },150));
 // ==========================================================
 
 });
