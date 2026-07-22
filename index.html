@@ -2065,6 +2065,7 @@
     </script>
 
     <!-- ====== 登录逻辑 ====== -->
+        <!-- ====== 登录逻辑【修复版】 ====== -->
     <script>
         (function() {
             const loginMask = document.getElementById('loginMask');
@@ -2173,12 +2174,23 @@
 
             confirmInitBtn.addEventListener('click', () => {
                 const newPwd = initPwdInput.value.trim();
-                if (newPwd === '') { tipText.innerText = '密码不能为空'; tipText.style.display = 'block'; initPwdInput.focus(); return; }
+                if (newPwd === '') {
+                    tipText.innerText = '密码不能为空';
+                    tipText.style.display = 'block';
+                    initPwdInput.focus();
+                    return;
+                }
                 localStorage.setItem('crmLoginPwd', newPwd.trim());
                 tipText.innerText = '密码创建成功，请登录';
                 tipText.style.display = 'block';
                 switchActionBtn.innerText = '重置密码';
-                           });
+
+                setTimeout(() => {
+                    showPanel('login');
+                    pwdInput.value = '';
+                }, 500);
+            });
+
             backFromInitBtn.addEventListener('click', () => showPanel('login'));
 
             confirmResetBtn.addEventListener('click', () => {
@@ -2267,7 +2279,7 @@
                 alert('初始密码设置完成，请刷新页面登录');
                 location.reload();
             });
-        })(); // 结束登录脚本的 IIFE
+        })();
     </script>
 </body>
 </html>
