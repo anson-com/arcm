@@ -170,12 +170,7 @@
         #industryListWrap::-webkit-scrollbar-track, #exhibitionListWrap::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
 
         /* ========== PC端隐藏移动端元素 ========== */
-        @media (min-width: 641px) {
-            .float-search-bar, .mobile-bottom-tab, .mobile-drawer-overlay, .float-bubble-menu {
-                display: none !important;
-            }
-        }
-
+   
         /* ============================================================
            移动端样式（同时适配横屏）
            ============================================================ */
@@ -278,7 +273,7 @@
                 grid-template-columns: repeat(5, 1fr) !important;
                 gap: 2px !important;
                 align-items: center !important;
-                z-index: 997 !important;
+                z-index: 1000 !important;
                 padding: 0 !important;
             }
             .tab-item {
@@ -318,7 +313,7 @@
            .card-phone-row {
     display: flex !important;
     align-items: center !important;
-    gap: 0px !important; /* 统一间距关掉，全部交给margin单独控制 */
+    gap: 0px !important;
     margin-top: 0px !important;
     font-size: 15px !important;
     line-height: 1 !important;
@@ -366,7 +361,32 @@
 
             .group-card-wrap { grid-template-columns: 1fr !important; gap: 0px !important; }
             .group-card-wrap:has(.contact-card:only-child) .contact-card { width: 100% !important; max-width: 100% !important; }
+
+                       /* ===== 内嵌横屏专属规则，仅移动端横屏生效 ===== */
+            @media (orientation: landscape) {
+                .group-card-wrap {
+                    grid-template-columns: 1fr 1fr !important;
+                    gap: 8px !important;
+                }
+                .contact-card .card-details {
+                    display: flex !important;
+                }
+                .contact-card .card-notes,
+                .contact-card .interactions-section,
+                .contact-card .card-actions {
+                    display: none !important;
+                }
+            }
         }
+
+
+/* 真正PC判断：宽高同时足够大，才隐藏移动端组件 */
+@media (min-width: 641px) and (min-height: 641px) {
+    .float-search-bar, .mobile-bottom-tab, .mobile-drawer-overlay, .float-bubble-menu {
+        display: none !important;
+    }
+}
+
 
         /* ===== 额外密码样式 ===== */
         #loginBox button:active, #resetBox button:active, #initPwdBox button:active {
@@ -1291,7 +1311,7 @@
         function calcToolbarRect() { if (toolbar) { const rect = toolbar.getBoundingClientRect(); toolbarBottom = rect.bottom; } }
 
         const handleScroll = throttle(function() {
-            const nowMobile = window.innerWidth <= 640;
+            const nowMobile = window.innerWidth <= 640 || window.innerHeight <= 640;
             if (nowMobile && appContainer) {
                 if (appContainer.scrollTop + appContainer.clientHeight >= appContainer.scrollHeight - 300) {
                     if (!isMobileLoading && !mobileAllLoaded) render(true);
@@ -1313,7 +1333,7 @@
         function recalcLayout() { calcToolbarRect(); }
 
         function bindScrollEvent() {
-            const isMobile = window.innerWidth <= 640;
+            const isMobile = window.innerWidth <= 640 || window.innerHeight <= 640;
             if (isMobile) {
                 window.removeEventListener('scroll', handleScroll);
                 appContainer.addEventListener('scroll', handleScroll, { passive: true });
@@ -1566,7 +1586,7 @@
                     return matchSearch && matchIndustry && matchExhibition;
                 });
 
-                const isMobile = window.innerWidth <= 640;
+                const isMobile = window.innerWidth <= 640 || window.innerHeight <= 640;
 
                 if (isMobile) {
                     if (!append) { mobileLoadedCount = 0; mobileAllLoaded = false; mobileFilterCache = filtered; }
@@ -2007,11 +2027,12 @@
                     deleteSingleInteraction(cid, index);
                     return;
                 }
-                const contactCard = e.target.closest('.contact-card');
-                if (contactCard && window.innerWidth <= 640) {
-                    const cid = contactCard.dataset.cid;
-                    openCustomerDetailDrawer(cid);
-                }
+                        const contactCard = e.target.closest('.contact-card');
+    const isMobileClick = window.innerWidth <= 640 || window.innerHeight <= 640;
+    if (contactCard && isMobileClick) {
+        const cid = contactCard.dataset.cid;
+        openCustomerDetailDrawer(cid);
+    }
             });
 
             document.querySelectorAll('.modal-overlay').forEach(el => {
